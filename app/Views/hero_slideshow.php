@@ -7,7 +7,8 @@ $slideshows = model('HeroSlideshowModel')->getActiveSlideshows();
 <!-- Hero Background Slideshow -->
 <div class="slideshow-background-container" id="slideshow-bg-container">
     <?php foreach ($slideshows as $index => $slide): ?>
-        <div class="slide-bg <?= $index === 0 ? 'active' : '' ?>" data-index="<?= $index ?>" data-id="<?= $slide['id'] ?>" style="background-image: url('<?= $slide['image_url'] ?>');">
+        <div class="slide-bg <?= $index === 0 ? 'active' : '' ?>" data-index="<?= $index ?>" data-id="<?= $slide['id'] ?>">
+            <div class="slide-bg-image" style="background-image: url('<?= $slide['image_url'] ?>')"></div>
             <div class="slide-bg-overlay"></div>
         </div>
     <?php endforeach; ?>
@@ -82,7 +83,7 @@ $slideshows = model('HeroSlideshowModel')->getActiveSlideshows();
                 heroContainer.addEventListener('mouseenter', () => {
                     if (slideBgInterval) {
                         clearInterval(slideBgInterval);
-                        console.log('⏸️ Auto-play paused');
+                        console.log('⏸️ Auto-play paused on hover');
                     }
                 });
                 
@@ -107,10 +108,10 @@ $slideshows = model('HeroSlideshowModel')->getActiveSlideshows();
 </script>
 <?php else: ?>
 <!-- No active slideshows -->
-<div class="slideshow-background-container" id="slideshow-bg-container" style="background-color: #e0e0e0; display: flex; align-items: center; justify-content: center;">
-    <div style="text-align: center; color: #999;">
+<div class="slideshow-background-container" id="slideshow-bg-container" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+    <div style="text-align: center; color: white;">
         <p>📸 Slideshow belum dikonfigurasi</p>
-        <small><a href="<?= base_url('admin') ?>" style="color: #0066cc;">Buka Admin Panel untuk menambah slide</a></small>
+        <small><a href="<?= base_url('admin') ?>" style="color: #fff; text-decoration: underline;">Buka Admin Panel untuk menambah slide</a></small>
     </div>
 </div>
 <?php endif; ?>
