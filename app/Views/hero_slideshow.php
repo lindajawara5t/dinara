@@ -15,14 +15,17 @@ $slideshows = model('HeroSlideshowModel')->getActiveSlideshows();
 </div>
 
 <script>
+console.log('=== HERO SLIDESHOW SCRIPT LOADED ===');
+
 (function() {
-    console.log('🎬 Hero Slideshow Initialized');
+    console.log('🎬 Hero Slideshow IIFE Started');
     
     let currentSlideBg = 0;
     const slideBgs = document.querySelectorAll('.slide-bg');
     let slideBgInterval = null;
     
     console.log('📊 Total Slides Found:', slideBgs.length);
+    console.log('Slide elements:', slideBgs);
 
     function showSlideBg(n) {
         // Validate index
@@ -69,6 +72,8 @@ $slideshows = model('HeroSlideshowModel')->getActiveSlideshows();
     }
 
     // Initialize
+    console.log('🔍 Checking if slideBgs.length > 0:', slideBgs.length > 0);
+    
     if (slideBgs.length > 0) {
         console.log('✅ Slideshow Starting with', slideBgs.length, 'slides');
         showSlideBg(currentSlideBg);
@@ -79,6 +84,8 @@ $slideshows = model('HeroSlideshowModel')->getActiveSlideshows();
             
             // Pause on hover
             const heroContainer = document.querySelector('.hero-section-with-slideshow');
+            console.log('Hero container found:', heroContainer ? 'YES' : 'NO');
+            
             if (heroContainer) {
                 heroContainer.addEventListener('mouseenter', () => {
                     if (slideBgInterval) {
@@ -103,7 +110,14 @@ $slideshows = model('HeroSlideshowModel')->getActiveSlideshows();
         console.log('✅ Slideshow ready! Use window.slideshowControl.next(), .prev() to control');
     } else {
         console.warn('⚠️ No slides found! Check HeroSlideshowModel');
+        console.log('Looking for .slide-bg elements...');
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.slide-bg');
+            console.log('After DOMContentLoaded - slides found:', slides.length);
+        });
     }
+    
+    console.log('=== HERO SLIDESHOW IIFE END ===');
 })();
 </script>
 <?php else: ?>
