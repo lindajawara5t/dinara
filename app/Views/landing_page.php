@@ -359,6 +359,63 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
+    <!-- HERO SLIDESHOW SCRIPT -->
+    <script>
+        console.log('=== HERO SLIDESHOW SCRIPT LOADED (inline) ===');
+        
+        function initHeroSlideshow() {
+            console.log('🎬 Hero Slideshow Init Started');
+            
+            let currentSlideBg = 0;
+            const slideBgs = document.querySelectorAll('.slide-bg');
+            let slideBgInterval = null;
+            
+            console.log('📊 Total Slides Found:', slideBgs.length);
+
+            if (slideBgs.length === 0) {
+                console.warn('⚠️ No .slide-bg elements found!');
+                return;
+            }
+
+            function showSlideBg(n) {
+                if (n >= slideBgs.length) currentSlideBg = 0;
+                if (n < 0) currentSlideBg = slideBgs.length - 1;
+                
+                slideBgs.forEach(slide => slide.classList.remove('active'));
+                if (slideBgs[currentSlideBg]) {
+                    slideBgs[currentSlideBg].classList.add('active');
+                    console.log('🖼️ Slide:', currentSlideBg + 1);
+                }
+            }
+
+            function autoPlayBg() {
+                currentSlideBg++;
+                showSlideBg(currentSlideBg);
+            }
+
+            function resetAutoPlayBg() {
+                if (slideBgInterval) clearInterval(slideBgInterval);
+                if (slideBgs.length > 1) {
+                    slideBgInterval = setInterval(autoPlayBg, 5000);
+                }
+            }
+
+            console.log('✅ Slideshow Starting');
+            showSlideBg(currentSlideBg);
+            if (slideBgs.length > 1) {
+                resetAutoPlayBg();
+                console.log('⏱️ Auto-play active');
+            }
+        }
+
+        // Init ketika document ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initHeroSlideshow);
+        } else {
+            initHeroSlideshow();
+        }
+    </script>
+    
     <script>
         // --- 1. PREPARE DATA (From Controller) ---
         // Kita gunakan Null Coalescing (??) agar JS tidak error jika data kosong
@@ -722,64 +779,6 @@
             map.flyTo([karimunLoc.lat, karimunLoc.lng], 13); // Zoom in pulau
         }
 
-    </script>
-    
-    <!-- HERO SLIDESHOW INITIALIZATION (at end to ensure DOM ready) -->
-    <script>
-    console.log('=== HERO SLIDESHOW INIT AT PAGE END ===');
-    
-    (function() {
-        console.log('🎬 Hero Slideshow Starting');
-        
-        let currentSlideBg = 0;
-        const slideBgs = document.querySelectorAll('.slide-bg');
-        let slideBgInterval = null;
-        
-        console.log('📊 Total slides found:', slideBgs.length);
-        
-        if (slideBgs.length === 0) {
-            console.warn('⚠️ No .slide-bg elements found!');
-            return;
-        }
-
-        function showSlideBg(n) {
-            if (n >= slideBgs.length) currentSlideBg = 0;
-            if (n < 0) currentSlideBg = slideBgs.length - 1;
-            
-            slideBgs.forEach(slide => slide.classList.remove('active'));
-            
-            if (slideBgs[currentSlideBg]) {
-                slideBgs[currentSlideBg].classList.add('active');
-                console.log('🖼️ Slide:', currentSlideBg + 1, '/', slideBgs.length);
-            }
-        }
-
-        function autoPlay() {
-            currentSlideBg++;
-            showSlideBg(currentSlideBg);
-        }
-
-        // Initialize
-        console.log('✅ Slideshow starting with', slideBgs.length, 'slides');
-        showSlideBg(0);
-        
-        if (slideBgs.length > 1) {
-            slideBgInterval = setInterval(autoPlay, 5000);
-            console.log('⏱️ Auto-play: every 5 seconds');
-            
-            // Pause on hover
-            const hero = document.querySelector('.hero-section-with-slideshow');
-            if (hero) {
-                hero.addEventListener('mouseenter', () => clearInterval(slideBgInterval));
-                hero.addEventListener('mouseleave', () => {
-                    clearInterval(slideBgInterval);
-                    slideBgInterval = setInterval(autoPlay, 5000);
-                });
-            }
-        }
-        
-        console.log('✅ Slideshow initialized');
-    })();
     </script>
     
     <div style="height: 100px;"></div> 
