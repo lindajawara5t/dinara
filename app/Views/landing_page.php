@@ -55,67 +55,29 @@
         .pulse-dot { width: 8px; height: 8px; background-color: #00ff88; border-radius: 50%; margin-right: 10px; flex-shrink: 0; box-shadow: 0 0 8px #00ff88; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        /* HERO SECTION */
-        .hero-section {
-            background: 
-                linear-gradient(135deg, rgba(13, 110, 253, 0.3) 0%, rgba(0, 100, 255, 0.25) 40%, rgba(0, 31, 63, 0.4) 100%),
-                url('<?= base_url('uploads/' . ($settings['hero_image'] ?? '')) ?>');
-            background-image: 
-                linear-gradient(135deg, rgba(13, 110, 253, 0.3) 0%, rgba(0, 100, 255, 0.25) 40%, rgba(0, 31, 63, 0.4) 100%),
-                url('<?= base_url('uploads/' . ($settings['hero_image'] ?? '')) ?>'),
-                linear-gradient(135deg, #0d6efd 0%, #0055ff 50%, #001f3f 100%);
-            background-size: cover; background-position: right center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            padding-top: 120px; padding-bottom: 200px; 
-            color: white; text-align: center;
-            border-bottom-left-radius: 0; border-bottom-right-radius: 0;
-            position: relative;
-            overflow: visible;
-            min-height: 600px;
-            width: 100vw;
-            margin-left: calc(-50vw + 50%);
-        }
-        
-        .hero-section::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(0, 200, 255, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(13, 110, 253, 0.12) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(0, 150, 255, 0.08) 0%, transparent 60%);
-            z-index: 1;
-            pointer-events: none;
-        }
-        
-        .hero-section .container-fluid {
-            position: relative; z-index: 2;
-            width: 100%;
-            max-width: 100% !important;
-            padding-left: 50px !important;
-            padding-right: 50px !important;
-        }
-
         /* HERO SECTION WITH SLIDESHOW */
         .hero-section-with-slideshow {
             position: relative;
-            overflow: hidden;
+            overflow: visible;
             min-height: 600px;
-            padding-top: 120px;
-            padding-bottom: 80px;
+            padding-top: 80px;
+            padding-bottom: 120px;
             color: white;
             text-align: center;
             width: 100vw;
             margin-left: calc(-50vw + 50%);
-            z-index: 0;
+            z-index: 10;
         }
 
         .slideshow-background-container {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            z-index: 0;
+            height: 100vh;
+            z-index: -1;
+            display: block;
+            pointer-events: none;
         }
 
         .slide-bg {
@@ -137,6 +99,7 @@
             height: 100%;
             background-size: cover;
             background-position: center;
+            background-repeat: no-repeat;
         }
 
         .slide-bg-overlay {
@@ -161,7 +124,7 @@
         /* SEARCH CARD (CONTAINER UTAMA) */
         .search-card {
             background: #ffffff; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.08);
-            padding: 30px; margin-top: -200px; position: relative; z-index: 10;
+            padding: 30px; margin-top: 30px; position: relative; z-index: 20;
         }
 
         /* MAP STYLING */
@@ -281,7 +244,7 @@
                 </div>
             </div>
             <div class="ms-auto">
-                <a href="/admin" class="btn btn-outline-dark rounded-pill px-3 py-1 btn-sm fw-bold border-2" style="font-size: 0.75rem;">Login Mitra</a>
+                <a href="<?= base_url('admin') ?>" class="btn btn-outline-dark rounded-pill px-3 py-1 btn-sm fw-bold border-2" style="font-size: 0.75rem;">Login Mitra</a>
             </div>
         </div>
     </nav>
