@@ -250,9 +250,21 @@
     </nav>
 
     <header class="hero-section-with-slideshow">
-        <script>console.log('🔍 CHECK: About to include hero_slideshow');</script>
-        <?= $this->include('hero_slideshow') ?>
-        <script>console.log('🔍 CHECK: hero_slideshow included, checking for .slide-bg elements:', document.querySelectorAll('.slide-bg').length);</script>
+        <!-- HERO SLIDESHOW CONTAINER -->
+        <?php
+        $slideshows = model('HeroSlideshowModel')->getActiveSlideshows();
+        ?>
+        <?php if (!empty($slideshows)): ?>
+        <div class="slideshow-background-container" id="slideshow-bg-container">
+            <?php foreach ($slideshows as $index => $slide): ?>
+            <div class="slide-bg <?= $index === 0 ? 'active' : '' ?>" data-index="<?= $index ?>">
+                <div class="slide-bg-image" style="background-image: url('<?= $slide['image_url'] ?>')"></div>
+                <div class="slide-bg-overlay"></div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+        
         <div class="container-fluid">
             <h1 class="fw-bold text-white mb-3" style="font-size: 2.8rem; letter-spacing: -1.5px; text-shadow: 0 8px 20px rgba(0,0,0,0.4), 0 2px 5px rgba(0,0,0,0.2); font-weight: 900; word-spacing: 3px; line-height: 1.2;">
                 <?= $settings['hero_title'] ?? 'Smart Journey Planner' ?>
