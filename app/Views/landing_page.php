@@ -101,11 +101,12 @@
             overflow: hidden;
             min-height: 600px;
             padding-top: 120px;
-            padding-bottom: 200px;
+            padding-bottom: 80px;
             color: white;
             text-align: center;
             width: 100vw;
             margin-left: calc(-50vw + 50%);
+            z-index: 0;
         }
 
         .slideshow-background-container {
@@ -150,7 +151,7 @@
 
         .hero-section-with-slideshow .container-fluid {
             position: relative;
-            z-index: 2;
+            z-index: 1;
             width: 100%;
             max-width: 100% !important;
             padding-left: 50px !important;
