@@ -12,7 +12,7 @@ class HeroSlideshowModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['title', 'description', 'image_url', 'sort_order', 'is_active'];
+    protected $allowedFields    = ['title', 'description', 'image_url', 'sort_order', 'is_active', 'duration', 'button_label', 'button_url', 'button_class'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

@@ -43,6 +43,8 @@
             box-shadow: 0 2px 20px rgba(0,0,0,0.08); 
             height: 80px;
             border-bottom: 1px solid rgba(0,0,0,0.05);
+            z-index: 1000 !important;
+            position: relative;
         }
         .navbar-brand img { max-height: 40px; width: auto; object-fit: contain; }
         .navbar-brand { font-weight: 700; color: #0d6efd; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
@@ -75,7 +77,7 @@
             left: 0;
             width: 100%;
             height: 100vh;
-            z-index: -1;
+            z-index: 1;
             display: block;
             pointer-events: none;
         }
@@ -114,7 +116,7 @@
 
         .hero-section-with-slideshow .container-fluid {
             position: relative;
-            z-index: 1;
+            z-index: 100;
             width: 100%;
             max-width: 100% !important;
             padding-left: 50px !important;

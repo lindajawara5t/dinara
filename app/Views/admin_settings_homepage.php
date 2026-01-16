@@ -209,11 +209,35 @@
 
             <!-- HERO SLIDER SETTINGS -->
             <div class="tab-pane fade" id="hero" role="tabpanel">
+                <!-- PERINGATAN: SISTEM BARU -->
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <h5 class="alert-heading"><i class="bi bi-exclamation-triangle me-2"></i>Sistem Slideshow Baru Tersedia!</h5>
+                    <p class="mb-2">Hero slideshow sekarang menggunakan <strong>sistem database</strong> yang lebih powerful dan mudah dikelola.</p>
+                    <hr>
+                    <p class="mb-2"><strong>Fitur baru:</strong></p>
+                    <ul class="mb-3">
+                        <li>Upload multiple gambar dengan mudah</li>
+                        <li>Drag & drop untuk mengatur urutan</li>
+                        <li>Toggle aktif/nonaktif per slide</li>
+                        <li>Edit gambar tanpa hapus yang lama</li>
+                    </ul>
+                    <div class="d-flex gap-2">
+                        <a href="<?= base_url('admin/settings') ?>#slideshow" class="btn btn-warning">
+                            <i class="bi bi-images me-1"></i> Kelola Hero Slideshow Baru
+                        </a>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="alert">Tetap Gunakan Sistem Lama</button>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i><strong>Catatan:</strong> Form di bawah ini adalah sistem lama dan akan segera dihapus. Disarankan menggunakan sistem baru di atas.
+                </div>
+                
                 <form action="<?= base_url('settings/save-homepage') ?>" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="section" value="hero_slider">
                     <div class="setting-card">
                         <div class="setting-card-header">
-                            <h6 class="mb-0"><i class="bi bi-images me-2"></i>Hero Slides (Slider)</h6>
+                            <h6 class="mb-0"><i class="bi bi-images me-2"></i>Hero Slides (Slider) - <span class="badge bg-secondary">SISTEM LAMA</span></h6>
                         </div>
                         <div class="setting-card-body">
                             <div id="heroSlidesRepeater">

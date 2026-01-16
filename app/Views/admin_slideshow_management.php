@@ -115,6 +115,38 @@ $slideshows = $slideshowModel->getAllSlideshows();
                 <label for="slideshow_desc" class="form-label">Deskripsi (Opsional)</label>
                 <textarea class="form-control" id="slideshow_desc" rows="2" placeholder="Deskripsi untuk slide ini..."></textarea>
             </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="slideshow_duration" class="form-label">Durasi Tampil (ms)</label>
+                    <input type="number" class="form-control" id="slideshow_duration" value="5000" placeholder="5000">
+                    <small class="text-muted">Berapa lama slide ditampilkan (ms). Default: 5000ms = 5 detik</small>
+                </div>
+                <div class="col-md-6">
+                    <label for="slideshow_button_class" class="form-label">Style Tombol</label>
+                    <select class="form-select" id="slideshow_button_class">
+                        <option value="btn-warning">Kuning (Warning)</option>
+                        <option value="btn-primary">Biru (Primary)</option>
+                        <option value="btn-success">Hijau (Success)</option>
+                        <option value="btn-danger">Merah (Danger)</option>
+                        <option value="btn-info">Info (Cyan)</option>
+                        <option value="btn-dark">Hitam (Dark)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="slideshow_button_label" class="form-label">Label Tombol (Opsional)</label>
+                <input type="text" class="form-control" id="slideshow_button_label" placeholder="Contoh: Lihat Paket, Booking Sekarang">
+                <small class="text-muted">Kosongkan jika tidak ingin menampilkan tombol</small>
+            </div>
+            
+            <div class="mb-3">
+                <label for="slideshow_button_url" class="form-label">Link Tombol (Opsional)</label>
+                <input type="text" class="form-control" id="slideshow_button_url" placeholder="Contoh: https://wa.me/628123456789 atau javascript:showSection('estimasi')">
+                <small class="text-muted">URL tujuan atau JavaScript function</small>
+            </div>
+            
             <button type="button" class="btn btn-primary w-100" onclick="uploadSlideshow()" id="upload-btn" disabled>
                 <i class="bi bi-upload"></i> Upload Slideshow
             </button>
@@ -143,10 +175,16 @@ $slideshows = $slideshowModel->getAllSlideshows();
                                 <div class="slideshow-item-desc"><?= $slide['description'] ?></div>
                             <?php endif; ?>
                             <div class="slideshow-item-meta">
-                                <small class="text-muted">Urutan: <?= $slide['sort_order'] ?> | 
-                                Status: <span class="badge <?= $slide['is_active'] ? 'bg-success' : 'bg-secondary' ?>">
-                                    <?= $slide['is_active'] ? 'Aktif' : 'Nonaktif' ?>
-                                </span></small>
+                                <small class="text-muted">
+                                    Urutan: <?= $slide['sort_order'] ?> | 
+                                    Durasi: <?= $slide['duration'] ?? 5000 ?>ms | 
+                                    Status: <span class="badge <?= $slide['is_active'] ? 'bg-success' : 'bg-secondary' ?>">
+                                        <?= $slide['is_active'] ? 'Aktif' : 'Nonaktif' ?>
+                                    </span>
+                                    <?php if (!empty($slide['button_label'])): ?>
+                                        | <span class="badge bg-info"><i class="bi bi-link-45deg"></i> Ada Tombol</span>
+                                    <?php endif; ?>
+                                </small>
                             </div>
                         </div>
                         <div class="slideshow-item-actions">
@@ -193,6 +231,34 @@ $slideshows = $slideshowModel->getAllSlideshows();
                     <label for="edit_slideshow_desc" class="form-label">Deskripsi</label>
                     <textarea class="form-control" id="edit_slideshow_desc" rows="3"></textarea>
                 </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="edit_slideshow_duration" class="form-label">Durasi (ms)</label>
+                        <input type="number" class="form-control" id="edit_slideshow_duration" value="5000">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="edit_slideshow_button_class" class="form-label">Style Tombol</label>
+                        <select class="form-select" id="edit_slideshow_button_class">
+                            <option value="btn-warning">Kuning</option>
+                            <option value="btn-primary">Biru</option>
+                            <option value="btn-success">Hijau</option>
+                            <option value="btn-danger">Merah</option>
+                            <option value="btn-info">Info</option>
+                            <option value="btn-dark">Hitam</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="edit_slideshow_button_label" class="form-label">Label Tombol</label>
+                    <input type="text" class="form-control" id="edit_slideshow_button_label" placeholder="Kosongkan jika tidak ada tombol">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="edit_slideshow_button_url" class="form-label">Link Tombol</label>
+                    <input type="text" class="form-control" id="edit_slideshow_button_url" placeholder="URL atau JavaScript">
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -224,6 +290,10 @@ function uploadSlideshow() {
     formData.append('slideshow_image', selectedImage);
     formData.append('title', document.getElementById('slideshow_title').value);
     formData.append('description', document.getElementById('slideshow_desc').value);
+    formData.append('duration', document.getElementById('slideshow_duration').value);
+    formData.append('button_label', document.getElementById('slideshow_button_label').value);
+    formData.append('button_url', document.getElementById('slideshow_button_url').value);
+    formData.append('button_class', document.getElementById('slideshow_button_class').value);
 
     fetch('<?= base_url('admin/save_slideshow') ?>', {
         method: 'POST',
@@ -253,6 +323,10 @@ function editSlideshow(id) {
                 document.getElementById('edit_slideshow_id').value = id;
                 document.getElementById('edit_slideshow_title').value = slideshow.title || '';
                 document.getElementById('edit_slideshow_desc').value = slideshow.description || '';
+                document.getElementById('edit_slideshow_duration').value = slideshow.duration || 5000;
+                document.getElementById('edit_slideshow_button_label').value = slideshow.button_label || '';
+                document.getElementById('edit_slideshow_button_url').value = slideshow.button_url || '';
+                document.getElementById('edit_slideshow_button_class').value = slideshow.button_class || 'btn-warning';
                 document.getElementById('current-image').src = '<?= base_url('') ?>' + slideshow.image_url;
                 new bootstrap.Modal(document.getElementById('editSlideshowModal')).show();
             }
@@ -266,6 +340,10 @@ function saveEditSlideshow() {
     formData.append('id', id);
     formData.append('title', document.getElementById('edit_slideshow_title').value);
     formData.append('description', document.getElementById('edit_slideshow_desc').value);
+    formData.append('duration', document.getElementById('edit_slideshow_duration').value);
+    formData.append('button_label', document.getElementById('edit_slideshow_button_label').value);
+    formData.append('button_url', document.getElementById('edit_slideshow_button_url').value);
+    formData.append('button_class', document.getElementById('edit_slideshow_button_class').value);
     
     const newImage = document.getElementById('edit_slideshow_image').files[0];
     if (newImage) {

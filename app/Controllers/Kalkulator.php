@@ -132,6 +132,13 @@ class Kalkulator extends BaseController
                 $settings[$row['setting_key']] = $row['setting_value'];
             }
         }
+        
+        // 5a. AMBIL HERO SLIDESHOW DARI DATABASE
+        $hero_slideshows = [];
+        if ($db->tableExists('hero_slideshow')) {
+            $slideshowModel = new \App\Models\HeroSlideshowModel();
+            $hero_slideshows = $slideshowModel->getActiveSlideshows();
+        }
 
         // 6. AMBIL KONTEN PROMO (Filter: exclude estimasi)
         $promos = [];
@@ -188,6 +195,7 @@ class Kalkulator extends BaseController
         // 8. KIRIM DATA KE VIEW
         $data = [
             'settings'       => $settings,
+            'hero_slideshows' => $hero_slideshows,  // <--- NEW: Hero Slideshow dari Database
             'destinasi_list' => $destinasi_menu,
             'promos'         => $promos,
             'current_lang'   => $lang,

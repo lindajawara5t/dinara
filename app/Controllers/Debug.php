@@ -109,6 +109,53 @@ class Debug extends Controller
         echo "</pre>";
     }
 
+    public function check_slideshow()
+    {
+        // Simple database check
+        $db = \Config\Database::connect();
+        
+        echo "<pre style='background: #f0f0f0; padding: 20px; font-family: monospace;'>";
+        echo "<h2>🎬 Hero Slideshow Database Check</h2>\n\n";
+        
+        // 1. Check if table exists
+        $tableResult = $db->query("SHOW TABLES LIKE 'hero_slideshow'");
+        if ($tableResult->getNumRows() == 0) {
+            echo "❌ <strong>Table 'hero_slideshow' does NOT exist!</strong>\n";
+        } else {
+            echo "✅ <strong>Table 'hero_slideshow' exists</strong>\n\n";
+            
+            // 2. Count all slides
+            $result = $db->query("SELECT COUNT(*) as total FROM hero_slideshow");
+            $row = $result->getRow();
+            echo "Total slides: <strong>" . $row->total . "</strong>\n";
+            
+            // 3. Count active slides
+            $result = $db->query("SELECT COUNT(*) as active FROM hero_slideshow WHERE is_active = 1");
+            $row = $result->getRow();
+            echo "Active slides: <strong>" . $row->active . "</strong>\n\n";
+            
+            // 4. List all slides
+            echo "All Slides:\n";
+            echo str_repeat("-", 80) . "\n";
+            $result = $db->query("SELECT id, title, image_url, is_active, sort_order FROM hero_slideshow ORDER BY sort_order");
+            
+            if ($result->getNumRows() > 0) {
+                foreach ($result->getResult() as $slide) {
+                    $active = $slide->is_active ? '✅' : '❌';
+                    echo "ID: {$slide->id} | Title: {$slide->title}\n";
+                    echo "  Image: {$slide->image_url}\n";
+                    echo "  Active: {$active} | Order: {$slide->sort_order}\n";
+                    echo "---\n";
+                }
+            } else {
+                echo "⚠️ No slides found!\n";
+            }
+        }
+        
+        echo str_repeat("=", 80) . "\n";
+        echo "</pre>";
+    }
+
     public function check()
     {
         $slideshowModel = new \App\Models\HeroSlideshowModel();

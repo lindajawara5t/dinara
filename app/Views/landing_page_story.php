@@ -72,12 +72,15 @@
         /* SEARCH FORM INSIDE HERO - TIKET.COM STYLE */
         .hero-search-form {
             position: absolute;
-            bottom: -60px;
+            bottom: -80px;
             left: 50%;
             transform: translateX(-50%);
             width: 90%;
             max-width: 1100px;
             z-index: 100;
+        }
+        .hero-spacer {
+            height: 100px;
         }
         .search-card-tiket {
             background: rgba(255, 255, 255, 0.8);
@@ -235,7 +238,7 @@
         
         /* PROMO SECTION STYLES */
         .promo-section {
-            padding: 30px 0 50px 0;
+            padding: 15px 0 50px 0;
         }
         .promo-card {
             background: white;
@@ -314,12 +317,12 @@
         .quick-action-grid {
             display: flex;
             justify-content: center;
-            gap: 32px;
+            gap: 20px;
             flex-wrap: wrap;
         }
         @media (max-width: 768px) {
             .quick-action-grid {
-                gap: 24px;
+                gap: 16px;
             }
         }
         .quick-action-card {
@@ -327,7 +330,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 12px 20px;
+            padding: 8px 16px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
@@ -341,11 +344,11 @@
             transform: scale(1.15);
         }
         .quick-action-icon {
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             transition: all 0.3s ease;
         }
         .quick-action-icon i {
-            font-size: 2.2rem;
+            font-size: 1.6rem;
             transition: all 0.3s ease;
         }
         .quick-action-icon.calculator i { color: #667eea; }
@@ -2358,9 +2361,9 @@
 
             /* 2. Hero Section (Header Panel) lebih kecil */
             .hero-section {
-                min-height: 220px; /* Lebih besar untuk mobile */
+                min-height: 280px; /* Lebih besar untuk mobile agar form muat */
                 margin-bottom: 0;
-                padding: 40px 0;
+                padding: 40px 0 60px 0;
             }
             .hero-title {
                 font-size: 1.5rem; /* Font lebih kecil */
@@ -2368,6 +2371,48 @@
             }
             .hero-subtitle {
                 font-size: 0.85rem;
+            }
+            
+            /* Hero Search Form Mobile */
+            .hero-search-form {
+                position: relative;
+                bottom: auto;
+                left: auto;
+                transform: none;
+                width: 95%;
+                margin: 20px auto 0;
+                padding: 0 10px;
+            }
+            .search-card-tiket {
+                padding: 15px;
+                border-radius: 16px;
+            }
+            .search-card-tiket .input-box {
+                height: 50px;
+                padding: 8px 12px;
+            }
+            .btn-search-tiket {
+                height: 50px;
+                font-size: 0.85rem;
+                padding: 10px 15px;
+            }
+            .nav-tabs-tiket {
+                padding: 8px 10px;
+                gap: 4px;
+                transform: none;
+            }
+            .nav-tab-item {
+                padding: 5px 8px;
+                font-size: 0.65rem;
+            }
+            .nav-tab-item span {
+                display: none; /* Sembunyikan teks, tampilkan icon saja */
+            }
+            .nav-tab-item i {
+                font-size: 1rem;
+            }
+            .hero-spacer {
+                height: 20px; /* Spacer lebih kecil di mobile karena form tidak overlap */
             }
 
             /* 3. Search Widget (Kotak Pencarian) */
@@ -2703,53 +2748,12 @@
                 <?php endif; ?>
                 <span><?= $settings['app_name'] ?? 'Dinara Travel' ?></span>
             </div>
-                    <?php
-                    // Mirror deklarasi $hero_slides agar tersedia sebelum JS
-                    if (!isset($hero_slides)) {
-                        $hero_slides = [];
-                        if (!empty($settings['hero_slides'])) {
-                            $slides = json_decode($settings['hero_slides'], true);
-                            if (is_array($slides)) {
-                                foreach ($slides as $slide) {
-                                    $img = $slide['image'] ?? '';
-                                    if ($img && strpos($img, 'http') !== 0) $img = base_url('uploads/' . $img);
-                                    $hero_slides[] = [
-                                        'image' => $img ?: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200',
-                                        'title' => $slide['title'] ?? 'Hai kamu, mau ke mana?',
-                                        'subtitle' => $slide['subtitle'] ?? 'Dinara Travel - Satu aplikasi untuk kebutuhan liburanmu.',
-                                        'button' => [
-                                            'label' => $slide['button_label'] ?? 'Ambil Promo',
-                                            'class' => $slide['button_class'] ?? 'btn-warning',
-                                            'onclick' => $slide['button_action'] ?? ''
-                                        ],
-                                        'duration' => (int)($slide['duration'] ?? 4000)
-                                    ];
-                                }
-                            }
-                        }
-                        if (empty($hero_slides)) {
-                            $hero_slides = [
-                                [
-                                    'image' => !empty($settings['hero_image']) ? base_url('uploads/' . $settings['hero_image']) : 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200',
-                                    'title' => $settings['hero_title'] ?? 'Hai kamu, mau ke mana?',
-                                    'subtitle' => $settings['hero_subtitle'] ?? 'Dinara Travel - Satu aplikasi untuk kebutuhan liburanmu.',
-                                    'button' => [ 'label' => 'Ambil Promo', 'class' => 'btn-warning', 'onclick' => 'ambilPromo()' ],
-                                    'duration' => 4000
-                                ]
-                            ];
-                        }
-                    }
-                    ?>
                     <script>
                     // HERO SLIDER LOGIC
                     let heroIndex = 0;
                     let heroTimeout = null;
-                    // Ambil durasi tiap slide dari PHP
-                    let heroDurations = [
-                        <?php foreach($hero_slides as $slide): ?>
-                            <?= (int)($slide['duration'] ?? 4000) ?>,
-                        <?php endforeach; ?>
-                    ];
+                    // Ambil durasi tiap slide dari PHP (default 5000ms jika tidak ada)
+                    let heroDurations = [5000];
                     const heroSlides = document.querySelectorAll('.hero-slide');
                     const heroDots = document.querySelectorAll('.hero-dot');
 
@@ -2773,6 +2777,11 @@
                         heroIndex = idx;
                         showHeroSlide(heroIndex);
                         resetHeroTimeout();
+                    }
+                    
+                    // Alias untuk goToSlide (digunakan di onclick dots)
+                    function goToSlide(idx) {
+                        goToHero(idx);
                     }
 
                     function resetHeroTimeout() {
@@ -2815,39 +2824,52 @@
     </nav>
 
     <!-- PROMO HEADER PANEL - TIKET.COM STYLE -->
-    <div class="hero-section p-0" style="position:relative;overflow:hidden;min-height:480px;">
+    <div class="hero-section p-0" style="position:relative;overflow:visible;min-height:480px;">
         <div id="heroSlider" class="position-absolute w-100 h-100" style="top:0;left:0;">
             <?php
-            // Ambil data hero_slides dari settings (JSON)
+            // Gunakan data slideshow dari database (hero_slideshow table)
             $hero_slides = [];
-            if (!empty($settings['hero_slides'])) {
-                $slides = json_decode($settings['hero_slides'], true);
-                if (is_array($slides)) {
-                    foreach ($slides as $slide) {
-                        $img = $slide['image'] ?? '';
-                        if ($img && strpos($img, 'http') !== 0) $img = base_url('uploads/' . $img);
-                        $hero_slides[] = [
-                            'image' => $img ?: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200',
-                            'title' => $slide['title'] ?? 'Hai kamu, mau ke mana?',
-                            'subtitle' => $slide['subtitle'] ?? 'Dinara Travel - Satu aplikasi untuk kebutuhan liburanmu.',
-                            'button' => [
-                                'label' => $slide['button_label'] ?? 'Ambil Promo',
-                                'class' => $slide['button_class'] ?? 'btn-warning',
-                                'onclick' => $slide['button_action'] ?? ''
-                            ],
-                            'duration' => (int)($slide['duration'] ?? 4000)
-                        ];
+            
+            if (!empty($hero_slideshows)) {
+                // Jika ada slideshow dari database, gunakan itu
+                foreach ($hero_slideshows as $slide) {
+                    // Tentukan button action
+                    $buttonAction = '';
+                    $buttonUrl = $slide['button_url'] ?? '';
+                    if (!empty($buttonUrl)) {
+                        // Cek apakah JavaScript atau URL
+                        if (stripos($buttonUrl, 'javascript:') === 0 || stripos($buttonUrl, 'showSection') !== false) {
+                            $buttonAction = str_replace('javascript:', '', $buttonUrl);
+                        } else {
+                            // Jika URL, buka di tab baru
+                            $buttonAction = "window.open('" . $buttonUrl . "', '_blank')";
+                        }
+                    } else {
+                        $buttonAction = "showSection('promo')";
                     }
+                    
+                    $hero_slides[] = [
+                        'image' => base_url($slide['image_url']),
+                        'title' => $slide['title'] ?: 'Hai kamu, mau ke mana?',
+                        'subtitle' => $slide['description'] ?: 'Dinara Travel - Satu aplikasi untuk kebutuhan liburanmu.',
+                        'button' => [
+                            'label' => $slide['button_label'] ?? 'Lihat Promo',
+                            'class' => $slide['button_class'] ?? 'btn-warning',
+                            'onclick' => $buttonAction
+                        ],
+                        'duration' => (int)($slide['duration'] ?? 5000)
+                    ];
                 }
             }
-            // Fallback jika kosong
+            
+            // Fallback jika tidak ada slideshow dari database
             if (empty($hero_slides)) {
                 $hero_slides = [
                     [
                         'image' => !empty($settings['hero_image']) ? base_url('uploads/' . $settings['hero_image']) : 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200',
                         'title' => $settings['hero_title'] ?? 'Hai kamu, mau ke mana?',
                         'subtitle' => $settings['hero_subtitle'] ?? 'Dinara Travel - Satu aplikasi untuk kebutuhan liburanmu.',
-                        'button' => [ 'label' => 'Ambil Promo', 'class' => 'btn-warning', 'onclick' => 'ambilPromo()' ],
+                        'button' => [ 'label' => 'Ambil Promo', 'class' => 'btn-warning', 'onclick' => "showSection('promo')" ],
                         'duration' => 4000
                     ]
                 ];
@@ -2859,20 +2881,35 @@
                 <div class="hero-content" style="width: 100%; max-width: 100%;">
                     <h1 class="hero-title"><?= $slide['title'] ?></h1>
                     <p class="hero-subtitle"><?= $slide['subtitle'] ?></p>
+                    <?php if (!empty($slide['button']['label'])): ?>
                     <button class="btn <?= $slide['button']['class'] ?> px-4 py-2 mt-3 fw-bold shadow" style="font-size:1.1rem;" onclick="<?= $slide['button']['onclick'] ?>">
                         <?= $slide['button']['label'] ?>
                     </button>
+                    <?php endif; ?>
                 </div>
             </div>
             <?php endforeach; ?>
+            <?php if (count($hero_slides) > 1): ?>
             <button id="heroPrev" class="btn btn-light position-absolute top-50 start-0 translate-middle-y ms-2" style="z-index:20;opacity:0.7;" onclick="slideHero(-1)"><i class="bi bi-chevron-left"></i></button>
             <button id="heroNext" class="btn btn-light position-absolute top-50 end-0 translate-middle-y me-2" style="z-index:20;opacity:0.7;" onclick="slideHero(1)"><i class="bi bi-chevron-right"></i></button>
             <div class="position-absolute bottom-0 start-50 translate-middle-x mb-3" style="z-index:21;">
                 <?php foreach($hero_slides as $i => $slide): ?>
-                <span class="hero-dot mx-1" data-dot="<?= $i ?>" style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#fff;opacity:<?= $i==0?'1':'0.5' ?>;cursor:pointer;border:2px solid #eee;"></span>
+                <span class="hero-dot mx-1" data-dot="<?= $i ?>" style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#fff;opacity:<?= $i==0?'1':'0.5' ?>;cursor:pointer;border:2px solid #eee;" onclick="goToSlide(<?= $i ?>)"></span>
                 <?php endforeach; ?>
             </div>
+            <?php endif; ?>
         </div>
+        
+        <script>
+        // Set heroDurations dari PHP setelah slides dirender
+        <?php if (!empty($hero_slides)): ?>
+        heroDurations = [
+            <?php foreach($hero_slides as $slide): ?>
+                <?= (int)($slide['duration'] ?? 5000) ?>,
+            <?php endforeach; ?>
+        ];
+        <?php endif; ?>
+        </script>
         
         <!-- SEARCH FORM INSIDE HERO -->
         <div class="hero-search-form">
@@ -2903,6 +2940,10 @@
                         <i class="bi bi-calculator"></i>
                         <span>Estimasi</span>
                     </div>
+                    <a href="<?= !empty($settings['footer_whatsapp']) ? esc($settings['footer_whatsapp']) : 'https://wa.me/6281234567890' ?>" target="_blank" class="nav-tab-item">
+                        <i class="bi bi-whatsapp"></i>
+                        <span>Konsultasi</span>
+                    </a>
                 </div>
             </div>
             
@@ -2963,39 +3004,11 @@
     </div>
 
     <!-- SPACER untuk form yang overlap -->
-    <div style="height: 80px;"></div>
+    <div class="hero-spacer"></div>
 
     <!-- ==================== PROMO SECTION (DEFAULT VISIBLE) ==================== -->
     <div id="section-promo" class="promo-section">
         <div class="container">
-            <!-- QUICK ACTION BUTTONS - MINIMAL STYLE -->
-            <div class="quick-action-grid mb-4">
-                <div class="quick-action-card" onclick="showSection('estimasi')">
-                    <div class="quick-action-icon calculator">
-                        <i class="bi bi-calculator-fill"></i>
-                    </div>
-                    <span class="quick-action-label">Hitung Biaya</span>
-                </div>
-                <a href="<?= !empty($settings['footer_whatsapp']) ? esc($settings['footer_whatsapp']) : 'https://wa.me/6281234567890' ?>" target="_blank" class="quick-action-card">
-                    <div class="quick-action-icon whatsapp">
-                        <i class="bi bi-whatsapp"></i>
-                    </div>
-                    <span class="quick-action-label">Konsultasi</span>
-                </a>
-                <a href="<?= base_url('hotel') ?>" class="quick-action-card">
-                    <div class="quick-action-icon hotel">
-                        <i class="bi bi-buildings"></i>
-                    </div>
-                    <span class="quick-action-label">Lihat Hotel</span>
-                </a>
-                <a href="<?= base_url('destinasi') ?>" class="quick-action-card">
-                    <div class="quick-action-icon destination">
-                        <i class="bi bi-compass"></i>
-                    </div>
-                    <span class="quick-action-label">Destinasi</span>
-                </a>
-            </div>
-            
             <!-- TENTANG KARIMUNJAWA SECTION -->
             <div class="karimunjawa-info-section mb-4">
                 <div class="row align-items-center">

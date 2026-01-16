@@ -1046,11 +1046,15 @@ class Admin extends BaseController
         }
         
         $data = [
-            'title'       => $this->request->getPost('title'),
-            'description' => $this->request->getPost('description'),
-            'image_url'   => $imageUrl,
-            'sort_order'  => $slideshowModel->countAllResults(),
-            'is_active'   => 1
+            'title'        => $this->request->getPost('title'),
+            'description'  => $this->request->getPost('description'),
+            'image_url'    => $imageUrl,
+            'sort_order'   => $slideshowModel->countAllResults(),
+            'is_active'    => 1,
+            'duration'     => (int)$this->request->getPost('duration') ?: 5000,
+            'button_label' => $this->request->getPost('button_label'),
+            'button_url'   => $this->request->getPost('button_url'),
+            'button_class' => $this->request->getPost('button_class') ?: 'btn-warning'
         ];
         
         if ($slideshowModel->insert($data)) {
@@ -1086,9 +1090,13 @@ class Admin extends BaseController
         }
         
         $data = [
-            'title'       => $this->request->getPost('title'),
-            'description' => $this->request->getPost('description'),
-            'image_url'   => $imageUrl
+            'title'        => $this->request->getPost('title'),
+            'description'  => $this->request->getPost('description'),
+            'image_url'    => $imageUrl,
+            'duration'     => (int)$this->request->getPost('duration') ?: 5000,
+            'button_label' => $this->request->getPost('button_label'),
+            'button_url'   => $this->request->getPost('button_url'),
+            'button_class' => $this->request->getPost('button_class') ?: 'btn-warning'
         ];
         
         if ($slideshowModel->update($id, $data)) {
