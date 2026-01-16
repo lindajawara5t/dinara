@@ -95,6 +95,68 @@
             padding-right: 50px !important;
         }
 
+        /* HERO SECTION WITH SLIDESHOW */
+        .hero-section-with-slideshow {
+            position: relative;
+            overflow: hidden;
+            min-height: 600px;
+            padding-top: 120px;
+            padding-bottom: 200px;
+            color: white;
+            text-align: center;
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+        }
+
+        .slideshow-background-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .slide-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .slide-bg.active {
+            opacity: 1;
+        }
+
+        .slide-bg-image {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .slide-bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(13, 110, 253, 0.3) 0%, rgba(0, 100, 255, 0.25) 40%, rgba(0, 31, 63, 0.4) 100%);
+            pointer-events: none;
+        }
+
+        .hero-section-with-slideshow .container-fluid {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 100% !important;
+            padding-left: 50px !important;
+            padding-right: 50px !important;
+        }
+
         /* SEARCH CARD (CONTAINER UTAMA) */
         .search-card {
             background: #ffffff; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.08);

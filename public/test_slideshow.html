@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Slideshow Test</title>
+    <style>
+        body { margin: 0; padding: 20px; background: #333; color: white; }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #222;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .hero-test {
+            position: relative;
+            min-height: 400px;
+            background: #111;
+            border: 2px solid #555;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .slideshow-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        
+        .slide-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+        
+        .slide-bg.active {
+            opacity: 1;
+        }
+        
+        .slide-image {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .content-overlay {
+            position: relative;
+            z-index: 2;
+            padding: 40px;
+            text-align: center;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .content-text h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .info {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border: 1px solid #444;
+        }
+        
+        .debug-data {
+            background: #0a0a0a;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            border-left: 3px solid #0d6efd;
+            font-family: monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎨 Slideshow Test Page</h1>
+        
+        <div id="status" style="padding: 15px; background: #1a1a1a; border-radius: 5px; margin-bottom: 20px; border: 1px solid #444;">
+            <strong>Status:</strong> <span id="status-text">Loading...</span>
+        </div>
+        
+        <div class="hero-test">
+            <div class="slideshow-bg" id="slideshow-bg"></div>
+            <div class="content-overlay">
+                <div class="content-text">
+                    <h1>Testing Slideshow</h1>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info">
+            <strong>ℹ️ Test Info:</strong>
+            <ul style="margin: 10px 0; padding-left: 20px;">
+                <li>Checking if slideshow background changes</li>
+                <li>Testing fade transition (1 second)</li>
+                <li>Looking for image loading from database</li>
+            </ul>
+        </div>
+        
+        <div class="debug-data" id="debug-data">
+            Fetching slideshow data...
+        </div>
+    </div>
+    
+    <script>
+        // Fetch slideshow data
+        fetch('<?= base_url("debug/slideshow") ?>')
+            .then(res => res.json())
+            .then(data => {
+                const debugEl = document.getElementById('debug-data');
+                debugEl.innerHTML = '<strong>Slideshow Data:</strong>\n' + JSON.stringify(data, null, 2);
+                
+                const statusEl = document.getElementById('status-text');
+                
+                if (data.total === 0) {
+                    statusEl.textContent = '❌ No slides found!';
+                    statusEl.style.color = '#ff6b6b';
+                    return;
+                }
+                
+                statusEl.textContent = `✅ Found ${data.total} slides`;
+                statusEl.style.color = '#51cf66';
+                
+                const slideBgContainer = document.getElementById('slideshow-bg');
+                
+                // Create slide elements
+                data.slides.forEach((slide, index) => {
+                    const slideEl = document.createElement('div');
+                    slideEl.className = `slide-bg ${index === 0 ? 'active' : ''}`;
+                    slideEl.innerHTML = `
+                        <div class="slide-image" style="background-image: url('<?= base_url('') ?>${slide.image_url}')"></div>
+                    `;
+                    slideBgContainer.appendChild(slideEl);
+                });
+                
+                // Auto-play
+                let currentSlide = 0;
+                setInterval(() => {
+                    const slides = document.querySelectorAll('.slide-bg');
+                    slides.forEach(s => s.classList.remove('active'));
+                    currentSlide = (currentSlide + 1) % slides.length;
+                    slides[currentSlide].classList.add('active');
+                }, 5000);
+            })
+            .catch(err => {
+                document.getElementById('debug-data').innerHTML = '❌ Error: ' + err.message;
+                document.getElementById('status-text').textContent = 'Error loading data';
+                document.getElementById('status-text').style.color = '#ff6b6b';
+            });
+    </script>
+</body>
+</html>

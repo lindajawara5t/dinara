@@ -100,3 +100,6 @@ $routes->get('travel/karimunjawa', 'Travel::karimunjawa');   // Detail Karimunja
 // 6. RUTE HALAMAN HOTEL & DESTINASI
 $routes->get('hotel', 'Home::hotel');           // Halaman Hotel
 $routes->get('destinasi', 'Home::destinasi');   // Halaman Destinasi
+
+// 7. DEBUG ROUTES
+$routes->get('debug/slideshow', 'Debug::slideshow');
