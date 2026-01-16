@@ -724,6 +724,64 @@
 
     </script>
     
+    <!-- HERO SLIDESHOW INITIALIZATION (at end to ensure DOM ready) -->
+    <script>
+    console.log('=== HERO SLIDESHOW INIT AT PAGE END ===');
+    
+    (function() {
+        console.log('🎬 Hero Slideshow Starting');
+        
+        let currentSlideBg = 0;
+        const slideBgs = document.querySelectorAll('.slide-bg');
+        let slideBgInterval = null;
+        
+        console.log('📊 Total slides found:', slideBgs.length);
+        
+        if (slideBgs.length === 0) {
+            console.warn('⚠️ No .slide-bg elements found!');
+            return;
+        }
+
+        function showSlideBg(n) {
+            if (n >= slideBgs.length) currentSlideBg = 0;
+            if (n < 0) currentSlideBg = slideBgs.length - 1;
+            
+            slideBgs.forEach(slide => slide.classList.remove('active'));
+            
+            if (slideBgs[currentSlideBg]) {
+                slideBgs[currentSlideBg].classList.add('active');
+                console.log('🖼️ Slide:', currentSlideBg + 1, '/', slideBgs.length);
+            }
+        }
+
+        function autoPlay() {
+            currentSlideBg++;
+            showSlideBg(currentSlideBg);
+        }
+
+        // Initialize
+        console.log('✅ Slideshow starting with', slideBgs.length, 'slides');
+        showSlideBg(0);
+        
+        if (slideBgs.length > 1) {
+            slideBgInterval = setInterval(autoPlay, 5000);
+            console.log('⏱️ Auto-play: every 5 seconds');
+            
+            // Pause on hover
+            const hero = document.querySelector('.hero-section-with-slideshow');
+            if (hero) {
+                hero.addEventListener('mouseenter', () => clearInterval(slideBgInterval));
+                hero.addEventListener('mouseleave', () => {
+                    clearInterval(slideBgInterval);
+                    slideBgInterval = setInterval(autoPlay, 5000);
+                });
+            }
+        }
+        
+        console.log('✅ Slideshow initialized');
+    })();
+    </script>
+    
     <div style="height: 100px;"></div> 
     <footer class="text-center py-4 border-top bg-white fixed-bottom" style="z-index: -1;">
         <small class="text-muted" style="font-size: 0.7rem;">&copy; 2027 Dinara Travel System v2.0</small>
