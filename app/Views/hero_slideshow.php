@@ -17,7 +17,8 @@ $slideshows = model('HeroSlideshowModel')->getActiveSlideshows();
 <script>
 console.log('=== HERO SLIDESHOW SCRIPT LOADED ===');
 
-(function() {
+// Wrapper function untuk memastikan DOM siap
+function initHeroSlideshow() {
     console.log('🎬 Hero Slideshow IIFE Started');
     
     let currentSlideBg = 0;
@@ -110,15 +111,19 @@ console.log('=== HERO SLIDESHOW SCRIPT LOADED ===');
         console.log('✅ Slideshow ready! Use window.slideshowControl.next(), .prev() to control');
     } else {
         console.warn('⚠️ No slides found! Check HeroSlideshowModel');
-        console.log('Looking for .slide-bg elements...');
-        document.addEventListener('DOMContentLoaded', () => {
-            const slides = document.querySelectorAll('.slide-bg');
-            console.log('After DOMContentLoaded - slides found:', slides.length);
-        });
     }
     
     console.log('=== HERO SLIDESHOW IIFE END ===');
-})();
+}
+
+// Pastikan DOM siap sebelum init
+if (document.readyState === 'loading') {
+    console.log('⏳ DOM masih loading, menunggu DOMContentLoaded...');
+    document.addEventListener('DOMContentLoaded', initHeroSlideshow);
+} else {
+    console.log('✓ DOM sudah siap, init langsung');
+    initHeroSlideshow();
+}
 </script>
 <?php else: ?>
 <!-- No active slideshows -->
