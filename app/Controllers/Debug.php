@@ -31,6 +31,12 @@ class Debug extends Controller
         return view('test_hero_slideshow');
     }
 
+    public function slideshow_simple()
+    {
+        // Render file test_slideshow_simple.html langsung
+        return view('test_slideshow_simple');
+    }
+
     public function check()
     {
         $slideshowModel = new \App\Models\HeroSlideshowModel();
