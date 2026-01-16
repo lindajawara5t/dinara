@@ -377,21 +377,46 @@
     
     <!-- HERO SLIDESHOW SCRIPT -->
     <script>
-        console.log('=== HERO SLIDESHOW SCRIPT LOADED (inline) ===');
+        console.log('=== HERO SLIDESHOW SCRIPT LOADED ===');
         
         function initHeroSlideshow() {
-            console.log('🎬 Hero Slideshow Init Started');
+            console.log('🎬 Hero Slideshow Initialization Started');
+            
+            // Debug: Check if container exists
+            const container = document.getElementById('slideshow-bg-container');
+            console.log('📦 Container found:', !!container);
+            if (container) {
+                console.log('Container computed style:', {
+                    position: getComputedStyle(container).position,
+                    zIndex: getComputedStyle(container).zIndex,
+                    display: getComputedStyle(container).display,
+                    width: container.offsetWidth,
+                    height: container.offsetHeight
+                });
+            }
             
             let currentSlideBg = 0;
             const slideBgs = document.querySelectorAll('.slide-bg');
             let slideBgInterval = null;
             
-            console.log('📊 Total Slides Found:', slideBgs.length);
+            console.log('📊 Total .slide-bg elements found:', slideBgs.length);
 
             if (slideBgs.length === 0) {
-                console.warn('⚠️ No .slide-bg elements found!');
+                console.error('❌ NO .slide-bg ELEMENTS FOUND! Slideshow cannot work.');
+                // Debug: Check alternative selectors
+                console.log('Checking for .slide-bg-image:', document.querySelectorAll('.slide-bg-image').length);
+                console.log('Checking for slideshow container:', document.querySelectorAll('[class*="slideshow"]').length);
                 return;
             }
+
+            // Debug: Show slide details
+            slideBgs.forEach((slide, idx) => {
+                console.log(`Slide ${idx}:`, {
+                    classes: slide.className,
+                    backgroundImage: getComputedStyle(slide.querySelector('.slide-bg-image') || slide).backgroundImage,
+                    opacity: getComputedStyle(slide).opacity
+                });
+            });
 
             function showSlideBg(n) {
                 if (n >= slideBgs.length) currentSlideBg = 0;
@@ -400,7 +425,7 @@
                 slideBgs.forEach(slide => slide.classList.remove('active'));
                 if (slideBgs[currentSlideBg]) {
                     slideBgs[currentSlideBg].classList.add('active');
-                    console.log('🖼️ Slide:', currentSlideBg + 1);
+                    console.log('✅ Showing slide:', currentSlideBg + 1, 'of', slideBgs.length);
                 }
             }
 
@@ -413,21 +438,25 @@
                 if (slideBgInterval) clearInterval(slideBgInterval);
                 if (slideBgs.length > 1) {
                     slideBgInterval = setInterval(autoPlayBg, 5000);
+                    console.log('⏱️ Auto-play interval set: 5000ms');
                 }
             }
 
-            console.log('✅ Slideshow Starting');
+            console.log('✅ Slideshow Starting...');
             showSlideBg(currentSlideBg);
             if (slideBgs.length > 1) {
                 resetAutoPlayBg();
-                console.log('⏱️ Auto-play active');
+                console.log('▶️ AUTO-PLAY IS ACTIVE');
             }
+            console.log('🎉 Slideshow initialization complete!');
         }
 
         // Init ketika document ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initHeroSlideshow);
+            console.log('⏳ Document loading - waiting for DOMContentLoaded');
         } else {
+            console.log('✓ Document already loaded - initializing immediately');
             initHeroSlideshow();
         }
     </script>
