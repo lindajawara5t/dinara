@@ -105,5 +105,6 @@ $routes->get('destinasi', 'Home::destinasi');   // Halaman Destinasi
 $routes->get('debug/slideshow', 'Debug::slideshow');
 $routes->get('debug/slideshow-test', 'Debug::slideshow_test');
 $routes->get('debug/slideshow-hero-test', 'Debug::slideshow_hero_test');
+$routes->get('debug/hero-slideshow', 'Debug::hero_slideshow_debug');
 $routes->get('test/slideshow-simple', 'Debug::slideshow_simple');
 $routes->get('debug/check', 'Debug::check');
