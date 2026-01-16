@@ -1,0 +1,33 @@
+# Disable directory browsing
+Options -Indexes
+
+# Rewrite engine
+<IfModule mod_rewrite.c>
+Options +FollowSymlinks
+RewriteEngine On
+RewriteBase /dinara/public/
+
+# Redirect Trailing Slashes
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} (.+)/$
+RewriteRule ^ %1 [L,R=301]
+
+# Rewrite to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L,NC,QSA]
+
+# Ensure Authorization header is passed along
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
+
+<IfModule !mod_rewrite.c>
+ErrorDocument 404 index.php
+</IfModule>
+
+# Pass Authorization header
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+
+# Disable server signature
+ServerSignature Off

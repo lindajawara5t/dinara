@@ -1,0 +1,30 @@
+ERROR - 2026-01-12 00:41:05 --> mysqli_sql_exception: Unknown column 'setting_group' in 'field list' in C:\xampp\htdocs\dinara\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\dinara\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `si...', 0)
+#1 C:\xampp\htdocs\dinara\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `si...')
+#2 C:\xampp\htdocs\dinara\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `si...')
+#3 C:\xampp\htdocs\dinara\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `si...', Array, false)
+#4 C:\xampp\htdocs\dinara\app\Controllers\Settings.php(66): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 C:\xampp\htdocs\dinara\system\CodeIgniter.php(933): App\Controllers\Settings->saveUnified()
+#6 C:\xampp\htdocs\dinara\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Settings))
+#7 C:\xampp\htdocs\dinara\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\dinara\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\dinara\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\dinara\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\xampp\htdocs\dinara\system\rewrite.php(44): require_once('C:\\xampp\\htdocs...')
+#12 {main}
+ERROR - 2026-01-12 00:41:20 --> mysqli_sql_exception: Unknown column 'setting_group' in 'field list' in C:\xampp\htdocs\dinara\system\Database\MySQLi\Connection.php:327
+Stack trace:
+#0 C:\xampp\htdocs\dinara\system\Database\MySQLi\Connection.php(327): mysqli->query('INSERT INTO `si...', 0)
+#1 C:\xampp\htdocs\dinara\system\Database\BaseConnection.php(729): CodeIgniter\Database\MySQLi\Connection->execute('INSERT INTO `si...')
+#2 C:\xampp\htdocs\dinara\system\Database\BaseConnection.php(646): CodeIgniter\Database\BaseConnection->simpleQuery('INSERT INTO `si...')
+#3 C:\xampp\htdocs\dinara\system\Database\BaseBuilder.php(2345): CodeIgniter\Database\BaseConnection->query('INSERT INTO `si...', Array, false)
+#4 C:\xampp\htdocs\dinara\app\Controllers\Settings.php(66): CodeIgniter\Database\BaseBuilder->insert(Array)
+#5 C:\xampp\htdocs\dinara\system\CodeIgniter.php(933): App\Controllers\Settings->saveUnified()
+#6 C:\xampp\htdocs\dinara\system\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Settings))
+#7 C:\xampp\htdocs\dinara\system\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 C:\xampp\htdocs\dinara\system\Boot.php(363): CodeIgniter\CodeIgniter->run()
+#9 C:\xampp\htdocs\dinara\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#10 C:\xampp\htdocs\dinara\public\index.php(59): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#11 C:\xampp\htdocs\dinara\system\rewrite.php(44): require_once('C:\\xampp\\htdocs...')
+#12 {main}

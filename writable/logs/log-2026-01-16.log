@@ -1,0 +1,29 @@
+CRITICAL - 2026-01-16 05:01:36 --> ErrorException: unlink(C:\xampp\htdocs\dinara\writable\debugbar/debugbar_1768532823.504306.json): No such file or directory
+[Method: GET, Route: /]
+in SYSTEMPATH\Debug\Toolbar\Collectors\History.php on line 82.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'unlink(C:\\xampp\\htdocs\\dinara\\writable\\debugbar/debugbar_1768532823.504306.json): No such file or directory', 'C:\\xampp\\htdocs\\dinara\\system\\Debug\\Toolbar\\Collectors\\History.php', 82)
+ 2 SYSTEMPATH\Debug\Toolbar\Collectors\History.php(82): unlink('C:\\xampp\\htdocs\\dinara\\writable\\debugbar/debugbar_1768532823.504306.json')
+ 3 SYSTEMPATH\Debug\Toolbar.php(517): CodeIgniter\Debug\Toolbar\Collectors\History->setFiles('1768539686.851110', 20)
+ 4 SYSTEMPATH\Debug\Toolbar.php(496): CodeIgniter\Debug\Toolbar->format([...], 'html')
+ 5 APPPATH\Config\Events.php(47): CodeIgniter\Debug\Toolbar->respond()
+ 6 SYSTEMPATH\Events\Events.php(152): CodeIgniter\Events\Events::Config\{closure}()
+ 7 SYSTEMPATH\CodeIgniter.php(339): CodeIgniter\Events\Events::trigger('pre_system')
+ 8 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH\index.php(70): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+11 ROOTPATH\index.php(3): require_once('C:\\xampp\\htdocs\\dinara\\public\\index.php')
+CRITICAL - 2026-01-16 05:07:39 --> ErrorException: Undefined variable $hero_slides
+[Method: GET, Route: /]
+in APPPATH\Views\landing_page_story.php on line 2712.
+ 1 APPPATH\Views\landing_page_story.php(2712): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $hero_slides', 'C:\\xampp\\htdocs\\dinara\\app\\Views\\landing_page_story.php', 2712)
+ 2 SYSTEMPATH\View\View.php(226): include('C:\\xampp\\htdocs\\dinara\\app\\Views\\landing_page_story.php')
+ 3 SYSTEMPATH\View\View.php(229): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1199): CodeIgniter\View\View->render('landing_page_story', [], true)
+ 5 APPPATH\Controllers\Kalkulator.php(232): view('landing_page_story', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Kalkulator->index()
+ 7 SYSTEMPATH\CodeIgniter.php(507): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Kalkulator))
+ 8 SYSTEMPATH\CodeIgniter.php(354): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(363): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(70): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 ROOTPATH\index.php(3): require_once('C:\\xampp\\htdocs\\dinara\\public\\index.php')

@@ -1,0 +1,15 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /dinara/
+    
+    # Allow physical files and directories to be accessed
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+    
+    # Redirect uploads to public/uploads
+    RewriteRule ^uploads/(.*)$ public/uploads/$1 [L]
+    
+    # Redirect everything else to public folder
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>

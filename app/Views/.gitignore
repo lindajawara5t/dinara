@@ -1,0 +1,7 @@
+# .gitignore
+/writable/cache/*
+/writable/session/*
+/writable/logs/*
+/writable/debugbar/*
+/writable/uploads/*
+!/writable/**/index.html
