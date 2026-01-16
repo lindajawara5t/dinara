@@ -1016,4 +1016,129 @@ class Admin extends BaseController
         
         return $this->response->setJSON($jadwals);
     }
+
+    // =========================================================================
+    // HERO SLIDESHOW MANAGEMENT
+    // =========================================================================
+    public function get_slideshows()
+    {
+        $slideshowModel = new \App\Models\HeroSlideshowModel();
+        $slideshows = $slideshowModel->getAllSlideshows();
+        return $this->response->setJSON($slideshows);
+    }
+
+    public function save_slideshow()
+    {
+        $slideshowModel = new \App\Models\HeroSlideshowModel();
+        
+        // Handle file upload
+        $image = $this->request->getFile('slideshow_image');
+        $imageUrl = '';
+        
+        if ($image && $image->isValid()) {
+            $fileName = uniqid() . '_' . $image->getClientName();
+            $image->move('uploads/hero', $fileName);
+            $imageUrl = 'uploads/hero/' . $fileName;
+        }
+        
+        if (!$imageUrl) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Image is required']);
+        }
+        
+        $data = [
+            'title'       => $this->request->getPost('title'),
+            'description' => $this->request->getPost('description'),
+            'image_url'   => $imageUrl,
+            'sort_order'  => $slideshowModel->countAllResults(),
+            'is_active'   => 1
+        ];
+        
+        if ($slideshowModel->insert($data)) {
+            return $this->response->setJSON(['success' => true, 'message' => 'Slideshow added successfully']);
+        }
+        
+        return $this->response->setJSON(['success' => false, 'message' => 'Failed to add slideshow']);
+    }
+
+    public function update_slideshow()
+    {
+        $slideshowModel = new \App\Models\HeroSlideshowModel();
+        $id = $this->request->getPost('id');
+        $oldData = $slideshowModel->find($id);
+        
+        if (!$oldData) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Slideshow not found']);
+        }
+        
+        $imageUrl = $oldData['image_url'];
+        
+        // Handle file upload
+        $image = $this->request->getFile('slideshow_image');
+        if ($image && $image->isValid()) {
+            $fileName = uniqid() . '_' . $image->getClientName();
+            $image->move('uploads/hero', $fileName);
+            $imageUrl = 'uploads/hero/' . $fileName;
+            
+            // Delete old image
+            if (!empty($oldData['image_url']) && file_exists($oldData['image_url'])) {
+                unlink($oldData['image_url']);
+            }
+        }
+        
+        $data = [
+            'title'       => $this->request->getPost('title'),
+            'description' => $this->request->getPost('description'),
+            'image_url'   => $imageUrl
+        ];
+        
+        if ($slideshowModel->update($id, $data)) {
+            return $this->response->setJSON(['success' => true, 'message' => 'Slideshow updated successfully']);
+        }
+        
+        return $this->response->setJSON(['success' => false, 'message' => 'Failed to update slideshow']);
+    }
+
+    public function delete_slideshow($id)
+    {
+        $slideshowModel = new \App\Models\HeroSlideshowModel();
+        $slideshow = $slideshowModel->find($id);
+        
+        if (!$slideshow) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Slideshow not found']);
+        }
+        
+        // Delete image file
+        if (!empty($slideshow['image_url']) && file_exists($slideshow['image_url'])) {
+            unlink($slideshow['image_url']);
+        }
+        
+        if ($slideshowModel->delete($id)) {
+            return $this->response->setJSON(['success' => true, 'message' => 'Slideshow deleted successfully']);
+        }
+        
+        return $this->response->setJSON(['success' => false, 'message' => 'Failed to delete slideshow']);
+    }
+
+    public function toggle_slideshow_active($id)
+    {
+        $slideshowModel = new \App\Models\HeroSlideshowModel();
+        
+        if ($slideshowModel->toggleActive($id)) {
+            return $this->response->setJSON(['success' => true]);
+        }
+        
+        return $this->response->setJSON(['success' => false]);
+    }
+
+    public function update_slideshow_order()
+    {
+        $slideshowModel = new \App\Models\HeroSlideshowModel();
+        $order = $this->request->getJSON();
+        
+        foreach ($order as $index => $item) {
+            $slideshowModel->update($item->id, ['sort_order' => $index]);
+        }
+        
+        return $this->response->setJSON(['success' => true]);
+    }
 }

@@ -56,6 +56,14 @@ $routes->post('admin/update_jadwal_kapal', 'Admin::update_jadwal_kapal'); // Upd
 $routes->get('admin/delete_jadwal_kapal/(:num)', 'Admin::delete_jadwal_kapal/$1'); // Hapus jadwal kapal
 $routes->get('admin/get_jadwal_kapal_json', 'Admin::get_jadwal_kapal_json'); // Get jadwal kapal as JSON
 
+// === [BARU] ROUTE HERO SLIDESHOW ===
+$routes->get('admin/get_slideshows', 'Admin::get_slideshows'); // Get all slideshows
+$routes->post('admin/save_slideshow', 'Admin::save_slideshow'); // Save new slideshow
+$routes->post('admin/update_slideshow', 'Admin::update_slideshow'); // Update slideshow
+$routes->get('admin/delete_slideshow/(:num)', 'Admin::delete_slideshow/$1'); // Delete slideshow
+$routes->post('admin/toggle_slideshow_active/(:num)', 'Admin::toggle_slideshow_active/$1'); // Toggle active
+$routes->post('admin/update_slideshow_order', 'Admin::update_slideshow_order'); // Update order
+
 // === [BARU] ROUTE RESET DATA ===
 $routes->post('admin/reset_data', 'Admin::reset_data');
 

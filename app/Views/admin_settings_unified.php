@@ -593,7 +593,7 @@
                 </a>
             </li>
             <li class="nav-item" style="margin-top: 50px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2);">
-                <a class="nav-link" href="/" target="_blank">
+                <a class="nav-link" href="<?= base_url('/') ?>" target="_blank">
                     <i class="bi bi-globe"></i> Lihat Website
                 </a>
             </li>
@@ -639,6 +639,9 @@
             <button class="modern-tab active" onclick="switchTab('general')">
                 <i class="bi bi-gear-fill"></i> General
             </button>
+            <button class="modern-tab" onclick="switchTab('slideshow')">
+                <i class="bi bi-images"></i> Hero Slideshow
+            </button>
             <button class="modern-tab" onclick="switchTab('images')">
                 <i class="bi bi-images"></i> Gambar & Logo
             </button>
@@ -666,6 +669,13 @@
             <button class="modern-tab" onclick="switchTab('jadwal_kapal')">
                 <i class="bi bi-calendar-event-fill"></i> Jadwal Kapal
             </button>
+        </div>
+
+        <!-- TAB: GENERAL -->
+
+        <!-- TAB: SLIDESHOW -->
+        <div id="tab-slideshow" class="tab-content-modern">
+            <?php include 'admin_slideshow_management.php'; ?>
         </div>
 
         <!-- TAB: GENERAL -->

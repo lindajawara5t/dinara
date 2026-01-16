@@ -53,7 +53,7 @@
             </li>
 
             <li class="nav-item mt-5 pt-5 border-top border-secondary">
-                <a href="/" target="_blank" class="nav-link text-warning">
+                <a href="<?= base_url('/') ?>" target="_blank" class="nav-link text-warning">
                     <i class="bi bi-globe"></i> Lihat Website
                 </a>
             </li>
