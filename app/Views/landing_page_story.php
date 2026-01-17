@@ -2823,7 +2823,7 @@
                         'image' => !empty($settings['hero_image']) ? base_url('uploads/' . $settings['hero_image']) : 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200',
                         'title' => $settings['hero_title'] ?? 'Hai kamu, mau ke mana?',
                         'subtitle' => $settings['hero_subtitle'] ?? 'Dinara Travel - Satu aplikasi untuk kebutuhan liburanmu.',
-                        'button' => [ 'label' => 'Ambil Promo', 'class' => 'btn-warning', 'onclick' => "showSection('promo')" ],
+                        'button' => [ 'label' => 'Ambil Promo', 'class' => 'btn-warning', 'onclick' => "showSection('promo')", 'url' => "showSection('promo')" ],
                         'duration' => 4000
                     ]
                 ];
