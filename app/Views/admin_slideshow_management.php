@@ -143,8 +143,20 @@ $slideshows = $slideshowModel->getAllSlideshows();
             
             <div class="mb-3">
                 <label for="slideshow_button_url" class="form-label">Link Tombol (Opsional)</label>
-                <input type="text" class="form-control" id="slideshow_button_url" placeholder="Contoh: https://wa.me/628123456789 atau javascript:showSection('estimasi')">
-                <small class="text-muted">URL tujuan atau JavaScript function</small>
+                <select class="form-select" id="slideshow_button_url">
+                    <option value="">-- Pilih Link --</option>
+                    <option value="javascript:showSection('promo')">🎉 Promo (JavaScript)</option>
+                    <option value="/kalkulator">🧮 Hitung Kalkulasi</option>
+                    <option value="/destinasi">🗺️ Destinasi</option>
+                    <option value="/hotel">🏨 Hotel</option>
+                    <option value="/travel">✈️ Travel & Wisata</option>
+                    <option value="/travel/karimunjawa">🏝️ Karimunjawa</option>
+                    <option value="/blog">📰 Blog & Terbaru</option>
+                    <option value="https://www.susiair.com/">✈️ Tiket Pesawat</option>
+                    <option value="javascript:showSection('estimasi')">🚤 Tiket Kapal</option>
+                    <option value="javascript:showSection('estimasi')">📋 Estimasi Harga</option>
+                </select>
+                <small class="text-muted">Pilih halaman tujuan untuk tombol</small>
             </div>
             
             <button type="button" class="btn btn-primary w-100" onclick="uploadSlideshow()" id="upload-btn" disabled>
@@ -257,7 +269,20 @@ $slideshows = $slideshowModel->getAllSlideshows();
                 
                 <div class="mb-3">
                     <label for="edit_slideshow_button_url" class="form-label">Link Tombol</label>
-                    <input type="text" class="form-control" id="edit_slideshow_button_url" placeholder="URL atau JavaScript">
+                    <select class="form-select" id="edit_slideshow_button_url">
+                        <option value="">-- Pilih Link --</option>
+                        <option value="javascript:showSection('promo')">🎉 Promo (JavaScript)</option>
+                        <option value="/kalkulator">🧮 Hitung Kalkulasi</option>
+                        <option value="/destinasi">🗺️ Destinasi</option>
+                        <option value="/hotel">🏨 Hotel</option>
+                        <option value="/travel">✈️ Travel & Wisata</option>
+                        <option value="/travel/karimunjawa">🏝️ Karimunjawa</option>
+                        <option value="/blog">📰 Blog & Terbaru</option>
+                        <option value="https://www.susiair.com/">✈️ Tiket Pesawat</option>
+                        <option value="javascript:showSection('estimasi')">🚤 Tiket Kapal</option>
+                        <option value="javascript:showSection('estimasi')">📋 Estimasi Harga</option>
+                    </select>
+                    <small class="text-muted">Pilih halaman tujuan untuk tombol</small>
                 </div>
             </div>
             <div class="modal-footer">
