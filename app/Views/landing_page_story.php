@@ -2795,6 +2795,12 @@
                         $buttonAction = "showSection('promo')";
                     }
                     
+                    // Simpan button URL asli untuk clickable image (data-button-url)
+                    $buttonUrlForClick = $buttonUrl;
+                    if (stripos($buttonUrl, 'javascript:') === 0) {
+                        $buttonUrlForClick = str_replace('javascript:', '', $buttonUrl);
+                    }
+                    
                     $hero_slides[] = [
                         'image' => base_url($slide['image_url']),
                         'title' => $slide['title'] ?: 'Hai kamu, mau ke mana?',
@@ -2802,7 +2808,8 @@
                         'button' => [
                             'label' => $slide['button_label'] ?? 'Lihat Promo',
                             'class' => $slide['button_class'] ?? 'btn-warning',
-                            'onclick' => $buttonAction
+                            'onclick' => $buttonAction,
+                            'url' => $buttonUrlForClick  // <-- ADD THIS for clickable image
                         ],
                         'duration' => (int)($slide['duration'] ?? 5000)
                     ];
@@ -2826,7 +2833,7 @@
             <div class="hero-slide w-100 h-100 position-absolute top-0 start-0" 
                  data-slide="<?= $i ?>" 
                  data-duration="<?= $slide['duration'] ?>"
-                 data-button-url="<?= esc($slide['button']['onclick'] ?? '') ?>"
+                 data-button-url="<?= esc($slide['button']['url'] ?? '') ?>"
                  style="background-image:url('<?= $slide['image'] ?>');background-size:cover;background-position:center;z-index:<?= 10-$i ?>;opacity:<?= $i==0?'1':'0' ?>;transition:opacity 0.7s;cursor:pointer;"
                  onclick="openSlideLink(this)">
                 <div class="hero-overlay"></div>
