@@ -2823,13 +2823,18 @@
             }
             ?>
             <?php foreach($hero_slides as $i => $slide): ?>
-            <div class="hero-slide w-100 h-100 position-absolute top-0 start-0" data-slide="<?= $i ?>" data-duration="<?= $slide['duration'] ?>" style="background-image:url('<?= $slide['image'] ?>');background-size:cover;background-position:center;z-index:<?= 10-$i ?>;opacity:<?= $i==0?'1':'0' ?>;transition:opacity 0.7s;">
+            <div class="hero-slide w-100 h-100 position-absolute top-0 start-0" 
+                 data-slide="<?= $i ?>" 
+                 data-duration="<?= $slide['duration'] ?>"
+                 data-button-url="<?= esc($slide['button']['onclick'] ?? '') ?>"
+                 style="background-image:url('<?= $slide['image'] ?>');background-size:cover;background-position:center;z-index:<?= 10-$i ?>;opacity:<?= $i==0?'1':'0' ?>;transition:opacity 0.7s;cursor:pointer;"
+                 onclick="openSlideLink(this)">
                 <div class="hero-overlay"></div>
                 <div class="hero-content" style="width: 100%; max-width: 100%;">
                     <h1 class="hero-title"><?= $slide['title'] ?></h1>
                     <p class="hero-subtitle"><?= $slide['subtitle'] ?></p>
                     <?php if (!empty($slide['button']['label'])): ?>
-                    <button class="btn <?= $slide['button']['class'] ?> px-4 py-2 mt-3 fw-bold shadow" style="font-size:1.1rem;" onclick="<?= $slide['button']['onclick'] ?>">
+                    <button class="btn <?= $slide['button']['class'] ?> px-4 py-2 mt-3 fw-bold shadow" style="font-size:1.1rem;" onclick="event.stopPropagation(); <?= $slide['button']['onclick'] ?>">
                         <?= $slide['button']['label'] ?>
                     </button>
                     <?php endif; ?>
@@ -4230,6 +4235,40 @@
     const estimasiSettings = <?= $json_estimasi_settings ?? '{}' ?>;
     
     // ==================== SECTION SWITCHING FUNCTION ====================
+    // ==================== OPEN SLIDE LINK (IMAGE CLICK) ====================
+    function openSlideLink(slideElement) {
+        const buttonUrl = slideElement.getAttribute('data-button-url');
+        
+        if (!buttonUrl) {
+            console.log('No link configured for this slide');
+            return;
+        }
+        
+        console.log('🔗 Opening slide link:', buttonUrl);
+        
+        // Check if it's a JavaScript function call
+        if (buttonUrl.startsWith('javascript:') || buttonUrl.startsWith('showSection(')) {
+            // Execute JavaScript function
+            try {
+                eval(buttonUrl.replace('javascript:', ''));
+                console.log('✅ Executed JavaScript:', buttonUrl);
+            } catch (e) {
+                console.error('❌ Error executing JavaScript:', e.message);
+            }
+        } else if (buttonUrl.startsWith('http://') || buttonUrl.startsWith('https://')) {
+            // Open external URL in new tab
+            window.open(buttonUrl, '_blank');
+            console.log('✅ Opened external link in new tab:', buttonUrl);
+        } else if (buttonUrl.startsWith('/')) {
+            // Navigate to internal page
+            window.location.href = buttonUrl;
+            console.log('✅ Navigating to:', buttonUrl);
+        } else {
+            console.warn('⚠️ Unknown link format:', buttonUrl);
+        }
+    }
+    
+    // ==================== SHOW SECTION ====================
     function showSection(section) {
         const promoSection = document.getElementById('section-promo');
         const estimasiSection = document.getElementById('section-estimasi');
