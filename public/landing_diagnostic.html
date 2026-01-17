@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Landing Page Diagnostic</title>
+    <style>
+        body { font-family: Arial; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .section { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h2 { color: #333; border-bottom: 2px solid #667eea; padding-bottom: 10px; }
+        .success { color: #2e7d32; }
+        .error { color: #c62828; }
+        .warning { color: #f57c00; }
+        pre { background: #f0f0f0; padding: 15px; overflow-x: auto; }
+        code { background: #f0f0f0; padding: 2px 6px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Landing Page Diagnostic</h1>
+        
+        <div class="section">
+            <h2>Slideshow HTML Presence Check</h2>
+            <p>Loading landing page and checking for slideshow elements...</p>
+            <div id="htmlCheck"></div>
+        </div>
+        
+        <div class="section">
+            <h2>JavaScript Console Capture</h2>
+            <p>Messages from landing page iframe:</p>
+            <div id="consoleCapture" style="background: #f5f5f5; padding: 15px; border-radius: 6px; max-height: 400px; overflow-y: auto; font-family: monospace; font-size: 12px;"></div>
+        </div>
+        
+        <div class="section">
+            <h2>Element Check (from iframe)</h2>
+            <div id="elementCheck"></div>
+        </div>
+    </div>
+
+    <script>
+        // Capture console messages
+        let capturedLogs = [];
+        
+        // Load landing page in iframe and check
+        function checkLandingPage() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://localhost:8080/dinara/', true);
+            
+            xhr.onload = function() {
+                const html = xhr.responseText;
+                
+                // Check 1: Slideshow container
+                const hasSlideshowContainer = html.includes('slideshow-background-container');
+                const containerCount = (html.match(/slideshow-background-container/g) || []).length;
+                
+                // Check 2: Slide elements
+                const slideBgCount = (html.match(/class="slide-bg/g) || []).length;
+                
+                // Check 3: Active slide
+                const hasActiveSlide = html.includes('slide-bg active');
+                
+                // Check 4: Script function
+                const hasInitFunction = html.includes('initHeroSlideshow');
+                const hasAutoPlay = html.includes('setInterval');
+                
+                // Check 5: Z-index fix
+                const hasZIndexOne = html.includes('z-index: 1;');
+                
+                // Check 6: CSS class definitions
+                const hasSlideBgCSS = html.includes('.slide-bg {');
+                
+                // Build report
+                let htmlCheckDiv = document.getElementById('htmlCheck');
+                htmlCheckDiv.innerHTML = `
+                    <p class="${hasSlideshowContainer ? 'success' : 'error'}">
+                        ✓ slideshow-background-container: ${hasSlideshowContainer ? '✅ FOUND (' + containerCount + 'x)' : '❌ NOT FOUND'}
+                    </p>
+                    <p class="${slideBgCount > 0 ? 'success' : 'error'}">
+                        ✓ .slide-bg elements: ${slideBgCount > 0 ? '✅ FOUND (' + slideBgCount + ')' : '❌ NOT FOUND'}
+                    </p>
+                    <p class="${hasActiveSlide ? 'success' : 'error'}">
+                        ✓ Active slide class: ${hasActiveSlide ? '✅ FOUND' : '❌ NOT FOUND'}
+                    </p>
+                    <p class="${hasInitFunction ? 'success' : 'error'}">
+                        ✓ initHeroSlideshow function: ${hasInitFunction ? '✅ FOUND' : '❌ NOT FOUND'}
+                    </p>
+                    <p class="${hasAutoPlay ? 'success' : 'error'}">
+                        ✓ Auto-play logic: ${hasAutoPlay ? '✅ FOUND' : '❌ NOT FOUND'}
+                    </p>
+                    <p class="${hasZIndexOne ? 'success' : 'error'}">
+                        ✓ Z-index fix (z-index: 1): ${hasZIndexOne ? '✅ FOUND' : '❌ NOT FOUND'}
+                    </p>
+                    <p class="${hasSlideBgCSS ? 'success' : 'error'}">
+                        ✓ .slide-bg CSS: ${hasSlideBgCSS ? '✅ FOUND' : '❌ NOT FOUND'}
+                    </p>
+                    
+                    <div style="margin-top: 15px; padding: 15px; background: #f9f9f9; border-radius: 6px;">
+                        <strong>Summary:</strong><br>
+                        HTML size: ${html.length} bytes<br>
+                        Contains slideshow code: ${(hasSlideshowContainer && slideBgCount > 0) ? '✅ YES' : '❌ NO'}
+                    </div>
+                `;
+                
+                // Show sample code
+                const containerStart = html.indexOf('slideshow-background-container');
+                if (containerStart !== -1) {
+                    const snippet = html.substring(containerStart - 200, containerStart + 1000);
+                    document.getElementById('elementCheck').innerHTML = `
+                        <pre>${escapeHtml(snippet.substring(0, 800))}</pre>
+                    `;
+                }
+            };
+            
+            xhr.onerror = function() {
+                document.getElementById('htmlCheck').innerHTML = '❌ Failed to load landing page';
+            };
+            
+            xhr.send();
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Run check
+        checkLandingPage();
+    </script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verify Slideshow - landing_page_story.php</title>
+    <style>
+        body { font-family: Arial; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .card { background: white; padding: 20px; margin: 15px 0; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .status { padding: 15px; border-radius: 6px; margin: 15px 0; }
+        .success { background: #e8f5e9; color: #2e7d32; border-left: 4px solid #4caf50; }
+        .error { background: #ffebee; color: #c62828; border-left: 4px solid #f44336; }
+        .info { background: #e3f2fd; color: #1565c0; border-left: 4px solid #2196f3; }
+        code { background: #f0f0f0; padding: 2px 6px; }
+        h2 { color: #333; border-bottom: 2px solid #667eea; padding-bottom: 10px; }
+        .slide-list { background: #f9f9f9; padding: 15px; border-radius: 6px; }
+        .slide-item { background: white; padding: 10px; margin: 8px 0; border-left: 4px solid #667eea; }
+        pre { background: #f0f0f0; padding: 15px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Slideshow Verification - landing_page_story.php</h1>
+        
+        <div class="card">
+            <h2>Step 1: Check HTML Rendering</h2>
+            <div id="htmlCheck"></div>
+        </div>
+        
+        <div class="card">
+            <h2>Step 2: Check Database Data</h2>
+            <div id="dbCheck"></div>
+        </div>
+        
+        <div class="card">
+            <h2>Step 3: Element Check</h2>
+            <div id="elementCheck"></div>
+        </div>
+        
+        <div class="card">
+            <h2>Step 4: Next Actions</h2>
+            <ol>
+                <li>Open <a href="http://localhost:8080/dinara/" target="_blank" style="color: #667eea; font-weight: bold;">http://localhost:8080/dinara/</a></li>
+                <li>Press F12 to open Developer Console</li>
+                <li>Look for messages starting with "🎬" or "📊"</li>
+                <li>Watch if background changes every ~5 seconds</li>
+                <li>Try clicking Next/Prev buttons</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        async function verify() {
+            // Check 1: HTML Structure
+            try {
+                const response = await fetch('http://localhost:8080/dinara/');
+                const html = await response.text();
+                
+                const hasHeroSlider = html.includes('id="heroSlider"');
+                const hasHeroSlides = html.includes('class="hero-slide');
+                const hasSlideHeroFunc = html.includes('function slideHero');
+                const slidesCount = (html.match(/class="hero-slide/g) || []).length;
+                const hasDurationAttr = html.includes('data-duration=');
+                const hasConsoleLog = html.includes("console.log('🎬");
+                
+                const htmlResult = `
+                    <div class="status ${(hasHeroSlider && hasHeroSlides && slidesCount > 0) ? 'success' : 'error'}">
+                        <strong>🎬 Hero Slider Container:</strong> ${hasHeroSlider ? '✅' : '❌'}<br>
+                        <strong>🖼️ Hero Slide Elements:</strong> ${hasHeroSlides ? `✅ (${slidesCount} slides)` : '❌'}<br>
+                        <strong>⏱️ Duration Attributes:</strong> ${hasDurationAttr ? '✅' : '❌'}<br>
+                        <strong>▶️ Slide Function:</strong> ${hasSlideHeroFunc ? '✅' : '❌'}<br>
+                        <strong>📊 Console Logging:</strong> ${hasConsoleLog ? '✅' : '❌'}
+                    </div>
+                    ${slidesCount > 0 ? `
+                        <div class="status info">
+                            <strong>Summary:</strong> Found ${slidesCount} slides with hero slideshow structure. 
+                            The slideshow code is properly rendered in landing_page_story.php!
+                        </div>
+                    ` : `
+                        <div class="status error">
+                            <strong>⚠️ Issue:</strong> No .hero-slide elements found. Check if data was passed to view.
+                        </div>
+                    `}
+                `;
+                
+                document.getElementById('htmlCheck').innerHTML = htmlResult;
+                
+                // Extract data
+                const sliderStart = html.indexOf('id="heroSlider"');
+                if (sliderStart > 0) {
+                    const snippet = html.substring(sliderStart - 200, sliderStart + 1000);
+                    document.getElementById('elementCheck').innerHTML = `
+                        <strong>HTML Snippet:</strong>
+                        <pre>${escapeHtml(snippet.substring(0, 500))}</pre>
+                    `;
+                }
+                
+            } catch (e) {
+                document.getElementById('htmlCheck').innerHTML = `<div class="status error">❌ Error: ${e.message}</div>`;
+            }
+            
+            // Check 2: Database
+            try {
+                const response = await fetch('http://localhost:8080/dinara/public/check_database.php');
+                const html = await response.text();
+                
+                const hasTable = html.includes('✅ EXISTS');
+                const hasData = html.includes('Active rows');
+                const hasActiveSlides = html.includes('✅') && html.includes('Active rows');
+                
+                document.getElementById('dbCheck').innerHTML = `
+                    <div class="status ${hasActiveSlides ? 'success' : 'error'}">
+                        <strong>Database Status:</strong> ${hasTable ? '✅ Table exists' : '❌ Table not found'}<br>
+                        <strong>Active Slides:</strong> ${hasActiveSlides ? '✅ Data present' : '❌ No active slides'}
+                    </div>
+                    <p><small><a href="http://localhost:8080/dinara/public/check_database.php" target="_blank">View full database check</a></small></p>
+                `;
+            } catch (e) {
+                document.getElementById('dbCheck').innerHTML = `<div class="status error">❌ Could not check: ${e.message}</div>`;
+            }
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        verify();
+    </script>
+</body>
+</html>

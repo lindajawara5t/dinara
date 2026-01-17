@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Slideshow Test - Hardcoded</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        /* SLIDESHOW CSS - EXACTLY LIKE landing_page.php */
+        .slideshow-background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 1;
+            display: block;
+            pointer-events: none;
+            border: 3px solid red;
+        }
+        
+        .slide-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        
+        .slide-bg.active {
+            opacity: 1;
+            z-index: 10;
+        }
+        
+        .slide-bg-image {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        .slide-bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(13, 110, 253, 0.3) 0%, rgba(0, 31, 63, 0.4) 100%);
+            pointer-events: none;
+        }
+        
+        /* CONTENT */
+        .content {
+            position: relative;
+            z-index: 100;
+            background: white;
+            padding: 30px;
+            margin-top: 50px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .controls {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 6px;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+        
+        button:hover {
+            background: #764ba2;
+        }
+        
+        .debug-log {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 6px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        
+        .log-entry {
+            padding: 5px;
+            margin: 3px 0;
+            background: white;
+            border-left: 3px solid #667eea;
+            padding-left: 10px;
+        }
+        
+        .status-box {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <div class="slideshow-background-container" id="slideshow-bg-container">
+        <!-- SLIDE 1 -->
+        <div class="slide-bg active" data-index="0">
+            <div class="slide-bg-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+            <div class="slide-bg-overlay"></div>
+        </div>
+        
+        <!-- SLIDE 2 -->
+        <div class="slide-bg" data-index="1">
+            <div class="slide-bg-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+            <div class="slide-bg-overlay"></div>
+        </div>
+        
+        <!-- SLIDE 3 -->
+        <div class="slide-bg" data-index="2">
+            <div class="slide-bg-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
+            <div class="slide-bg-overlay"></div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="content">
+            <h1>🎬 Slideshow Test - Hardcoded</h1>
+            
+            <div class="status-box" id="statusBox">
+                ✅ Status: Testing...
+            </div>
+            
+            <div class="controls">
+                <button onclick="prevSlide()">← Previous</button>
+                <button onclick="nextSlide()">Next →</button>
+                <button onclick="startAutoPlay()">▶ Start Auto-Play</button>
+                <button onclick="stopAutoPlay()">⏹ Stop Auto-Play</button>
+                <button onclick="clearLog()">Clear Log</button>
+            </div>
+            
+            <h2>Debug Log:</h2>
+            <div class="debug-log" id="debugLog"></div>
+        </div>
+    </div>
+
+    <script>
+        // SLIDESHOW LOGIC - EXACTLY LIKE landing_page.php
+        let currentSlideBg = 0;
+        const slideBgs = document.querySelectorAll('.slide-bg');
+        let slideBgInterval = null;
+        
+        function log(msg) {
+            const logDiv = document.getElementById('debugLog');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.textContent = new Date().toLocaleTimeString() + ' - ' + msg;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function showSlideBg(n) {
+            if (n >= slideBgs.length) currentSlideBg = 0;
+            if (n < 0) currentSlideBg = slideBgs.length - 1;
+            
+            slideBgs.forEach(slide => slide.classList.remove('active'));
+            if (slideBgs[currentSlideBg]) {
+                slideBgs[currentSlideBg].classList.add('active');
+                log('✅ Showing slide: ' + (currentSlideBg + 1) + ' of ' + slideBgs.length);
+            }
+        }
+        
+        function autoPlayBg() {
+            currentSlideBg++;
+            showSlideBg(currentSlideBg);
+        }
+        
+        function startAutoPlay() {
+            if (slideBgInterval) clearInterval(slideBgInterval);
+            if (slideBgs.length > 1) {
+                slideBgInterval = setInterval(autoPlayBg, 5000);
+                log('▶️ Auto-play started (5s interval)');
+            }
+        }
+        
+        function stopAutoPlay() {
+            if (slideBgInterval) clearInterval(slideBgInterval);
+            log('⏹ Auto-play stopped');
+        }
+        
+        function nextSlide() {
+            stopAutoPlay();
+            currentSlideBg++;
+            showSlideBg(currentSlideBg);
+            log('➡️ Next button clicked');
+        }
+        
+        function prevSlide() {
+            stopAutoPlay();
+            currentSlideBg--;
+            showSlideBg(currentSlideBg);
+            log('⬅️ Previous button clicked');
+        }
+        
+        function clearLog() {
+            document.getElementById('debugLog').innerHTML = '';
+            log('Log cleared');
+        }
+        
+        // Initialize
+        window.addEventListener('load', function() {
+            log('🎬 Page loaded');
+            log('Found ' + slideBgs.length + ' slides');
+            showSlideBg(currentSlideBg);
+            startAutoPlay();
+            
+            // Update status
+            document.getElementById('statusBox').innerHTML = 
+                '✅ Status: Running! Slides auto-play every 5 seconds. Total slides: ' + slideBgs.length;
+        });
+    </script>
+</body>
+</html>

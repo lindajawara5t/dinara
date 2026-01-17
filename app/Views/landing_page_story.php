@@ -2748,107 +2748,6 @@
                 <?php endif; ?>
                 <span><?= $settings['app_name'] ?? 'Dinara Travel' ?></span>
             </div>
-                    <script>
-                    // HERO SLIDER LOGIC
-                    console.log('🎬 Hero Slider Script Starting...');
-                    
-                    let heroIndex = 0;
-                    let heroTimeout = null;
-                    
-                    const heroSlides = document.querySelectorAll('.hero-slide');
-                    const heroDots = document.querySelectorAll('.hero-dot');
-                    
-                    console.log('📊 Found slides:', heroSlides.length);
-                    console.log('📊 Found dots:', heroDots.length);
-                    
-                    // Generate durations array dari slide element data
-                    let heroDurations = [];
-                    heroSlides.forEach((slide, idx) => {
-                        const duration = parseInt(slide.dataset.duration) || 5000;
-                        heroDurations.push(duration);
-                        console.log(`⏱️ Slide ${idx}: ${duration}ms`);
-                    });
-                    
-                    if (heroDurations.length === 0) {
-                        heroDurations = [5000];
-                        console.warn('⚠️ No slides data found, using default 5000ms');
-                    }
-
-                    function showHeroSlide(idx) {
-                        heroSlides.forEach((slide, i) => {
-                            slide.style.opacity = (i === idx) ? '1' : '0';
-                            slide.style.zIndex = (i === idx) ? 10 : 5;
-                        });
-                        heroDots.forEach((dot, i) => {
-                            dot.style.opacity = (i === idx) ? '1' : '0.5';
-                        });
-                        console.log(`✅ Slide ${idx + 1} of ${heroSlides.length} shown`);
-                    }
-
-                    function slideHero(dir = 1) {
-                        heroIndex = (heroIndex + dir + heroSlides.length) % heroSlides.length;
-                        showHeroSlide(heroIndex);
-                        resetHeroTimeout();
-                        console.log(`➡️ Slide changed to ${heroIndex + 1}`);
-                    }
-
-                    function goToHero(idx) {
-                        heroIndex = idx;
-                        showHeroSlide(heroIndex);
-                        resetHeroTimeout();
-                        console.log(`🎯 Jump to slide ${idx + 1}`);
-                    }
-                    
-                    // Alias untuk goToSlide (digunakan di onclick dots)
-                    function goToSlide(idx) {
-                        goToHero(idx);
-                    }
-
-                    function resetHeroTimeout() {
-                        if (heroTimeout) clearTimeout(heroTimeout);
-                        const duration = heroDurations[heroIndex] || 4000;
-                        heroTimeout = setTimeout(() => {
-                            slideHero(1);
-                        }, duration);
-                        console.log(`⏳ Next auto-play in ${duration}ms`);
-                    }
-
-                    heroDots.forEach((dot, i) => {
-                        dot.addEventListener('click', () => goToHero(i));
-                    });
-
-                    // Mulai auto-slide saat halaman siap
-                    document.addEventListener('DOMContentLoaded', function() {
-                        console.log('🎬 DOMContentLoaded - Initializing hero slideshow');
-                        console.log(`Slides ready: ${heroSlides.length}`);
-                        console.log(`Durations: ${JSON.stringify(heroDurations)}`);
-                        
-                        if (heroSlides.length > 0) {
-                            showHeroSlide(heroIndex);
-                            resetHeroTimeout();
-                            console.log('✅ Hero slideshow initialized successfully!');
-                            console.log(`▶️ Auto-play STARTED - First slide duration: ${heroDurations[0]}ms`);
-                        } else {
-                            console.error('❌ No hero slides found!');
-                        }
-                    });
-                    
-                    // Also try immediate init if DOM is already ready
-                    if (document.readyState === 'loading') {
-                        console.log('⏳ Document still loading');
-                    } else {
-                        console.log('✓ Document already loaded - triggering init immediately');
-                        try {
-                            if (heroSlides.length > 0) {
-                                showHeroSlide(heroIndex);
-                                resetHeroTimeout();
-                                console.log('✅ Immediate init successful');
-                            }
-                        } catch(e) {
-                            console.error('Error in immediate init:', e);
-                        }
-                    }
-                    </script>
             
             <!-- Welcome Text - Only on Home Page -->
             <div class="welcome-header" id="welcome-header">
@@ -2949,7 +2848,20 @@
         </div>
         
         <script>
+        // 🎬 HERO SLIDESHOW SCRIPT - COMPLETE AUTO-PLAY IMPLEMENTATION
+        console.log('🎬 Hero Slideshow Script Loaded');
+        
+        let heroIndex = 0;
+        let heroTimeout = null;
+        
+        const heroSlides = document.querySelectorAll('.hero-slide');
+        const heroDots = document.querySelectorAll('.hero-dot');
+        
+        console.log('📊 Found hero slides:', heroSlides.length);
+        console.log('📊 Found hero dots:', heroDots.length);
+        
         // Set heroDurations dari PHP setelah slides dirender
+        let heroDurations = [];
         <?php if (!empty($hero_slides)): ?>
         heroDurations = [
             <?php foreach($hero_slides as $slide): ?>
@@ -2957,6 +2869,76 @@
             <?php endforeach; ?>
         ];
         <?php endif; ?>
+        
+        // Generate durations array dari slide element data (backup)
+        heroSlides.forEach((slide, idx) => {
+            const duration = parseInt(slide.dataset.duration) || 5000;
+            console.log(`⏱️ Slide ${idx}: ${duration}ms`);
+        });
+        
+        if (heroDurations.length === 0) {
+            heroDurations = [5000];
+            console.warn('⚠️ No slides data found, using default 5000ms');
+        }
+        
+        console.log(`✅ Hero Durations: ${JSON.stringify(heroDurations)}`);
+
+        function showHeroSlide(idx) {
+            heroSlides.forEach((slide, i) => {
+                slide.style.opacity = (i === idx) ? '1' : '0';
+                slide.style.zIndex = (i === idx) ? 10 : 5;
+            });
+            heroDots.forEach((dot, i) => {
+                dot.style.opacity = (i === idx) ? '1' : '0.5';
+            });
+            console.log(`✅ Hero Slide ${idx + 1} of ${heroSlides.length} shown`);
+        }
+
+        function slideHero(dir = 1) {
+            heroIndex = (heroIndex + dir + heroSlides.length) % heroSlides.length;
+            showHeroSlide(heroIndex);
+            resetHeroTimeout();
+            console.log(`➡️ Hero slide changed to ${heroIndex + 1}`);
+        }
+        
+        function goToSlide(idx) {
+            heroIndex = idx;
+            showHeroSlide(heroIndex);
+            resetHeroTimeout();
+            console.log(`🎯 Jump to hero slide ${heroIndex + 1}`);
+        }
+
+        function resetHeroTimeout() {
+            if (heroTimeout) clearTimeout(heroTimeout);
+            const duration = heroDurations[heroIndex] || 5000;
+            heroTimeout = setTimeout(() => {
+                slideHero(1);
+            }, duration);
+            console.log(`⏳ Next hero auto-play in ${duration}ms`);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎬 DOMContentLoaded - Initializing hero slideshow');
+            console.log(`Hero slides ready: ${heroSlides.length}`);
+            
+            if (heroSlides.length > 0) {
+                showHeroSlide(heroIndex);
+                resetHeroTimeout();
+                console.log('✅ Hero slideshow initialized successfully!');
+                console.log(`▶️ Auto-play STARTED - First slide duration: ${heroDurations[0]}ms`);
+            } else {
+                console.error('❌ No hero slides found!');
+            }
+        });
+        
+        // Immediate init if DOM already loaded
+        if (document.readyState !== 'loading' && heroSlides.length > 0) {
+            console.log('✓ Document already loaded - triggering hero init immediately');
+            showHeroSlide(heroIndex);
+            resetHeroTimeout();
+            console.log('✅ Hero immediate init successful');
+        }
         </script>
         
         <!-- SEARCH FORM INSIDE HERO -->

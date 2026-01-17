@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Landing Page Source</title>
+    <style>
+        body { font-family: monospace; margin: 20px; }
+        .section { border: 2px solid #333; padding: 20px; margin: 20px 0; }
+        h2 { background: #333; color: white; padding: 10px; }
+        pre { background: #f0f0f0; padding: 15px; overflow-x: auto; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Landing Page Source Code Analysis</h1>
+    <div id="results"></div>
+
+    <script>
+        async function checkLandingPage() {
+            const results = document.getElementById('results');
+            
+            try {
+                const response = await fetch('http://localhost:8080/dinara/');
+                const html = await response.text();
+                
+                // Check 1: slideshow-background-container
+                const hasSlideshowContainer = html.includes('slideshow-background-container');
+                
+                // Check 2: slide-bg elements
+                const slideBgCount = (html.match(/class="slide-bg/g) || []).length;
+                
+                // Check 3: Script loading
+                const hasScript = html.includes('initHeroSlideshow');
+                
+                // Check 4: z-index CSS
+                const hasZIndexFix = html.includes('z-index: 1;') && html.includes('slideshow-background-container');
+                
+                // Extract snippet
+                const containerStart = html.indexOf('slideshow-background-container');
+                const snippet = containerStart !== -1 ? html.substring(containerStart - 100, containerStart + 500) : 'NOT FOUND';
+                
+                results.innerHTML = `
+                    <div class="section">
+                        <h2>✓ Slideshow Container Check</h2>
+                        <p class="${hasSlideshowContainer ? 'success' : 'error'}">
+                            Slideshow container: ${hasSlideshowContainer ? '✅ FOUND' : '❌ NOT FOUND'}
+                        </p>
+                    </div>
+                    
+                    <div class="section">
+                        <h2>✓ Slide Elements Check</h2>
+                        <p class="${slideBgCount > 0 ? 'success' : 'error'}">
+                            Total .slide-bg elements: ${slideBgCount} ${slideBgCount > 0 ? '✅' : '❌'}
+                        </p>
+                    </div>
+                    
+                    <div class="section">
+                        <h2>✓ Script Loading Check</h2>
+                        <p class="${hasScript ? 'success' : 'error'}">
+                            initHeroSlideshow function: ${hasScript ? '✅ FOUND' : '❌ NOT FOUND'}
+                        </p>
+                    </div>
+                    
+                    <div class="section">
+                        <h2>✓ CSS Z-Index Fix Check</h2>
+                        <p class="${hasZIndexFix ? 'success' : 'error'}">
+                            Z-Index fix applied: ${hasZIndexFix ? '✅ YES' : '❌ NO'}
+                        </p>
+                    </div>
+                    
+                    <div class="section">
+                        <h2>HTML Snippet (around slideshow-container)</h2>
+                        <pre>${snippet.substring(0, 600)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                results.innerHTML = `<div class="section error"><h2>Error</h2><p>${error.message}</p></div>`;
+            }
+        }
+        
+        checkLandingPage();
+    </script>
+</body>
+</html>
