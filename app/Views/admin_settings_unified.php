@@ -1918,5 +1918,11 @@
             // Bisa load agent dari database nanti
         });
     </script>
+    
+    <!-- Bootstrap JS Bundle - REQUIRED untuk Modal, Dropdown, dll -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Sortable JS - REQUIRED untuk drag-and-drop slideshow order -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 </body>
 </html>
