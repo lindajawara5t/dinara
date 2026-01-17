@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slideshow Auto-Play Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .console {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 20px 0;
+            line-height: 1.5;
+        }
+        
+        .console-line {
+            margin: 2px 0;
+        }
+        
+        .status {
+            padding: 10px;
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        
+        .error {
+            background: #ffebee;
+            border-left-color: #f44336;
+            color: #c62828;
+        }
+        
+        .landing-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #2196f3;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        
+        .landing-link:hover {
+            background: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Slideshow Auto-Play Test</h1>
+        
+        <div class="status">
+            <strong>Status Landing Page:</strong><br>
+            <span id="status">Loading...</span>
+        </div>
+        
+        <h3>Console Output:</h3>
+        <div class="console" id="console"></div>
+        
+        <h3>Checklist:</h3>
+        <ul id="checklist" style="list-style: none; padding: 0;">
+            <li id="check-load">⏳ Page loaded</li>
+            <li id="check-slides">⏳ Hero slides found</li>
+            <li id="check-script">⏳ Script executed</li>
+            <li id="check-auto-play">⏳ Auto-play started</li>
+        </ul>
+        
+        <a href="http://localhost:8080/dinara/" class="landing-link">↩️ Back to Landing Page</a>
+    </div>
+
+    <script>
+    // Override console.log to capture messages
+    const consoleLogs = [];
+    const originalLog = console.log;
+    
+    const consoleDiv = document.getElementById('console');
+    
+    console.log = function(...args) {
+        originalLog.apply(console, args);
+        
+        const msg = args.map(arg => {
+            if (typeof arg === 'object') {
+                return JSON.stringify(arg);
+            }
+            return String(arg);
+        }).join(' ');
+        
+        consoleLogs.push(msg);
+        
+        // Update display
+        const line = document.createElement('div');
+        line.className = 'console-line';
+        line.textContent = msg;
+        consoleDiv.appendChild(line);
+        consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        
+        // Update checklist based on message
+        if (msg.includes('Hero Slideshow Script Loaded')) {
+            document.getElementById('check-script').textContent = '✅ Script executed';
+        }
+        if (msg.includes('Found hero slides:')) {
+            document.getElementById('check-slides').textContent = '✅ Hero slides found';
+        }
+        if (msg.includes('Auto-play STARTED')) {
+            document.getElementById('check-auto-play').textContent = '✅ Auto-play started';
+        }
+    };
+    
+    // Test if landing page is accessible
+    fetch('http://localhost:8080/dinara/')
+        .then(response => {
+            document.getElementById('status').textContent = `✅ Landing page accessible (${response.status})`;
+            document.getElementById('check-load').textContent = '✅ Page loaded';
+            
+            // Also try to fetch blog endpoint to check
+            return fetch('http://localhost:8080/dinara/blog/all');
+        })
+        .then(response => {
+            console.log(`📊 Blog endpoint status: ${response.status}`);
+            if (response.status === 404) {
+                console.warn('⚠️ Blog endpoint returns 404 - this is secondary issue');
+            }
+        })
+        .catch(err => {
+            document.getElementById('status').innerHTML = `❌ Error: ${err.message}`;
+            console.error('Error:', err);
+        });
+    
+    // Log test start
+    console.log('🧪 Slideshow Auto-Play Test Started');
+    console.log(`⏰ Time: ${new Date().toLocaleString()}`);
+    console.log('📋 Waiting for landing page to load slides...');
+    </script>
+</body>
+</html>
