@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Real-time Slideshow Debug</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            color: #333;
+        }
+        
+        .status-item {
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 4px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-ok {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .status-warn {
+            background: #fff3e0;
+            color: #e65100;
+            border-left: 4px solid #ff9800;
+        }
+        
+        .status-error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        .status-pending {
+            background: #e3f2fd;
+            color: #1565c0;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .console-log {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            line-height: 1.4;
+            grid-column: 1 / -1;
+        }
+        
+        .log-line {
+            margin: 2px 0;
+            padding: 2px;
+        }
+        
+        .log-debug { color: #888; }
+        .log-info { color: #00ff00; }
+        .log-warn { color: #ffff00; }
+        .log-error { color: #ff0000; }
+        
+        .test-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .test-button:hover {
+            background: #5568d3;
+        }
+        
+        .iframe-embed {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="card">
+            <div class="title">🎬 Slideshow Status</div>
+            <div id="slideshow-status"></div>
+            <button class="test-button" onclick="checkSlideshowState()">🔍 Check Now</button>
+        </div>
+        
+        <div class="card">
+            <div class="title">📊 Database Info</div>
+            <div id="database-status"></div>
+            <button class="test-button" onclick="checkDatabase()">📈 Check Database</button>
+        </div>
+        
+        <div class="card" style="grid-column: 1 / -1;">
+            <div class="title">📋 Console Output</div>
+            <div class="console-log" id="console-output"></div>
+        </div>
+    </div>
+
+    <script>
+    const consoleOutput = document.getElementById('console-output');
+    const originalLog = console.log;
+    const originalWarn = console.warn;
+    const originalError = console.error;
+    
+    // Override console methods
+    console.log = function(...args) {
+        originalLog.apply(console, args);
+        addLogLine('info', args.join(' '));
+    };
+    
+    console.warn = function(...args) {
+        originalWarn.apply(console, args);
+        addLogLine('warn', args.join(' '));
+    };
+    
+    console.error = function(...args) {
+        originalError.apply(console, args);
+        addLogLine('error', args.join(' '));
+    };
+    
+    function addLogLine(type, message) {
+        const line = document.createElement('div');
+        line.className = `log-line log-${type}`;
+        line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+        consoleOutput.appendChild(line);
+        consoleOutput.scrollTop = consoleOutput.scrollHeight;
+    }
+    
+    function addStatus(containerId, icon, text, type) {
+        const container = document.getElementById(containerId);
+        const item = document.createElement('div');
+        item.className = `status-item status-${type}`;
+        item.innerHTML = `<span>${icon}</span><span>${text}</span>`;
+        container.appendChild(item);
+    }
+    
+    async function checkSlideshowState() {
+        console.log('🔍 Checking slideshow state...');
+        document.getElementById('slideshow-status').innerHTML = '';
+        
+        try {
+            const response = await fetch('http://localhost:8080/dinara/');
+            const html = await response.text();
+            
+            const hasHeroSlides = html.includes('class="hero-slide');
+            const slideCount = (html.match(/class="hero-slide/g) || []).length;
+            const hasAutoPlayScript = html.includes('resetHeroTimeout');
+            const hasSlideHeroFunc = html.includes('function slideHero');
+            
+            console.log(`✅ Landing page fetched - ${response.status}`);
+            console.log(`📊 Hero slides found: ${slideCount}`);
+            console.log(`🔧 Has auto-play: ${hasAutoPlayScript}`);
+            console.log(`⚙️ Has slideHero function: ${hasSlideHeroFunc}`);
+            
+            addStatus('slideshow-status', '✅', `Landing page accessible (${response.status})`, 'ok');
+            addStatus('slideshow-status', slideCount > 0 ? '✅' : '⚠️', `Hero slides: ${slideCount}`, slideCount > 0 ? 'ok' : 'warn');
+            addStatus('slideshow-status', hasAutoPlayScript ? '✅' : '❌', `Auto-play script: ${hasAutoPlayScript}`, hasAutoPlayScript ? 'ok' : 'error');
+            addStatus('slideshow-status', hasSlideHeroFunc ? '✅' : '❌', `slideHero function: ${hasSlideHeroFunc}`, hasSlideHeroFunc ? 'ok' : 'error');
+            
+        } catch (err) {
+            console.error('❌ Error:', err.message);
+            addStatus('slideshow-status', '❌', `Error: ${err.message}`, 'error');
+        }
+    }
+    
+    async function checkDatabase() {
+        console.log('📊 Checking database...');
+        document.getElementById('database-status').innerHTML = '';
+        
+        try {
+            const response = await fetch('http://localhost:8080/dinara/public/check_hero_slides_db.php');
+            const data = await response.json();
+            
+            console.log('📈 Database check result:', JSON.stringify(data, null, 2));
+            
+            if (data.status === 'success') {
+                addStatus('database-status', '✅', `Table exists: ${data.hero_slideshow_table_exists}`, data.hero_slideshow_table_exists ? 'ok' : 'error');
+                addStatus('database-status', '📊', `Active slides: ${data.total_active_slides}`, 'ok');
+                
+                if (data.slides && data.slides.length > 0) {
+                    data.slides.forEach((slide, idx) => {
+                        addStatus('database-status', `📸`, `Slide ${idx+1}: ${slide.title} (${slide.duration}ms)`, 'ok');
+                    });
+                } else {
+                    addStatus('database-status', '⚠️', 'No active slides in database - using fallback', 'warn');
+                }
+            } else {
+                addStatus('database-status', '❌', data.message, 'error');
+            }
+            
+        } catch (err) {
+            console.error('❌ Database check error:', err.message);
+            addStatus('database-status', '❌', `Error: ${err.message}`, 'error');
+        }
+    }
+    
+    // Auto-check on load
+    console.log('🚀 Slideshow Debug Dashboard Loaded');
+    setTimeout(() => {
+        checkSlideshowState();
+        checkDatabase();
+    }, 500);
+    </script>
+</body>
+</html>
