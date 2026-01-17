@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog Endpoint Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 { color: #333; margin-bottom: 20px; }
+        
+        .test-result {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            border-left: 4px solid #ddd;
+        }
+        
+        .success {
+            background: #e8f5e9;
+            border-left-color: #4caf50;
+            color: #2e7d32;
+        }
+        
+        .error {
+            background: #ffebee;
+            border-left-color: #f44336;
+            color: #c62828;
+        }
+        
+        .warning {
+            background: #fff3e0;
+            border-left-color: #ff9800;
+            color: #e65100;
+        }
+        
+        pre {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+            line-height: 1.4;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #2196f3;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            margin-top: 10px;
+        }
+        
+        .button:hover {
+            background: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Blog Endpoint Verification</h1>
+        
+        <div id="results"></div>
+        
+        <button class="button" onclick="runTests()">🔄 Run Tests Again</button>
+    </div>
+
+    <script>
+    const resultsDiv = document.getElementById('results');
+    
+    async function runTests() {
+        resultsDiv.innerHTML = '<div class="test-result warning">Testing...</div>';
+        
+        try {
+            // Test 1: Direct fetch to /blog/all
+            console.log('Test 1: Fetching /blog/all...');
+            const response = await fetch('/blog/all', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            
+            console.log(`Status: ${response.status}`);
+            const contentType = response.headers.get('content-type');
+            console.log(`Content-Type: ${contentType}`);
+            
+            const text = await response.text();
+            console.log(`Response length: ${text.length}`);
+            console.log(`First 100 chars: ${text.substring(0, 100)}`);
+            
+            // Try parse as JSON
+            let jsonData = null;
+            try {
+                jsonData = JSON.parse(text);
+                console.log(`✅ Valid JSON`);
+                console.log(`Posts count: ${jsonData.length}`);
+            } catch (e) {
+                console.error(`❌ Invalid JSON: ${e.message}`);
+                console.error(`Response starts with: ${text.substring(0, 50)}`);
+            }
+            
+            // Build results
+            let html = '';
+            
+            // Test 1 Result
+            if (response.status === 200) {
+                html += '<div class="test-result success">';
+                html += '✅ Endpoint Status: ' + response.status;
+                html += '</div>';
+            } else {
+                html += '<div class="test-result error">';
+                html += '❌ Endpoint Status: ' + response.status;
+                html += '</div>';
+            }
+            
+            // Test 2 Result
+            if (contentType && contentType.includes('application/json')) {
+                html += '<div class="test-result success">';
+                html += '✅ Content-Type: ' + contentType;
+                html += '</div>';
+            } else {
+                html += '<div class="test-result error">';
+                html += '❌ Content-Type: ' + contentType + ' (expected application/json)';
+                html += '</div>';
+            }
+            
+            // Test 3 Result
+            if (jsonData) {
+                html += '<div class="test-result success">';
+                html += '✅ Valid JSON Response - ' + jsonData.length + ' posts found<br>';
+                html += '<pre>' + JSON.stringify(jsonData.slice(0, 2), null, 2) + '</pre>';
+                html += '</div>';
+            } else {
+                html += '<div class="test-result error">';
+                html += '❌ Invalid JSON - Response starts with:<br>';
+                html += '<pre>' + text.substring(0, 200) + '</pre>';
+                html += '</div>';
+            }
+            
+            // Test 4: Check from admin page context
+            html += '<hr>';
+            html += '<h3>📋 Admin Page Context</h3>';
+            html += '<div class="test-result warning">';
+            html += 'ℹ️ To verify errors in admin page:<br>';
+            html += '1. Open http://localhost:8080/dinara/admin<br>';
+            html += '2. Press F12 to open Console<br>';
+            html += '3. Check for any error messages<br>';
+            html += '4. Verify blog posts load in interface<br>';
+            html += '</div>';
+            
+            resultsDiv.innerHTML = html;
+            
+        } catch (err) {
+            resultsDiv.innerHTML = '<div class="test-result error">❌ Error: ' + err.message + '</div>';
+            console.error('Test error:', err);
+        }
+    }
+    
+    // Run tests on load
+    window.addEventListener('load', runTests);
+    </script>
+</body>
+</html>
