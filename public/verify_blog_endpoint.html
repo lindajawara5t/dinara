@@ -90,9 +90,14 @@
         resultsDiv.innerHTML = '<div class="test-result warning">Testing...</div>';
         
         try {
-            // Test 1: Direct fetch to /blog/all
+            // Test 1: Direct fetch to /blog/all - use proper base URL
             console.log('Test 1: Fetching /blog/all...');
-            const response = await fetch('/blog/all', {
+            // Get base URL from current location
+            const baseUrl = window.location.origin + '/dinara';
+            const blogUrl = baseUrl + '/blog/all';
+            console.log('Using URL:', blogUrl);
+            
+            const response = await fetch(blogUrl, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json'
