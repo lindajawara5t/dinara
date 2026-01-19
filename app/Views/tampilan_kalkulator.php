@@ -33,5 +33,17 @@
             </form>
         </div>
     </div>
+    
+    <script>
+        // Force scroll to top on page load
+        if (history.scrollRestoration) {
+            history.scrollRestoration = 'manual';
+        }
+        window.addEventListener('load', function() {
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+        });
+    </script>
 </body>
 </html>

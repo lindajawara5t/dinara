@@ -19,7 +19,9 @@ class Admin extends BaseController
             $bookingModel = new \App\Models\BookingModel();
             $paymentModel = new \App\Models\PaymentModel();
             
+            // HANYA HITUNG BOOKING YANG CONFIRMED & COMPLETED (BUKAN PENDING/CANCELLED)
             $querySum = $db->table('bookings')
+                                ->whereIn('status', ['confirmed', 'completed'])
                                 ->selectSum('total_price', 'omset')
                                 ->selectSum('estimated_margin', 'laba')
                                 ->selectSum('num_people', 'total_pax')
@@ -156,8 +158,8 @@ class Admin extends BaseController
         $rowExp = $db->table('booking_expenses')->selectSum('amount')->where('booking_id', $id)->get()->getRow();
         $data['total_expense'] = $rowExp->amount ?? 0;
         
-        // Hitung Profit Trip Ini (Revenue - Expense)
-        $data['profit_trip'] = $data['booking']['total_revenue'] - $data['total_expense'];
+        // Hitung Profit Trip Ini (Total Price - Total Expense)
+        $data['profit_trip'] = ($data['booking']['total_price'] ?? 0) - $data['total_expense'];
 
         // Daftar Guide untuk dipilih
         $model = new ServiceModel();
@@ -200,6 +202,85 @@ class Admin extends BaseController
         return redirect()->to('/admin/booking_detail/' . $id)->with('sukses', 'Status Trip Diupdate!');
     }
 
+    // =========================================================================
+    // APPROVE BOOKING - Setujui booking dari pending ke confirmed
+    // =========================================================================
+    public function approve_booking()
+    {
+        $id = $this->request->getPost('booking_id');
+        $db = \Config\Database::connect();
+        
+        // Update status ke confirmed
+        $db->table('bookings')->where('id', $id)->update([
+            'status' => 'confirmed',
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
+        
+        return redirect()->back()->with('sukses', 'Booking berhasil disetujui!');
+    }
+
+    // =========================================================================
+    // REJECT BOOKING - Tolak dan hapus booking
+    // =========================================================================
+    public function reject_booking()
+    {
+        $id = $this->request->getPost('booking_id');
+        $db = \Config\Database::connect();
+        
+        // Hapus data terkait terlebih dahulu
+        if ($db->tableExists('booking_items')) {
+            $db->table('booking_items')->where('booking_id', $id)->delete();
+        }
+        if ($db->tableExists('booking_expenses')) {
+            $db->table('booking_expenses')->where('booking_id', $id)->delete();
+        }
+        if ($db->tableExists('payments')) {
+            $db->table('payments')->where('booking_id', $id)->delete();
+        }
+        
+        // Hapus booking utama
+        $db->table('bookings')->where('id', $id)->delete();
+        
+        return redirect()->to('/admin')->with('sukses', 'Booking berhasil ditolak dan dihapus!');
+    }
+
+    // =========================================================================
+    // AUTO CLEANUP - Hapus otomatis booking cancelled (>7 hari)
+    // =========================================================================
+    public function cleanup_cancelled_bookings()
+    {
+        $db = \Config\Database::connect();
+        
+        // Cari booking cancelled yang lebih dari 7 hari
+        $oldCancelled = $db->table('bookings')
+            ->where('status', 'cancelled')
+            ->where('updated_at <', date('Y-m-d H:i:s', strtotime('-7 days')))
+            ->get()
+            ->getResultArray();
+        
+        $deleted = 0;
+        foreach ($oldCancelled as $booking) {
+            $bookingId = $booking['id'];
+            
+            // Hapus data terkait
+            if ($db->tableExists('booking_items')) {
+                $db->table('booking_items')->where('booking_id', $bookingId)->delete();
+            }
+            if ($db->tableExists('booking_expenses')) {
+                $db->table('booking_expenses')->where('booking_id', $bookingId)->delete();
+            }
+            if ($db->tableExists('payments')) {
+                $db->table('payments')->where('booking_id', $bookingId)->delete();
+            }
+            
+            // Hapus booking
+            $db->table('bookings')->where('id', $bookingId)->delete();
+            $deleted++;
+        }
+        
+        return redirect()->back()->with('sukses', "Berhasil menghapus {$deleted} booking cancelled lama.");
+    }
+
     // Helper: Hitung Ulang Profit
     private function recalculate_profit($booking_id) {
         $db = \Config\Database::connect();
@@ -207,14 +288,15 @@ class Admin extends BaseController
         $rowExp = $db->table('booking_expenses')->selectSum('amount')->where('booking_id', $booking_id)->get()->getRow();
         $total_cost = $rowExp->amount ?? 0;
         
-        // Ambil revenue
+        // Ambil booking data
         $booking = $db->table('bookings')->where('id', $booking_id)->get()->getRowArray();
-        $profit_baru = $booking['total_revenue'] - $total_cost;
+        $total_price = $booking['total_price'] ?? 0;
+        $profit_baru = $total_price - $total_cost;
 
         // Update tabel induk
         $db->table('bookings')->where('id', $booking_id)->update([
-            'total_cost' => $total_cost,
-            'profit'     => $profit_baru
+            'total_net_cost' => $total_cost,
+            'estimated_margin'     => $profit_baru
         ]);
     }
 

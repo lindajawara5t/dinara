@@ -119,6 +119,16 @@ class Kalkulator extends BaseController
         $lokal     = $getRichData(['transport_local']);  
         $guide     = $getRichData(['guide']); 
 
+        // Load Konsumsi/Makan
+        $konsumsi = [];
+        if ($db->tableExists('konsumsi')) {
+            $konsumsi = $db->table('konsumsi')
+                ->where('is_active', 1)
+                ->orderBy('price_per_person', 'ASC')
+                ->get()
+                ->getResultArray();
+        }
+
         // Load Tiket Kapal & Pesawat
         $kapal     = $db->table('service_categories')->where('type', 'transport_sea')->get()->getResultArray();
         
@@ -205,11 +215,38 @@ class Kalkulator extends BaseController
         $floating_box_description = null; // Default null, akan diisi dari database
         $floating_box_found = false; // Flag untuk cek apakah data ditemukan
         
-        if ($db->tableExists('site_content')) {
+        // PRIORITAS 1: Cek dari site_settings table (dari form admin)
+        if (isset($settings['est_floating_box']) && !empty($settings['est_floating_box'])) {
+            $floating_box_description = $settings['est_floating_box'];
+            $floating_box_found = true;
+        }
+        
+        // PRIORITAS 2: Cek dari site_content table (detail estimasi page)
+        if (!$floating_box_found && $db->tableExists('site_content')) {
             $estimasi_list = $db->table('site_content')
                 ->where('page_name', 'estimasi')
                 ->get(0, 0, false) // Disable cache
                 ->getResultArray();
+            
+            // Jika tidak ada data sama sekali, buat default data
+            if (empty($estimasi_list)) {
+                $defaults = [
+                    ['page_name' => 'estimasi', 'section_name' => 'floating_box', 'content_key' => 'title', 'content_value' => 'Deskripsi Box Total'],
+                    ['page_name' => 'estimasi', 'section_name' => 'floating_box', 'content_key' => 'description', 'content_value' => '<span style="color:#ffe082;">Ini total estimasi termurah</span> liburan ke Karimunjawa 3H2M.<br>Kamu bisa <b>upgrade</b> dengan klik pilihan yang ada. Buat liburanmu makin seru dan sesuai keinginan!'],
+                    ['page_name' => 'estimasi', 'section_name' => 'transport_land', 'content_key' => 'title', 'content_value' => 'Transportasi Darat'],
+                    ['page_name' => 'estimasi', 'section_name' => 'transport_land', 'content_key' => 'description', 'content_value' => 'Biaya transportasi darat dari titik jemput ke Jepara PP'],
+                ];
+                
+                foreach ($defaults as $d) {
+                    $db->table('site_content')->insert($d);
+                }
+                
+                // Fetch again setelah insert
+                $estimasi_list = $db->table('site_content')
+                    ->where('page_name', 'estimasi')
+                    ->get(0, 0, false)
+                    ->getResultArray();
+            }
             
             // Group by section_name
             foreach ($estimasi_list as $item) {
@@ -220,14 +257,14 @@ class Kalkulator extends BaseController
                 $estimasi_settings[$section][$item['content_key']] = $item['content_value'];
                 
                 // Ambil deskripsi floating box jika ada (bahkan jika kosong)
-                if ($section === 'floating_box' && $item['content_key'] === 'description') {
+                if (!$floating_box_found && $section === 'floating_box' && $item['content_key'] === 'description') {
                     $floating_box_description = $item['content_value'];
                     $floating_box_found = true;
                 }
             }
         }
         
-        // Jika tidak ditemukan di database sama sekali, gunakan default
+        // FALLBACK: Jika tidak ditemukan di database sama sekali, gunakan default
         if (!$floating_box_found) {
             $floating_box_description = 'Ini total estimasi termurah liburan ke Karimunjawa 3H2M. Kamu bisa upgrade dengan klik pilihan yang ada!';
         }
@@ -257,6 +294,7 @@ class Kalkulator extends BaseController
             'json_pesawat'   => json_encode($pesawat),
             'json_lokal'     => json_encode($lokal),
             'json_hotels'    => json_encode($hotels),
+            'json_konsumsi'  => json_encode($konsumsi),    // <--- BARU
             'json_tour_laut' => json_encode($tour_laut),    // <--- BARU
             'json_tour_darat' => json_encode($tour_darat),  // <--- BARU
             'json_destinasi_laut' => json_encode($destinasi_laut),

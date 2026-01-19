@@ -19,7 +19,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <a href="/admin" class="btn btn-outline-secondary btn-sm mb-2"><i class="bi bi-arrow-left"></i> Kembali ke Dashboard</a>
-                <h4 class="fw-bold mb-0">Operasional Trip: <?= $booking['guest_name'] ?></h4>
+                <h4 class="fw-bold mb-0">Operasional Trip: <?= $booking['customer_name'] ?></h4>
                 <small class="text-muted">Kode: <?= $booking['booking_code'] ?> | Tgl: <?= $booking['travel_date'] ?></small>
             </div>
             <div>
@@ -31,7 +31,7 @@
             <div class="col-md-4">
                 <div class="card-stat bg-in shadow-sm">
                     <small>TOTAL PEMBAYARAN TAMU (OMSET)</small>
-                    <h3 class="fw-bold">Rp <?= number_format($booking['total_revenue']) ?></h3>
+                    <h3 class="fw-bold">Rp <?= number_format($booking['total_price']) ?></h3>
                 </div>
             </div>
             <div class="col-md-4">
@@ -111,7 +111,7 @@
                                 <select name="guide_name" class="form-select">
                                     <option value="">-- Pilih Guide --</option>
                                     <?php foreach($guides as $g): ?>
-                                        <option value="<?= $g['name'] ?>" <?= $booking['guide_name'] == $g['name'] ? 'selected' : '' ?>><?= $g['name'] ?></option>
+                                        <option value="<?= $g['name'] ?>" <?= isset($booking['guide_name']) && $booking['guide_name'] == $g['name'] ? 'selected' : '' ?>><?= $g['name'] ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>

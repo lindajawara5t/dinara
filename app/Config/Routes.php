@@ -32,6 +32,9 @@ $routes->get('paket-alternatif', 'Kalkulator::paket_alternatif');
 $routes->get('admin/booking_detail/(:num)', 'Admin::booking_detail/$1'); // Halaman Kelola Trip
 $routes->post('admin/simpan_pengeluaran', 'Admin::simpan_pengeluaran');   // Simpan Pengeluaran
 $routes->post('admin/update_guide_booking', 'Admin::update_guide_booking'); // Update Status & Guide
+$routes->post('admin/approve_booking', 'Admin::approve_booking'); // Setujui Booking
+$routes->post('admin/reject_booking', 'Admin::reject_booking'); // Tolak & Hapus Booking
+$routes->get('admin/cleanup_cancelled', 'Admin::cleanup_cancelled_bookings'); // Auto cleanup cancelled
 $routes->post('admin/simpan_konten', 'Admin::simpan_konten'); // Untuk upload promo
 $routes->get('admin/hapus_konten/(:num)', 'Admin::hapus_konten/$1'); // Untuk hapus promo
 

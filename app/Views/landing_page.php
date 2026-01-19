@@ -830,5 +830,20 @@
     <footer class="text-center py-4 border-top bg-white fixed-bottom" style="z-index: -1;">
         <small class="text-muted" style="font-size: 0.7rem;">&copy; 2027 Dinara Travel System v2.0</small>
     </footer>
+    
+    <script>
+        // Force scroll to top on page load
+        if (history.scrollRestoration) {
+            history.scrollRestoration = 'manual';
+        }
+        window.addEventListener('load', function() {
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+        });
+        window.addEventListener('beforeunload', function() {
+            window.scrollTo(0, 0);
+        });
+    </script>
 </body>
 </html>

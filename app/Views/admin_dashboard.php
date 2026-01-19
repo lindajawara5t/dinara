@@ -198,7 +198,20 @@
             </script>
         <?php endif; ?>
         <div id="view-dashboard" class="section-view <?= $activeTab === 'dashboard' ? 'active' : '' ?>">
-            <h3 class="fw-bold text-secondary mb-4">Ringkasan Bisnis</h3>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold text-secondary mb-0">Ringkasan Bisnis</h3>
+                <?php if($chart_cancelled > 0): ?>
+                <a href="<?= base_url('admin/cleanup_cancelled') ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Hapus semua booking cancelled yang lebih dari 7 hari?')">
+                    <i class="bi bi-trash me-1"></i> Bersihkan Cancelled (<?= $chart_cancelled ?>)
+                </a>
+                <?php endif; ?>
+            </div>
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <i class="bi bi-info-circle me-2"></i>
+                <strong>Info:</strong> Nominal omset & laba hanya menghitung booking yang <strong>Confirmed</strong> atau <strong>Completed</strong>. 
+                Booking <strong>Pending</strong> belum dihitung sampai Anda menyetujuinya.
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
             <div class="row g-4 mb-4">
                 <div class="col-md-4"><div class="card-stat bg-omset"><small class="text-uppercase fw-bold opacity-75">Total Omset</small><h2 class="fw-bold mb-0">Rp <?= number_format($total_omset ?? 0) ?></h2><i class="bi bi-wallet2 stat-icon"></i></div></div>
                 <div class="col-md-4"><div class="card-stat bg-profit"><small class="text-uppercase fw-bold opacity-75">Keuntungan Bersih</small><h2 class="fw-bold mb-0">Rp <?= number_format($total_laba ?? 0) ?></h2><i class="bi bi-graph-up-arrow stat-icon"></i></div></div>
@@ -222,8 +235,27 @@
                                         <td class="fw-bold"><?= $b['customer_name'] ?></td>
                                         <td><?= $b['travel_date'] ?></td>
                                         <td class="text-success fw-bold">Rp <?= number_format($b['profit'] ?? 0) ?></td>
-                                        <td><span class="badge bg-<?= ($b['status']=='confirmed'?'success':($b['status']=='pending'?'warning':'danger')) ?>"><?= strtoupper($b['status']) ?></span></td>
-                                        <td><a href="<?= base_url('admin/booking_detail/'.$b['id']) ?>" class="btn btn-sm btn-primary">Kelola</a></td>
+                                        <td><span class="badge bg-<?= ($b['status']=='confirmed'?'success':($b['status']=='pending'?'warning':($b['status']=='completed'?'info':'danger'))) ?>"><?= strtoupper($b['status']) ?></span></td>
+                                        <td>
+                                            <?php if($b['status'] == 'pending'): ?>
+                                                <div class="btn-group btn-group-sm" role="group">
+                                                    <form method="POST" action="<?= base_url('admin/approve_booking') ?>" style="display:inline;">
+                                                        <input type="hidden" name="booking_id" value="<?= $b['id'] ?>">
+                                                        <button type="submit" class="btn btn-success" title="Setujui" onclick="return confirm('Setujui booking ini?')">
+                                                            <i class="bi bi-check-lg"></i>
+                                                        </button>
+                                                    </form>
+                                                    <form method="POST" action="<?= base_url('admin/reject_booking') ?>" style="display:inline;">
+                                                        <input type="hidden" name="booking_id" value="<?= $b['id'] ?>">
+                                                        <button type="submit" class="btn btn-danger" title="Tolak & Hapus" onclick="return confirm('Tolak dan HAPUS booking ini? Data tidak bisa dikembalikan!')">
+                                                            <i class="bi bi-x-lg"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            <?php else: ?>
+                                                <a href="<?= base_url('admin/booking_detail/'.$b['id']) ?>" class="btn btn-sm btn-primary">Kelola</a>
+                                            <?php endif; ?>
+                                        </td>
                                     </tr>
                                     <?php endforeach; else: ?><tr><td colspan="6" class="text-center text-muted py-4">Belum ada booking masuk.</td></tr><?php endif; ?>
                                 </tbody>
@@ -1704,9 +1736,21 @@
         }
         
         // ====================================================
+        // FORCE SCROLL TO TOP ON PAGE LOAD
+        // ====================================================
+        window.addEventListener('load', function() {
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+        });
+        
+        // ====================================================
         // AUTO-OPEN MODAL SETELAH SIMPAN DATA BERHASIL
         // ====================================================
         document.addEventListener('DOMContentLoaded', function() {
+            // Scroll to top immediately
+            window.scrollTo(0, 0);
+            
             const hash = window.location.hash;
             
             // Jika ada hash (#tab-destinasi), berarti baru submit
@@ -1802,8 +1846,8 @@
             pickMarker.setLatLng([lat, lng]);
             pickMarker.bindPopup('<strong>' + name + '</strong>').openPopup();
             
-            // Scroll ke map jika perlu
-            document.getElementById('pickMap').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Scroll ke map jika perlu (commented out to prevent unwanted scrolling)
+            // document.getElementById('pickMap').scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
         
         // Init map ketika tab lokasi dibuka
