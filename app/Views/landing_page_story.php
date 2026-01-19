@@ -1137,31 +1137,33 @@
             100% { box-shadow: 0 8px 20px rgba(13, 110, 253, 0.6), inset 0 -2px 4px rgba(0, 0, 0, 0.15); }
         }
 
-        /* INFO POPOVER STYLING */
+        /* INFO POPOVER STYLING - MELEBAR & COMPACT */
         .popover {
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
             backdrop-filter: blur(10px);
             background: rgba(255, 255, 255, 0.98);
+            max-width: 380px !important; /* Lebih lebar dari default 276px */
+            min-width: 300px;
         }
 
         .popover-header {
             background: linear-gradient(135deg, #0d6efd, #0099ff);
             color: white;
             border: none;
-            border-radius: 12px 12px 0 0;
-            padding: 12px 16px;
+            border-radius: 10px 10px 0 0;
+            padding: 8px 12px; /* Lebih kecil/compact */
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 0.85rem; /* Sedikit lebih kecil */
         }
 
         .popover-body {
-            padding: 14px 16px;
+            padding: 10px 12px; /* Lebih compact */
             color: #555;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            border-radius: 0 0 12px 12px;
+            font-size: 0.8rem; /* Lebih kecil */
+            line-height: 1.5; /* Lebih rapat */
+            border-radius: 0 0 10px 10px;
         }
 
         /* Tombol Galeri Overlay */
@@ -1252,8 +1254,8 @@
             border-radius: 14px;
             padding: 8px 12px 10px 12px;
             box-shadow: 0 4px 18px rgba(102, 126, 234, 0.18), 0 1px 4px rgba(0,0,0,0.08);
-            min-width: 140px;
-            max-width: 220px;
+            min-width: 240px;
+            max-width: 280px;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
             border: 1px solid rgba(255,255,255,0.12);
@@ -1308,15 +1310,16 @@
             background: white;
             color: #764ba2;
             border: none;
-            border-radius: 8px;
-            padding: 7px 10px;
-            font-size: 0.72rem;
+            border-radius: 10px;
+            padding: 9px 10px;
+            font-size: 0.7rem;
             font-weight: 700;
             margin-top: 8px;
             width: 100%;
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+            white-space: nowrap;
         }
         .floating-total-btn:hover {
             background: #f0f0f0;
@@ -1324,6 +1327,57 @@
         }
         .floating-total-btn i {
             font-size: 0.92rem;
+        }
+        /* BOOK NOW Button - Styling Baru yang Elegan & Mencolok */
+        .btn-book-now {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 6px !important;
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E3E 50%, #FFD93D 100%) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 10px !important;
+            padding: 9px 12px !important;
+            font-size: 0.75rem !important;
+            font-weight: 800 !important;
+            cursor: pointer !important;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.35) !important;
+            position: relative !important;
+            overflow: hidden !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.8px !important;
+            min-height: 38px !important;
+            white-space: nowrap !important;
+        }
+        .btn-book-now::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: left 0.5s ease;
+        }
+        .btn-book-now:hover::before {
+            left: 100%;
+        }
+        .btn-book-now:hover {
+            transform: translateY(-3px) scale(1.05) !important;
+            box-shadow: 0 12px 30px rgba(255, 107, 107, 0.45), 0 0 20px rgba(255, 200, 100, 0.3) !important;
+        }
+        .btn-book-now:active {
+            transform: translateY(-1px) scale(1.02) !important;
+        }
+        .btn-book-now i {
+            font-size: 1.1rem !important;
+            animation: bounce-icon 0.6s infinite;
+        }
+        @keyframes bounce-icon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
         }
         /* Pulse animation for total updates */
         @keyframes pulse-total {
@@ -1333,6 +1387,140 @@
         }
         .floating-total-card.pulse {
             animation: pulse-total 0.3s ease;
+        }
+        /* Modal Booking Form Styles */
+        .modal-booking {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-booking.show {
+            display: flex;
+        }
+        .modal-booking-content {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .modal-booking-header {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E3E 50%, #FFD93D 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-booking-header h3 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .modal-booking-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-booking-body {
+            padding: 25px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #333;
+            font-size: 14px;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #FF6B6B;
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .modal-booking-footer {
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .btn-modal {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        .btn-modal-submit {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E3E 50%, #FFD93D 100%);
+            color: white;
+            flex: 1;
+        }
+        .btn-modal-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+        }
+        .btn-modal-cancel {
+            background: #f0f0f0;
+            color: #333;
+        }
+        .btn-modal-cancel:hover {
+            background: #e0e0e0;
         }
         /* Mobile responsive */
         @media (max-width: 768px) {
@@ -2784,22 +2972,33 @@
                     $buttonAction = '';
                     $buttonUrl = $slide['button_url'] ?? '';
                     if (!empty($buttonUrl)) {
-                        // Cek apakah JavaScript atau URL
+                        // Cek tipe URL
                         if (stripos($buttonUrl, 'javascript:') === 0 || stripos($buttonUrl, 'showSection') !== false) {
+                            // JavaScript function
                             $buttonAction = str_replace('javascript:', '', $buttonUrl);
-                        } else {
-                            // Jika URL, buka di tab baru
+                        } elseif (stripos($buttonUrl, 'http://') === 0 || stripos($buttonUrl, 'https://') === 0) {
+                            // External URL - buka di tab baru
                             $buttonAction = "window.open('" . $buttonUrl . "', '_blank')";
+                        } elseif ($buttonUrl === '/' || $buttonUrl === '') {
+                            // Home/Root URL - scroll to top
+                            $buttonAction = "window.scrollTo({ top: 0, behavior: 'smooth' }); showSection('promo')";
+                        } elseif ($buttonUrl === '/estimasi') {
+                            // Estimasi section - tampilkan estimasi kalkulasi
+                            $buttonAction = "showSection('estimasi')";
+                        } elseif (stripos($buttonUrl, '/') === 0) {
+                            // Internal URL - navigasi normal (jangan di tab baru)
+                            $buttonAction = "window.location.href = '" . base_url(ltrim($buttonUrl, '/')) . "'";
+                        } else {
+                            // Default
+                            $buttonAction = "showSection('promo')";
                         }
                     } else {
                         $buttonAction = "showSection('promo')";
                     }
                     
                     // Simpan button URL asli untuk clickable image (data-button-url)
+                    // PENTING: Kirim URL original, bukan full base_url (JavaScript akan handle itu)
                     $buttonUrlForClick = $buttonUrl;
-                    if (stripos($buttonUrl, 'javascript:') === 0) {
-                        $buttonUrlForClick = str_replace('javascript:', '', $buttonUrl);
-                    }
                     
                     $hero_slides[] = [
                         'image' => base_url($slide['image_url']),
@@ -2809,7 +3008,7 @@
                             'label' => $slide['button_label'] ?? 'Lihat Promo',
                             'class' => $slide['button_class'] ?? 'btn-warning',
                             'onclick' => $buttonAction,
-                            'url' => $buttonUrlForClick  // <-- ADD THIS for clickable image
+                            'url' => $buttonUrlForClick  // URL untuk JavaScript openSlideLink
                         ],
                         'duration' => (int)($slide['duration'] ?? 5000)
                     ];
@@ -2951,6 +3150,56 @@
             resetHeroTimeout();
             console.log('✅ Hero immediate init successful');
         }
+        
+        // ==================== OPEN SLIDE LINK FUNCTION ====================
+        // Function untuk handle klik pada hero slide image
+        function openSlideLink(slideElement) {
+            const buttonUrl = slideElement.getAttribute('data-button-url');
+            
+            if (!buttonUrl) {
+                console.log('ℹ️ No link configured for this slide');
+                return;
+            }
+            
+            console.log('🔗 Opening slide link:', buttonUrl);
+            
+            // Check if it's a JavaScript function call
+            if (buttonUrl.startsWith('javascript:') || buttonUrl.startsWith('showSection(')) {
+                // Execute JavaScript function
+                try {
+                    eval(buttonUrl.replace('javascript:', ''));
+                    console.log('✅ Executed JavaScript:', buttonUrl);
+                } catch (e) {
+                    console.error('❌ Error executing JavaScript:', e.message);
+                }
+            } else if (buttonUrl.startsWith('http://') || buttonUrl.startsWith('https://')) {
+                // Open external URL in new tab
+                window.open(buttonUrl, '_blank');
+                console.log('✅ Opened external link in new tab:', buttonUrl);
+            } else if (buttonUrl === '/' || buttonUrl === '') {
+                // Home/Root URL - scroll to top and show promo
+                console.log('✅ Navigating to Home');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                if (typeof showSection === 'function') {
+                    showSection('promo');
+                }
+            } else if (buttonUrl === '/estimasi') {
+                // Estimasi section - show estimasi calculator
+                console.log('✅ Navigating to Estimasi Calculator');
+                if (typeof showSection === 'function') {
+                    showSection('estimasi');
+                }
+            } else if (buttonUrl.startsWith('/')) {
+                // Navigate to internal page - avoid double slash
+                const baseUrl = '<?= base_url() ?>'.replace(/\/$/, ''); // Remove trailing slash if exists
+                const cleanPath = buttonUrl.startsWith('/') ? buttonUrl : '/' + buttonUrl; // Ensure leading slash
+                const finalUrl = baseUrl + cleanPath;
+                console.log('✅ Navigating to:', finalUrl);
+                window.location.href = finalUrl;
+            } else {
+                console.warn('⚠️ Unknown link format:', buttonUrl);
+            }
+        }
         </script>
         
         <!-- SEARCH FORM INSIDE HERO -->
@@ -2990,7 +3239,7 @@
             </div>
             
             <div class="search-card-tiket">
-                <form action="/kalkulator/hitung" method="post">
+                <form action="<?= base_url('kalkulator/hitung') ?>" method="post">
                     <div class="row g-3 align-items-end">
                         
                         <!-- TITIK KEBERANGKATAN -->
@@ -3209,7 +3458,7 @@
                         <p class="blog-header-subtitle">Temukan tips, cerita, dan informasi menarik seputar keindahan Karimunjawa</p>
                     </div>
                     <div class="blog-header-action">
-                        <a href="/blog" class="btn-blog-all">
+                        <a href="<?= base_url('blog') ?>" class="btn-blog-all">
                             <span>Lihat Semua Artikel</span>
                             <i class="bi bi-arrow-right"></i>
                         </a>
@@ -3261,7 +3510,7 @@
                                 </p>
                                 
                                 <div class="blog-post-footer">
-                                    <a href="/blog/<?= $post['slug'] ?>" class="btn-read-more">
+                                    <a href="<?= base_url('blog/'.$post['slug']) ?>" class="btn-read-more">
                                         Baca Selengkapnya
                                         <i class="bi bi-arrow-right"></i>
                                     </a>
@@ -3743,180 +3992,283 @@
     <!-- ==================== ESTIMASI SECTION (HIDDEN BY DEFAULT) ==================== -->
     <div id="section-estimasi" class="section-hidden">
 
-    <div style="display: flex; gap: 8px; padding: 0 15px; margin: 20px auto 0; max-width: 100%; align-items: flex-start;">
-        <!-- MAPS & HOTEL & BUDGET COLUMN (KIRI) -->
-        <div style="flex: 0 0 calc(50% - 4px); max-width: calc(50% - 4px); display: flex; flex-direction: column; gap: 4px;">
-            <!-- MAPS SECTION -->
-            <div class="card border-0 shadow-sm rounded-4" style="background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,249,250,0.95) 100%); padding: 8px;">
-                <div style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border-bottom: 1.5px solid #e8eef7; padding: 6px 8px; margin: -8px -8px 6px -8px; border-radius: 12px 12px 0 0;">
-                    <h6 class="fw-bold mb-0" style="font-size: 0.85rem; color: #0d6efd; letter-spacing: 0.2px;"><i class="bi bi-map-fill"></i> Rute Perjalanan</h6>
-                </div>
-                <div id="map" style="border-radius: 10px; height: 300px;"></div>
-            </div>
-
-            <!-- HOTEL SECTION -->
-            <div class="card border-0 shadow-sm rounded-4" id="section-hotel" style="background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,249,250,0.95) 100%); padding: 8px; height: 410px;">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6 class="fw-bold mb-0 text-secondary" style="font-size: 0.75rem;"><i class="bi bi-building"></i> <?= lang('Landing.choose_accommodation') ?></h6>
-                    <div class="hotel-nav-buttons d-flex gap-1">
-                        <button type="button" class="btn btn-sm btn-outline-primary rounded-circle" id="hotel-prev" onclick="slideHotel(-1)" style="width: 22px; height: 22px; padding: 0; font-size: 0.6rem;" disabled>‹</button>
-                        <span class="hotel-counter small fw-bold text-secondary align-self-center" style="min-width: 30px; text-align: center; font-size: 0.65rem;">1/1</span>
-                        <button type="button" class="btn btn-sm btn-outline-primary rounded-circle" id="hotel-next" onclick="slideHotel(1)" style="width: 22px; height: 22px; padding: 0; font-size: 0.6rem;">›</button>
+    <!-- SECTION HEADERS & GUIDES -->
+    <div style="background: linear-gradient(135deg, #0d6efd 0%, #0099ff 100%); color: white; padding: 30px 15px; margin-bottom: 20px; border-radius: 0 0 20px 20px;">
+        <div class="container-wide">
+            <h2 class="fw-bold mb-4" style="font-size: 1.8rem;"><i class="bi bi-calculator-fill me-2"></i>Hitung Estimasi Liburanmu ke Karimunjawa</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; border-left: 3px solid #ffe082;">
+                        <div class="fw-bold" style="font-size: 0.9rem;">📍 LANGKAH 1</div>
+                        <div style="font-size: 0.85rem; margin-top: 5px;">Tentukan Titik Keberangkatanmu</div>
                     </div>
                 </div>
-                <div class="alert alert-light border-0 small text-muted mb-2" style="padding: 0.25rem 0.4rem; font-size: 0.65rem;"><i class="bi bi-info-circle"></i> <?= lang('Landing.cheapest_selected') ?></div>
-                <div class="hotel-carousel-wrapper" style="overflow: hidden; height: 330px;">
-                    <div class="row g-1" id="hotel-list-container"></div>
-                </div>
-            </div>
-
-            <!-- BUDGET BOX - FULL WIDTH DI KIRI -->
-            <div class="budget-box-elegant" style="padding: 15px; border-radius: 12px;">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <label class="text-white fw-bold mb-0" style="font-size: 0.85rem;"><i class="bi bi-wallet2"></i> BUDGET ANDA</label>
-                    <button type="button" class="btn btn-warning btn-sm fw-bold" onclick="showDapatApaAja()" style="font-size: 0.7rem; border-radius: 6px; padding: 4px 10px;">
-                        <i class="bi bi-list-check"></i> Dapat Apa Aja?
-                    </button>
-                </div>
-                <div class="input-group bg-white rounded-3 overflow-hidden" style="height: 45px;">
-                    <span class="input-group-text bg-white border-0 fw-bold text-primary" style="font-size: 1rem;">Rp</span>
-                    <input type="number" id="budget_user" class="form-control border-0 fw-bold text-primary" placeholder="Masukkan budget..." onkeyup="checkBudget()" style="font-size: 1.1rem;">
-                </div>
-                
-                <!-- HASIL PERHITUNGAN BUDGET -->
-                <div id="budget-feedback" class="mt-3 d-none">
-                    <!-- Status Bar -->
-                    <div id="budget-status" class="text-center py-2 rounded-3 mb-2" style="font-size: 0.8rem;"></div>
-                    
-                    <!-- Detail Breakdown -->
-                    <div class="bg-white bg-opacity-10 rounded-3 p-2" style="font-size: 0.75rem;">
-                        <div class="d-flex justify-content-between text-white mb-1">
-                            <span>Total Paket Termurah:</span>
-                            <span id="budget-total-estimasi" class="fw-bold">Rp 0</span>
-                        </div>
-                        <div class="d-flex justify-content-between text-white border-top border-white border-opacity-25 pt-1">
-                            <span class="fw-bold">Sisa Uang:</span>
-                            <span id="sisa-uang" class="fw-bold" style="font-size: 0.9rem;">Rp 0</span>
-                        </div>
+                <div class="col-md-4">
+                    <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; border-left: 3px solid #ffe082;">
+                        <div class="fw-bold" style="font-size: 0.9rem;">🚢 LANGKAH 2-4</div>
+                        <div style="font-size: 0.85rem; margin-top: 5px;">Pilih Kapal, Transportasi & Penginapan</div>
                     </div>
-                    
-                    <!-- REKOMENDASI UPGRADE -->
-                    <div id="upgrade-recommendations" class="mt-2 d-none">
-                        <label class="small text-warning fw-bold mb-1" style="font-size: 0.7rem;"><i class="bi bi-arrow-up-circle-fill"></i> SISA BUDGET BISA UNTUK:</label>
-                        <div id="upgrade-list" class="bg-white bg-opacity-10 rounded-3 p-2" style="font-size: 0.7rem;"></div>
+                </div>
+                <div class="col-md-4">
+                    <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; border-left: 3px solid #ffe082;">
+                        <div class="fw-bold" style="font-size: 0.9rem;">🎯 LANGKAH 5-7</div>
+                        <div style="font-size: 0.85rem; margin-top: 5px;">Pilih Wisata & Fasilitas Tambahan</div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <div style="display: flex; gap: 8px; padding: 0 15px; margin: 20px auto 0; max-width: 100%; align-items: flex-start;">
+        <!-- MAPS & HOTEL & BUDGET COLUMN (KIRI) -->
+        <div style="flex: 0 0 calc(50% - 4px); max-width: calc(50% - 4px); display: flex; flex-direction: column; gap: 4px;">
+            <!-- STEP 1: TITIK KEBERANGKATAN & KAPAL SECTION -->
+            <div class="card border-0 shadow-sm rounded-4" style="background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,249,250,0.95) 100%); padding: 12px;">
+                <div style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border-bottom: 1.5px solid #e8eef7; padding: 8px 10px; margin: -12px -12px 8px -12px; border-radius: 12px 12px 0 0;">
+                    <h6 class="fw-bold mb-1" style="font-size: 0.85rem; color: #0d6efd; letter-spacing: 0.2px;">
+                        <span class="badge bg-primary me-2" style="font-size: 0.65rem;">1</span>
+                        <i class="bi bi-geo-alt-fill"></i> Tentukan Titik Keberangkatanmu
+                    </h6>
+                    <small style="font-size: 0.7rem; color: #666;">Pilih kota asal dan tanggal keberangkatan</small>
+                </div>
+                <div id="map" style="border-radius: 10px; height: 250px; margin-bottom: 8px;"></div>
+            </div>
+
+            <!-- STEP 2: PILIH KAPAL/TIKET SECTION (NEW) -->
+            <div class="card border-0 shadow-sm rounded-4" style="background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,249,250,0.95) 100%); padding: 12px;">
+                <div style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border-bottom: 1.5px solid #e8eef7; padding: 8px 10px; margin: -12px -12px 8px -12px; border-radius: 12px 12px 0 0;">
+                    <h6 class="fw-bold mb-1" style="font-size: 0.85rem; color: #0d6efd; letter-spacing: 0.2px;">
+                        <span class="badge bg-primary me-2" style="font-size: 0.65rem;">2</span>
+                        <i class="bi bi-ship"></i> Pilih Tipe Kapal & Tiket Pesawat
+                    </h6>
+                    <small style="font-size: 0.7rem; color: #666;">Pilih opsi perjalanan menuju Karimunjawa</small>
+                </div>
+                <div id="kapal-tiket-options" style="display: flex; flex-direction: column; gap: 8px;">
+                    <!-- KAPAL OPTIONS -->
+                    <div style="border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
+                        <label style="padding: 8px 0; display: flex; align-items: center; cursor: pointer; margin-bottom: 6px;">
+                            <input type="radio" name="kapal_type" value="kapal" checked onchange="updateKapalDisplay()">
+                            <span class="fw-bold" style="font-size: 0.75rem; margin-left: 8px;"><i class="bi bi-ship"></i> Tiket Kapal</span>
+                        </label>
+                        <div id="kapal-list" style="margin-left: 20px; display: flex; flex-wrap: wrap; gap: 8px; max-height: 90px; overflow-y: auto; overflow-x: auto; padding-bottom: 8px;"></div>
+                    </div>
+
+                    <!-- PESAWAT OPTIONS -->
+                    <div>
+                        <label style="padding: 8px 0; display: flex; align-items: center; cursor: pointer; margin-bottom: 6px;">
+                            <input type="radio" name="kapal_type" value="pesawat" onchange="updateKapalDisplay()">
+                            <span class="fw-bold" style="font-size: 0.75rem; margin-left: 8px;"><i class="bi bi-airplane"></i> Tiket Pesawat</span>
+                        </label>
+                        <div id="pesawat-list" style="margin-left: 20px; display: flex; flex-wrap: wrap; gap: 8px; max-height: 90px; overflow-y: auto; overflow-x: auto; padding-bottom: 8px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3 & 4: TRANSPORTASI KARIMUN & HOTEL SECTION -->
+            <div class="card border-0 shadow-sm rounded-4" style="background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,249,250,0.95) 100%); padding: 12px;">
+                <div style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border-bottom: 1.5px solid #e8eef7; padding: 8px 10px; margin: -12px -12px 8px -12px; border-radius: 12px 12px 0 0;">
+                    <h6 class="fw-bold mb-1" style="font-size: 0.85rem; color: #0d6efd; letter-spacing: 0.2px;">
+                        <span class="badge bg-primary me-2" style="font-size: 0.65rem;">3 & 4</span>
+                        <i class="bi bi-building"></i> Transportasi di Karimun & Penginapan
+                    </h6>
+                    <small style="font-size: 0.7rem; color: #666;">Pilih kendaraan & akomodasi terbaik untuk Anda</small>
+                </div>
+                <div id="section-hotel" class="d-flex flex-column gap-2" style="padding: 8px 0;">
+                    <!-- TRANSPORTASI KARIMUN -->
+                    <div>
+                        <label class="text-dark fw-bold mb-2 d-block" style="font-size: 0.75rem;"><i class="bi bi-scooter"></i> Transportasi di Karimun:</label>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+                            <label style="padding: 10px; background: #f8f9fa; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.3s ease;" class="transport-option">
+                                <input type="radio" name="transportasi_karimun" value="motor" checked onchange="updateTransportasiKarimun('motor')" style="display: none;">
+                                <div style="font-size: 1.5rem; margin-bottom: 4px;">🏍️</div>
+                                <div style="font-size: 0.7rem; font-weight: 600; color: #333;">Motor</div>
+                                <div style="font-size: 0.65rem; color: #666; margin-top: 2px;">Termurah</div>
+                                <div id="motor-price" style="font-size: 0.65rem; color: #0d6efd; font-weight: 600; margin-top: 4px;">Rp 0/hari</div>
+                            </label>
+                            <label style="padding: 10px; background: #f8f9fa; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.3s ease;" class="transport-option">
+                                <input type="radio" name="transportasi_karimun" value="mobil" onchange="updateTransportasiKarimun('mobil')" style="display: none;">
+                                <div style="font-size: 1.5rem; margin-bottom: 4px;">🚗</div>
+                                <div style="font-size: 0.7rem; font-weight: 600; color: #333;">Mobil Rent</div>
+                                <div style="font-size: 0.65rem; color: #666; margin-top: 2px;">Nyaman</div>
+                                <div id="mobil-price" style="font-size: 0.65rem; color: #0d6efd; font-weight: 600; margin-top: 4px;">Rp 0/hari</div>
+                            </label>
+                        </div>
+                        <style>
+                            .transport-option {
+                                position: relative;
+                                overflow: hidden;
+                            }
+                            .transport-option input:checked + div + div + div,
+                            .transport-option input:checked + div + div,
+                            .transport-option input:checked + div {
+                                color: #0d6efd;
+                            }
+                            .transport-option input:checked ~ * {
+                                color: #0d6efd;
+                            }
+                            .transport-option:has(input:checked) {
+                                background: linear-gradient(135deg, rgba(13, 110, 253, 0.1) 0%, rgba(13, 110, 253, 0.05) 100%) !important;
+                                border-color: #0d6efd !important;
+                                box-shadow: 0 2px 8px rgba(13, 110, 253, 0.2);
+                            }
+                        </style>
+                    </div>
+
+                    <!-- PENGINAPAN -->
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label class="text-dark fw-bold mb-0" style="font-size: 0.75rem;"><i class="bi bi-building"></i> Penginapan:</label>
+                            <div class="hotel-nav-buttons d-flex gap-1">
+                                <button type="button" class="btn btn-sm btn-outline-primary rounded-circle" id="hotel-prev" onclick="slideHotel(-1)" style="width: 22px; height: 22px; padding: 0; font-size: 0.6rem;" disabled>‹</button>
+                                <span class="hotel-counter small fw-bold text-secondary align-self-center" style="min-width: 30px; text-align: center; font-size: 0.65rem;">1/1</span>
+                                <button type="button" class="btn btn-sm btn-outline-primary rounded-circle" id="hotel-next" onclick="slideHotel(1)" style="width: 22px; height: 22px; padding: 0; font-size: 0.6rem;">›</button>
+                            </div>
+                        </div>
+                        <div class="hotel-carousel-wrapper" style="overflow: hidden; height: 340px; border-radius: 8px;">
+                            <div id="hotel-list-container"></div>
+                        </div>
+                    </div>
+
+                    <!-- KONSUMSI/MAKAN SECTION - IN LEFT COLUMN -->
+                    <div style="padding: 10px; border-radius: 12px; background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,249,250,0.95) 100%); margin-top: 4px;">
+                        <div style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border-bottom: 1.5px solid #e8eef7; padding: 8px 10px; margin: -10px -10px 8px -10px; border-radius: 12px 12px 0 0;">
+                            <h6 class="fw-bold mb-1" style="font-size: 0.85rem; color: #0d6efd; letter-spacing: 0.2px;">
+                                <span class="badge bg-primary me-2" style="font-size: 0.65rem;">6</span>
+                                <i class="bi bi-egg-fried"></i> Pilih Paket Konsumsi
+                            </h6>
+                            <small style="font-size: 0.7rem; color: #666;">Pilih menu makanan sesuai kebutuhan</small>
+                        </div>
+                        <div id="konsumsi-container" class="d-flex flex-wrap gap-2" style="background: rgba(13, 110, 253, 0.02); border-radius: 8px; padding: 8px;">
+                            <!-- Konsumsi options akan di-generate via JS -->
+                            <div class="text-secondary small" style="width: 100%; text-align: center; padding: 10px; color: #aaa;">Memuat pilihan konsumsi...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
 
         <!-- ESTIMASI COLUMN (KANAN) -->
         <div style="flex: 0 0 calc(50% - 4px); max-width: calc(50% - 4px); display: flex; flex-direction: column; gap: 4px;">
-                <div style="display: flex; flex-direction: column; gap: 4px;">
-                    <div class="card shadow-sm border-0 rounded-4" style="font-size: 0.8rem; position: relative; padding: 8px; height: 340px; overflow-y: auto;">
-                        <div style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border-bottom: 2px solid #e8eef7; padding: 6px 8px; margin: -8px -8px 8px -8px; border-radius: 12px 12px 0 0;">
-                            <h5 class="fw-bold mb-0" style="font-size: 0.95rem; color: #0d6efd; letter-spacing: 0.3px;"><i class="bi bi-calculator-fill"></i> Rincian Biaya <span id="duration-label" style="font-size: 0.75rem; color: #666; font-weight: 500;">(3D 2M)</span></h5>
-                            <small style="font-size: 0.65rem; color: #198754;"><i class="bi bi-hand-index-thumb"></i> Upgrade apapun tinggal klik!</small>
+                <div style="display: flex; flex-direction: column; gap: 0;">
+                    <div class="card shadow-sm border-0 rounded-4" style="font-size: 0.8rem; position: relative; padding: 6px; height: auto; max-height: 480px; overflow-y: auto;">
+                        <div style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border-bottom: 2px solid #e8eef7; padding: 5px 6px; margin: -6px -6px 5px -6px; border-radius: 12px 12px 0 0;">
+                            <h5 class="fw-bold mb-0" style="font-size: 0.9rem; color: #0d6efd; letter-spacing: 0.2px;"><i class="bi bi-calculator-fill"></i> Rincian Biaya <span id="duration-label" style="font-size: 0.7rem; color: #666; font-weight: 400;">(3D 2M)</span></h5>
+                            <small style="font-size: 0.6rem; color: #198754;"><i class="bi bi-hand-index-thumb"></i> Klik untuk upgrade</small>
                         </div>
                         
                         <!-- 1. TIKET KAPAL PP -->
-                        <div style="margin-bottom: 6px; border-bottom: 1px solid #f0f0f0; padding-bottom: 4px;">
-                            <div class="d-flex justify-content-between align-items-center" style="font-size: 0.75rem;">
-                                <div class="d-flex gap-1 align-items-center">
-                                    <span class="badge bg-primary me-1" style="font-size: 0.6rem;">1</span>
-                                    <i class="bi bi-ship text-info"></i>
-                                    <span id="label_kapal">Tiket Kapal PP (Termurah)</span>
-                                    <span class="info-icon" data-info-key="transport_sea" role="button" tabindex="0" style="display:inline-flex;width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,#0d6efd 0%,#0099ff 100%);color:white;font-weight:900;font-size:0.6rem;align-items:center;justify-content:center;cursor:pointer;margin-left:2px;box-shadow:0 1px 4px rgba(13,110,253,0.3);">i</span>
+                        <div style="margin-bottom: 4px; border-bottom: 1px solid #f0f0f0; padding-bottom: 2px; padding-top: 2px;">
+                            <div class="d-flex justify-content-between align-items-center" style="font-size: 0.72rem; gap: 4px;">
+                                <div class="d-flex gap-1 align-items-center" style="flex: 1; min-width: 0;">
+                                    <span class="badge bg-primary" style="font-size: 0.5rem; padding: 2px 4px; flex-shrink: 0;">1</span>
+                                    <i class="bi bi-ship text-info" style="font-size: 0.7rem; flex-shrink: 0;"></i>
+                                    <span id="label_kapal" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Tiket Kapal PP</span>
+                                    <span class="info-icon" data-info-key="transport_sea" role="button" tabindex="0" style="display:inline-flex;width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,#0d6efd 0%,#0099ff 100%);color:white;font-weight:900;font-size:0.5rem;align-items:center;justify-content:center;cursor:pointer;flex-shrink: 0;box-shadow:0 1px 3px rgba(13,110,253,0.3);">i</span>
                                 </div>
-                                <span class="fw-bold text-dark" id="val_kapal_pp">Rp 0</span>
+                                <span class="fw-bold text-dark" id="val_kapal_pp" style="flex-shrink: 0;">Rp 0</span>
                             </div>
                         </div>
 
                         <!-- 2. PENGINAPAN -->
-                        <div style="margin-bottom: 6px; border-bottom: 1px solid #f0f0f0; padding-bottom: 4px;">
-                            <div class="d-flex justify-content-between align-items-center" style="font-size: 0.75rem;">
-                                <div class="d-flex gap-1 align-items-center">
-                                    <span class="badge bg-primary me-1" style="font-size: 0.6rem;">2</span>
-                                    <i class="bi bi-building text-success"></i>
-                                    <span id="label_hotel">Hotel Termurah</span>
-                                    <span class="info-icon" data-info-key="hotel" role="button" tabindex="0" style="display:inline-flex;width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,#0d6efd 0%,#0099ff 100%);color:white;font-weight:900;font-size:0.6rem;align-items:center;justify-content:center;cursor:pointer;margin-left:2px;box-shadow:0 1px 4px rgba(13,110,253,0.3);">i</span>
+                        <div style="margin-bottom: 4px; border-bottom: 1px solid #f0f0f0; padding-bottom: 2px; padding-top: 2px;">
+                            <div class="d-flex justify-content-between align-items-center" style="font-size: 0.72rem; gap: 4px;">
+                                <div class="d-flex gap-1 align-items-center" style="flex: 1; min-width: 0;">
+                                    <span class="badge bg-primary" style="font-size: 0.5rem; padding: 2px 4px; flex-shrink: 0;">2</span>
+                                    <i class="bi bi-building text-success" style="font-size: 0.7rem; flex-shrink: 0;"></i>
+                                    <span id="label_hotel" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Hotel</span>
+                                    <span class="info-icon" data-info-key="hotel" role="button" tabindex="0" style="display:inline-flex;width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,#0d6efd 0%,#0099ff 100%);color:white;font-weight:900;font-size:0.5rem;align-items:center;justify-content:center;cursor:pointer;flex-shrink: 0;box-shadow:0 1px 3px rgba(13,110,253,0.3);">i</span>
                                 </div>
-                                <span class="fw-bold text-dark" id="val_hotel">Rp 0</span>
+                                <span class="fw-bold text-dark" id="val_hotel" style="flex-shrink: 0;">Rp 0</span>
                             </div>
                         </div>
 
                         <!-- 3. SEWA MOTOR/MOBIL -->
-                        <div style="margin-bottom: 6px; border-bottom: 1px solid #f0f0f0; padding-bottom: 4px;">
-                            <div class="d-flex justify-content-between align-items-center" style="font-size: 0.75rem;">
-                                <div class="d-flex gap-1 align-items-center">
-                                    <span class="badge bg-primary me-1" style="font-size: 0.6rem;">3</span>
-                                    <i class="bi bi-scooter text-warning"></i>
-                                    <span id="label_lokal">Motor (Termurah)</span>
-                                    <span class="info-icon" data-info-key="transport" role="button" tabindex="0" style="display:inline-flex;width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,#0d6efd 0%,#0099ff 100%);color:white;font-weight:900;font-size:0.6rem;align-items:center;justify-content:center;cursor:pointer;margin-left:2px;box-shadow:0 1px 4px rgba(13,110,253,0.3);">i</span>
+                        <div style="margin-bottom: 4px; border-bottom: 1px solid #f0f0f0; padding-bottom: 2px; padding-top: 2px;">
+                            <div class="d-flex justify-content-between align-items-center" style="font-size: 0.72rem; gap: 4px;">
+                                <div class="d-flex gap-1 align-items-center" style="flex: 1; min-width: 0;">
+                                    <span class="badge bg-primary" style="font-size: 0.5rem; padding: 2px 4px; flex-shrink: 0;">3</span>
+                                    <i class="bi bi-scooter text-warning" style="font-size: 0.7rem; flex-shrink: 0;"></i>
+                                    <span id="label_lokal" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Motor</span>
+                                    <span class="info-icon" data-info-key="transport" role="button" tabindex="0" style="display:inline-flex;width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,#0d6efd 0%,#0099ff 100%);color:white;font-weight:900;font-size:0.5rem;align-items:center;justify-content:center;cursor:pointer;flex-shrink: 0;box-shadow:0 1px 3px rgba(13,110,253,0.3);">i</span>
                                 </div>
-                                <span class="fw-bold text-dark" id="val_lokal">Rp 0</span>
+                                <span class="fw-bold text-dark" id="val_lokal" style="flex-shrink: 0;">Rp 0</span>
                             </div>
                         </div>
 
                         <!-- 4. TOUR DARAT + GUIDE -->
-                        <div style="margin-bottom: 6px; border-bottom: 1px solid #f0f0f0; padding-bottom: 4px;">
-                            <div class="d-flex justify-content-between align-items-center" style="font-size: 0.75rem;">
-                                <div class="d-flex gap-1 align-items-center">
-                                    <span class="badge bg-primary me-1" style="font-size: 0.6rem;">4</span>
-                                    <i class="bi bi-tree text-success"></i>
-                                    <span>Tour Darat + Guide</span>
-                                    <span class="info-icon" data-info-key="guide" role="button" tabindex="0" style="display:inline-flex;width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,#0d6efd 0%,#0099ff 100%);color:white;font-weight:900;font-size:0.6rem;align-items:center;justify-content:center;cursor:pointer;margin-left:2px;box-shadow:0 1px 4px rgba(13,110,253,0.3);">i</span>
+                        <div style="margin-bottom: 4px; border-bottom: 1px solid #f0f0f0; padding-bottom: 2px; padding-top: 2px;">
+                            <div class="d-flex justify-content-between align-items-center" style="font-size: 0.72rem; gap: 4px;">
+                                <div class="d-flex gap-1 align-items-center" style="flex: 1; min-width: 0;">
+                                    <span class="badge bg-primary" style="font-size: 0.5rem; padding: 2px 4px; flex-shrink: 0;">4</span>
+                                    <i class="bi bi-tree text-success" style="font-size: 0.7rem; flex-shrink: 0;"></i>
+                                    <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Tour Darat</span>
+                                    <span class="info-icon" data-info-key="guide" role="button" tabindex="0" style="display:inline-flex;width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,#0d6efd 0%,#0099ff 100%);color:white;font-weight:900;font-size:0.5rem;align-items:center;justify-content:center;cursor:pointer;flex-shrink: 0;box-shadow:0 1px 3px rgba(13,110,253,0.3);">i</span>
                                 </div>
-                                <span class="fw-bold text-dark" id="val_darat_guide">Rp 0</span>
+                                <span class="fw-bold text-dark" id="val_darat_guide" style="flex-shrink: 0;">Rp 0</span>
                             </div>
                         </div>
 
                         <!-- 5. TOUR LAUT / WISATA LAUT -->
-                        <div style="margin-bottom: 6px; border-bottom: 1px solid #f0f0f0; padding-bottom: 4px;">
-                            <div class="d-flex justify-content-between align-items-center" style="font-size: 0.75rem;">
-                                <div class="d-flex gap-1 align-items-center">
-                                    <span class="badge bg-primary me-1" style="font-size: 0.6rem;">5</span>
-                                    <i class="bi bi-water text-info"></i>
-                                    <span>Wisata Laut</span>
-                                    <span class="info-icon" data-info-key="activity" role="button" tabindex="0" style="display:inline-flex;width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,#0d6efd 0%,#0099ff 100%);color:white;font-weight:900;font-size:0.6rem;align-items:center;justify-content:center;cursor:pointer;margin-left:2px;box-shadow:0 1px 4px rgba(13,110,253,0.3);">i</span>
+                        <div style="margin-bottom: 4px; border-bottom: 1px solid #f0f0f0; padding-bottom: 2px; padding-top: 2px;">
+                            <div class="d-flex justify-content-between align-items-center" style="font-size: 0.72rem; gap: 4px;">
+                                <div class="d-flex gap-1 align-items-center" style="flex: 1; min-width: 0;">
+                                    <span class="badge bg-primary" style="font-size: 0.5rem; padding: 2px 4px; flex-shrink: 0;">5</span>
+                                    <i class="bi bi-water text-info" style="font-size: 0.7rem; flex-shrink: 0;"></i>
+                                    <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Wisata Laut</span>
+                                    <span class="info-icon" data-info-key="activity" role="button" tabindex="0" style="display:inline-flex;width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,#0d6efd 0%,#0099ff 100%);color:white;font-weight:900;font-size:0.5rem;align-items:center;justify-content:center;cursor:pointer;flex-shrink: 0;box-shadow:0 1px 3px rgba(13,110,253,0.3);">i</span>
                                 </div>
-                                <span class="fw-bold text-dark" id="val_wisata_laut">Rp 0</span>
+                                <span class="fw-bold text-dark" id="val_wisata_laut" style="flex-shrink: 0;">Rp 0</span>
                             </div>
                         </div>
 
                         <!-- 6. MAKAN -->
-                        <div style="margin-bottom: 6px; border-bottom: 1px solid #f0f0f0; padding-bottom: 4px;">
-                            <div class="d-flex justify-content-between align-items-center" style="font-size: 0.75rem;">
-                                <div class="d-flex gap-1 align-items-center">
-                                    <span class="badge bg-primary me-1" style="font-size: 0.6rem;">6</span>
-                                    <i class="bi bi-egg-fried text-warning"></i>
-                                    <span>Makan 3x/hari</span>
-                                    <span class="info-icon" data-info-key="food" role="button" tabindex="0" style="display:inline-flex;width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,#0d6efd 0%,#0099ff 100%);color:white;font-weight:900;font-size:0.6rem;align-items:center;justify-content:center;cursor:pointer;margin-left:2px;box-shadow:0 1px 4px rgba(13,110,253,0.3);">i</span>
+                        <div style="margin-bottom: 4px; border-bottom: 1px solid #f0f0f0; padding-bottom: 2px; padding-top: 2px;">
+                            <div class="d-flex justify-content-between align-items-center" style="font-size: 0.72rem; gap: 4px;">
+                                <div class="d-flex gap-1 align-items-center" style="flex: 1; min-width: 0;">
+                                    <span class="badge bg-primary" style="font-size: 0.5rem; padding: 2px 4px; flex-shrink: 0;">6</span>
+                                    <i class="bi bi-egg-fried text-warning" style="font-size: 0.7rem; flex-shrink: 0;"></i>
+                                    <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Makan</span>
+                                    <span class="info-icon" data-info-key="food" role="button" tabindex="0" style="display:inline-flex;width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,#0d6efd 0%,#0099ff 100%);color:white;font-weight:900;font-size:0.5rem;align-items:center;justify-content:center;cursor:pointer;flex-shrink: 0;box-shadow:0 1px 3px rgba(13,110,253,0.3);">i</span>
                                 </div>
-                                <span class="fw-bold text-dark" id="val_makan">Rp 0</span>
+                                <span class="fw-bold text-dark" id="val_makan" style="flex-shrink: 0;">Rp 0</span>
                             </div>
                         </div>
 
                         <!-- TRANSPORT DARAT (jika bukan dari Jepara) -->
-                        <div id="section-transport-darat" style="margin-bottom: 6px; border-bottom: 1px solid #f0f0f0; padding-bottom: 4px; display: none;">
-                            <div class="d-flex justify-content-between align-items-center" style="font-size: 0.75rem;">
-                                <div class="d-flex gap-1 align-items-center">
-                                    <span class="badge bg-secondary me-1" style="font-size: 0.6rem;">+</span>
-                                    <i class="bi bi-car-front text-secondary"></i>
-                                    <span id="label_darat">Transport Darat PP</span>
-                                    <span class="info-icon" data-info-key="transport_land" role="button" tabindex="0" style="display:inline-flex;width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,#0d6efd 0%,#0099ff 100%);color:white;font-weight:900;font-size:0.6rem;align-items:center;justify-content:center;cursor:pointer;margin-left:2px;box-shadow:0 1px 4px rgba(13,110,253,0.3);">i</span>
+                        <div id="section-transport-darat" style="margin-bottom: 4px; border-bottom: 1px solid #f0f0f0; padding-bottom: 2px; padding-top: 2px; display: none;">
+                            <div class="d-flex justify-content-between align-items-center" style="font-size: 0.72rem; gap: 4px;">
+                                <div class="d-flex gap-1 align-items-center" style="flex: 1; min-width: 0;">
+                                    <span class="badge bg-secondary" style="font-size: 0.5rem; padding: 2px 4px; flex-shrink: 0;">+</span>
+                                    <i class="bi bi-car-front text-secondary" style="font-size: 0.7rem; flex-shrink: 0;"></i>
+                                    <span id="label_darat" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Transport Darat</span>
+                                    <span class="info-icon" data-info-key="transport_land" role="button" tabindex="0" style="display:inline-flex;width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,#0d6efd 0%,#0099ff 100%);color:white;font-weight:900;font-size:0.5rem;align-items:center;justify-content:center;cursor:pointer;flex-shrink: 0;box-shadow:0 1px 3px rgba(13,110,253,0.3);">i</span>
                                 </div>
-                                <span class="fw-bold text-dark" id="val_darat">Rp 0</span>
+                                <span class="fw-bold text-dark" id="val_darat" style="flex-shrink: 0;">Rp 0</span>
+                            </div>
+                        </div>
+
+                        <!-- 7. FASILITAS TAMBAHAN -->
+                        <div style="margin-bottom: 4px; border-bottom: 2px solid #e8eef7; padding-bottom: 2px; padding-top: 2px;">
+                            <div class="d-flex justify-content-between align-items-center" style="font-size: 0.72rem; gap: 4px;">
+                                <div class="d-flex gap-1 align-items-center" style="flex: 1; min-width: 0;">
+                                    <span class="badge bg-primary" style="font-size: 0.5rem; padding: 2px 4px; flex-shrink: 0;">7</span>
+                                    <i class="bi bi-star text-warning" style="font-size: 0.7rem; flex-shrink: 0;"></i>
+                                    <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Fasilitas</span>
+                                    <span class="info-icon" data-info-key="facility" role="button" tabindex="0" style="display:inline-flex;width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,#0d6efd 0%,#0099ff 100%);color:white;font-weight:900;font-size:0.5rem;align-items:center;justify-content:center;cursor:pointer;flex-shrink: 0;box-shadow:0 1px 3px rgba(13,110,253,0.3);">i</span>
+                                </div>
+                                <span class="fw-bold text-dark" id="val_fasilitas" style="flex-shrink: 0;">Rp 0</span>
                             </div>
                         </div>
 
                         <!-- TOTAL -->
-                        <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top border-2" style="gap: 6px;">
-                            <span class="fw-bold text-dark" style="font-size: 0.95rem;"><i class="bi bi-receipt"></i> TOTAL</span>
-                            <h5 class="fw-bold text-primary mb-0" id="val_grand_total" style="font-size: 1.2rem;">Rp 0</h5>
+                        <div class="d-flex justify-content-between align-items-center" style="gap: 4px; padding: 4px 0 0 0; margin-top: 3px;">
+                            <span class="fw-bold text-dark" style="font-size: 0.85rem;"><i class="bi bi-receipt"></i> TOTAL</span>
+                            <h6 class="fw-bold text-primary mb-0" id="val_grand_total" style="font-size: 1.05rem;">Rp 0</h6>
                         </div>
                         
-                        <div class="text-center mt-1">
-                            <small class="text-muted" style="font-size: 0.7rem;">Harga per orang: <span id="price-per-person" class="fw-bold text-primary">Rp 0</span></small>
+                        <div class="text-center" style="margin-top: 2px;">
+                            <small class="text-muted" style="font-size: 0.65rem;">Per orang: <span id="price-per-person" class="fw-bold text-primary">Rp 0</span></small>
                         </div>
                     </div>
                 </div>
@@ -3931,11 +4283,13 @@
                     .wisata-2027-card {
                         background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,249,250,0.95) 100%);
                         border-radius: 16px;
-                        height: 410px;
+                        height: auto;
+                        min-height: 350px;
                         overflow-y: auto;
+                        max-height: 800px;
                         padding: 8px;
                         position: relative;
-                        overflow: hidden;
+                        overflow-x: hidden;
                         box-shadow: 0 4px 15px rgba(0,0,0,0.08);
                     }
                     .wisata-section-header {
@@ -4071,6 +4425,10 @@
                         <div class="wisata-items-grid" id="container-tour-laut">
                             <div class="wisata-empty-msg">Pilih lokasi untuk melihat wisata</div>
                         </div>
+                        <!-- DESKRIPSI WISATA LAUT YANG DIPILIH -->
+                        <div id="selected-tour-laut-desc" style="margin-top: 8px; padding: 8px; background: rgba(255,255,255,0.05); border-radius: 8px; border-left: 3px solid #0dcaf0; display: none;">
+                            <div id="tour-laut-desc-list" style="font-size: 0.65rem; line-height: 1.4; color: rgba(255,255,255,0.85);"></div>
+                        </div>
                         
                         <!-- WISATA DARAT -->
                         <div class="wisata-section-header darat-header">
@@ -4083,9 +4441,14 @@
                         <div class="wisata-items-grid" id="container-tour-darat">
                             <div class="wisata-empty-msg">Pilih lokasi untuk melihat wisata</div>
                         </div>
+                        <!-- DESKRIPSI WISATA DARAT YANG DIPILIH -->
+                        <div id="selected-tour-darat-desc" style="margin-top: 8px; padding: 8px; background: rgba(255,255,255,0.05); border-radius: 8px; border-left: 3px solid #198754; display: none;">
+                            <div id="tour-darat-desc-list" style="font-size: 0.65rem; line-height: 1.4; color: rgba(255,255,255,0.85);"></div>
+                        </div>
                     </div>
                 </div>
                 </div>
+                
                 
                 <!-- FASILITAS TAMBAHAN - COMPACT STYLE -->
                 <div class="budget-box-elegant" style="padding: 10px; border-radius: 12px; margin-top: 4px;">
@@ -4099,6 +4462,61 @@
                     </div>
                     <div class="fasilitas-carousel-container bg-white rounded-3 p-2" style="overflow: hidden;">
                         <div id="fasilitas-container" class="fasilitas-slides-wrapper" style="display: flex; transition: transform 0.3s ease;"></div>
+                    </div>
+                </div>
+                
+                <!-- MASUKKAN BUDGET SECTION -->
+                <div class="budget-box-elegant" style="margin-top: 4px;">
+                    <div>
+                        <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.85rem;">
+                            <span class="badge bg-primary me-2" style="font-size: 0.65rem;">💰</span>
+                            <i class="bi bi-wallet2"></i> Kamu Punya Tabungan Liburan Berapa?
+                        </h6>
+                        <small style="font-size: 0.7rem; color: #666;">Masukkan budget kamu, kami hitungkan buat liburanmu!</small>
+                    </div>
+                    <div class="input-group bg-white rounded-3 overflow-hidden mt-2" style="height: 45px;">
+                        <span class="input-group-text bg-white border-0 fw-bold text-primary" style="font-size: 1rem;">Rp</span>
+                        <input type="number" id="budget_user" class="form-control border-0 fw-bold text-primary" placeholder="Masukkan budget..." onkeyup="checkBudget()" style="font-size: 1.1rem;">
+                    </div>
+                    
+                    <!-- HASIL PERHITUNGAN BUDGET -->
+                    <div id="budget-feedback" class="mt-3 d-none">
+                        <!-- Status Bar -->
+                        <div id="budget-status" class="text-center py-2 rounded-3 mb-2" style="font-size: 0.8rem;"></div>
+                        
+                        <!-- Detail Breakdown -->
+                        <div class="bg-white bg-opacity-10 rounded-3 p-2" style="font-size: 0.75rem;">
+                            <div class="d-flex justify-content-between text-white mb-1">
+                                <span>Total Paket Termurah:</span>
+                                <span id="budget-total-estimasi" class="fw-bold">Rp 0</span>
+                            </div>
+                            <div class="d-flex justify-content-between text-white border-top border-white border-opacity-25 pt-1">
+                                <span class="fw-bold">Sisa Uang:</span>
+                                <span id="sisa-uang" class="fw-bold" style="font-size: 0.9rem;">Rp 0</span>
+                            </div>
+                        </div>
+                        
+                        <!-- REKOMENDASI UPGRADE -->
+                        <div id="upgrade-recommendations" class="mt-2 d-none">
+                            <label class="small text-warning fw-bold mb-1" style="font-size: 0.7rem;"><i class="bi bi-arrow-up-circle-fill"></i> SISA BUDGET BISA UNTUK:</label>
+                            <div id="upgrade-list" class="bg-white bg-opacity-10 rounded-3 p-2" style="font-size: 0.7rem;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ITINERARY SECTION - ELEGANT DISPLAY -->
+                <div style="margin-top: 12px;">
+                    <div class="card border-0 shadow-lg rounded-4 overflow-hidden" style="background: linear-gradient(135deg, rgba(13, 110, 253, 0.02) 0%, rgba(111, 66, 193, 0.02) 100%);">
+                        <!-- Header dengan Gradient -->
+                        <div style="background: linear-gradient(135deg, #0d6efd, #6f42c1); color: white; padding: 35px 30px; text-align: center; display: flex; align-items: center; justify-content: space-between;">
+                            <div style="flex: 1;">
+                                <h3 class="fw-bold mb-2" id="itinerary-title-header" style="font-size: 1.4rem;">📅 Itinerary Perjalanan 3 Hari 2 Malam</h3>
+                                <p class="mb-0 small" style="opacity: 0.95; font-size: 0.9rem;">Lihat rencana perjalanan lengkap Anda dari awal hingga akhir dengan detail aktivitas setiap hari</p>
+                            </div>
+                            <a href="<?= base_url('itinerary') ?>" id="btn-lihat-itinerary" class="btn btn-light btn-lg fw-bold rounded-pill" style="white-space: nowrap; margin-left: 20px; transition: all 0.3s ease;">
+                                <i class="bi bi-eye"></i> Lihat Itinerary
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -4150,20 +4568,6 @@
             </div>
         </div>
     </div>
-    <div class="container-wide" style="margin-top: 50px; margin-bottom: 80px;">
-        <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
-            <!-- Header dengan Gradient -->
-            <div style="background: linear-gradient(135deg, #0d6efd, #6f42c1); color: white; padding: 40px 30px; text-align: center; display: flex; align-items: center; justify-content: space-between;">
-                <div style="flex: 1;">
-                    <h3 class="fw-bold mb-2" id="itinerary-title-header">📅 Itinerary Perjalanan 3 Hari 2 Malam</h3>
-                    <p class="mb-0 small" style="opacity: 0.95;">Lihat rencana perjalanan lengkap Anda dari awal hingga akhir dengan detail aktivitas setiap hari</p>
-                </div>
-                <a href="<?= base_url('itinerary') ?>" id="btn-lihat-itinerary" class="btn btn-light btn-lg fw-bold rounded-pill" style="white-space: nowrap; margin-left: 20px;">
-                    <i class="bi bi-eye"></i> Lihat Itinerary
-                </a>
-            </div>
-        </div>
-    </div>
 
     <div class="container-wide mb-5 pb-5">
         <hr class="my-5 border-secondary opacity-25">
@@ -4208,14 +4612,19 @@
             </div>
             <div class="floating-total-amount" id="floatingTotalAmount">Rp 0</div>
             <div class="floating-total-pax" id="floatingTotalPax">Harga per 1 orang</div>
-            <div class="floating-total-info" style="font-size:0.68rem;color:#fffbe7;margin:6px 0 2px 0;line-height:1.3;font-weight:500;">
-                <span style="color:#ffe082;">Ini total estimasi termurah</span> liburan ke Karimunjawa 3H2M.<br>
-                Kamu bisa <b>upgrade</b> dengan klik pilihan yang ada. Buat liburanmu makin seru dan sesuai keinginan!
+            <div class="floating-total-info" id="floatingTotalDescription" style="font-size:0.65rem;color:#fffbe7;margin:6px 0 2px 0;line-height:1.3;font-weight:500;">
+                <!-- Deskripsi dari database/admin -->
             </div>
-            <button class="floating-total-btn" onclick="window.open('<?= !empty($settings['footer_whatsapp']) ? esc($settings['footer_whatsapp']) : 'https://wa.me/6281234567890' ?>', '_blank')">
-                <i class="bi bi-whatsapp"></i>
-                <?= lang('Landing.contact_admin') ?>
-            </button>
+            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                <button class="btn-book-now" onclick="submitBooking()">
+                    <i class="bi bi-calendar-check"></i>
+                    BOOK NOW
+                </button>
+                <button class="floating-total-btn" onclick="window.open('<?= !empty($settings['footer_whatsapp']) ? esc($settings['footer_whatsapp']) : 'https://wa.me/6281234567890' ?>', '_blank')" style="flex: 1;">
+                    <i class="bi bi-whatsapp"></i>
+                    Hubungi Admin
+                </button>
+            </div>
         </div>
     </div>
 
@@ -4230,6 +4639,7 @@
     // 1. DATA DARI CONTROLLER
     const dbKota      = <?= $json_kota_asal ?? '{}' ?>;
     const dbKapal     = <?= $json_kapal ?? '[]' ?>; 
+    const dbPesawat   = <?= $json_pesawat ?? '[]' ?>;
     const dbLokal     = <?= $json_lokal ?? '[]' ?>;
     const dbHotels    = <?= $json_hotels ?? '[]' ?>;
     const dbTourLaut  = <?= $json_tour_laut ?? '[]' ?>;  // Data Laut
@@ -4240,41 +4650,18 @@
     const dbFas       = <?= $json_fasilitas ?? '[]' ?>; 
     const dbGuide     = <?= $json_guide ?? '[]' ?>;
     const estimasiSettings = <?= $json_estimasi_settings ?? '{}' ?>;
+    const floatingBoxDescription = <?= json_encode($floating_box_description ?? '') ?>;
+    
+    // Set deskripsi floating box
+    document.addEventListener('DOMContentLoaded', function() {
+        const descBox = document.getElementById('floatingTotalDescription');
+        if (descBox) {
+            // Set innerHTML bahkan jika kosong
+            descBox.innerHTML = floatingBoxDescription || '';
+        }
+    });
     
     // ==================== SECTION SWITCHING FUNCTION ====================
-    // ==================== OPEN SLIDE LINK (IMAGE CLICK) ====================
-    function openSlideLink(slideElement) {
-        const buttonUrl = slideElement.getAttribute('data-button-url');
-        
-        if (!buttonUrl) {
-            console.log('No link configured for this slide');
-            return;
-        }
-        
-        console.log('🔗 Opening slide link:', buttonUrl);
-        
-        // Check if it's a JavaScript function call
-        if (buttonUrl.startsWith('javascript:') || buttonUrl.startsWith('showSection(')) {
-            // Execute JavaScript function
-            try {
-                eval(buttonUrl.replace('javascript:', ''));
-                console.log('✅ Executed JavaScript:', buttonUrl);
-            } catch (e) {
-                console.error('❌ Error executing JavaScript:', e.message);
-            }
-        } else if (buttonUrl.startsWith('http://') || buttonUrl.startsWith('https://')) {
-            // Open external URL in new tab
-            window.open(buttonUrl, '_blank');
-            console.log('✅ Opened external link in new tab:', buttonUrl);
-        } else if (buttonUrl.startsWith('/')) {
-            // Navigate to internal page
-            window.location.href = buttonUrl;
-            console.log('✅ Navigating to:', buttonUrl);
-        } else {
-            console.warn('⚠️ Unknown link format:', buttonUrl);
-        }
-    }
-    
     // ==================== SHOW SECTION ====================
     function showSection(section) {
         const promoSection = document.getElementById('section-promo');
@@ -4350,6 +4737,48 @@
             floatingCard.classList.add('pulse');
         }
     }
+
+    // ==================== UPDATE SUMMARY WIDGET (REAL-TIME) ====================
+    function updateSummaryWidget() {
+        // Update rincian biaya sesuai state terbaru
+        
+        // Calculate meal cost based on selected konsumsi or default HARGA_MAKAN
+        let makanHarga = HARGA_MAKAN;
+        if (state.selectedKonsumsi !== null && state.selectedKonsumsi !== undefined && dbKonsumsi[state.selectedKonsumsi]) {
+            makanHarga = parseInt(dbKonsumsi[state.selectedKonsumsi].price_per_person) || HARGA_MAKAN;
+        }
+        
+        const summaryItems = {
+            'Tiket Kapal PP': state.biaya.laut * state.orang * 2,
+            'Penginapan': state.biaya.hotel * Math.ceil(state.orang/2) * Math.max(1, state.durasi-1),
+            'Motor/Mobil': state.biaya.lokal * state.durasi,
+            'Wisata Darat': state.selectedTourDarat.reduce((sum, i) => sum + (dbTourDarat[i]?.price_publish || 0) * state.orang, 0),
+            'Wisata Laut': state.selectedTourLaut.reduce((sum, i) => sum + (dbTourLaut[i]?.price_publish || 0) * state.orang, 0),
+            'Makan': makanHarga * state.durasi * 3 * state.orang,
+            'Fasilitas': state.selectedFacilities.reduce((sum, i) => sum + (dbFas[i]?.price_publish || 0), 0)
+        };
+
+        // Update summary display jika ada
+        for (const [name, amount] of Object.entries(summaryItems)) {
+            const elem = document.getElementById('val_' + name.toLowerCase().replace(/\s+/g, '_'));
+            if (elem) {
+                elem.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(amount);
+                // Highlight if changed
+                elem.style.color = '#667eea';
+                setTimeout(() => { elem.style.color = ''; }, 500);
+            }
+        }
+
+        // Update grand total
+        const grandTotal = Object.values(summaryItems).reduce((a,b) => a+b, 0);
+        const grandTotalElem = document.getElementById('val_grand_total');
+        if (grandTotalElem) {
+            grandTotalElem.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(grandTotal);
+            grandTotalElem.style.color = '#0d6efd';
+            grandTotalElem.style.fontWeight = '700';
+            setTimeout(() => { grandTotalElem.style.color = ''; }, 500);
+        }
+    }
     
     // DEBUG
     console.log('Data loaded:');
@@ -4367,8 +4796,11 @@
         biaya: { darat:0, laut:0, lokal:0, hotel:0, guide:0 }, // Harga Satuan
         selectedTourLaut: [], 
         selectedTourDarat: [],
+        selectedHotel: null, // TAMBAHAN: Simpan hotel yang dipilih
+        selectedHotelName: null,
+        selectedKonsumsi: null, // NEW: Pilihan konsumsi
         selectedFacilities: [], 
-        totalEstimasi: 0
+        totalEstimate: 0
     };
 
     // MAP INIT - Start with Indonesia view so users can zoom and find their location
@@ -4398,10 +4830,14 @@
             $('#kota_asal').append(new Option(kota, kota, false, false));
         });
         
+        // Initialize kapal & pesawat display
+        initKapalPesawatDisplay();
+        
         // Render Awal
         renderHotels(); 
         renderDestinations(); 
         renderFacilities();
+        populateKonsumsiContainer(); // NEW: Populate konsumsi options
         autoSelectDefaults(); // Pilih destinasi default jika data ada
         updateItineraryButton(); // Update itinerary button link default (3 hari)
         
@@ -4454,24 +4890,50 @@
             state.biaya.darat = parseInt(dbKota[kotaKey].opsi.sort((a,b)=>a.price_publish-b.price_publish)[0].price_publish);
         }
 
-        // 2. Set Transport Laut (Termurah)
-        if(dbKapal.length > 0) state.biaya.laut = parseInt(dbKapal.sort((a,b)=>a.price_publish-b.price_publish)[0].price_publish);
+        // 2. Set Transport Laut (Termurah) + Auto-select radio button
+        if(dbKapal.length > 0) {
+            let sortedKapal = dbKapal.sort((a,b)=>a.price_publish-b.price_publish);
+            let cheapestKapalIndex = dbKapal.indexOf(sortedKapal[0]);
+            state.biaya.laut = parseInt(sortedKapal[0].price_publish);
+            // Auto-select the cheapest kapal radio button
+            let kapalRadio = document.querySelector(`input[name="selected_kapal"][value="${cheapestKapalIndex}"]`);
+            if (kapalRadio) {
+                kapalRadio.checked = true;
+                selectKapal(cheapestKapalIndex);
+            }
+            if (document.getElementById('label_kapal')) {
+                document.getElementById('label_kapal').innerText = (sortedKapal[0].name || sortedKapal[0].description) + ' (Termurah)';
+            }
+        }
 
-        // 3. Set Lokal Rental (Termurah) + Update Label
+        // 3. Set Lokal Rental (Termurah) + Update Label + Set Radio Button
         if(dbLokal.length > 0) {
             let sortedLokal = [...dbLokal].sort((a,b)=>a.price_publish-b.price_publish);
             state.biaya.lokal = parseInt(sortedLokal[0].price_publish);
             document.getElementById('label_lokal').innerText = sortedLokal[0].name + ' (Termurah)';
+            // Auto-select the cheapest transport
+            let cheapestType = sortedLokal[0].name.toLowerCase().includes('motor') ? 'motor' : 'mobil';
+            let radioBtn = document.querySelector(`input[name="transportasi_karimun"][value="${cheapestType}"]`);
+            if (radioBtn) {
+                radioBtn.checked = true;
+                updateTransportasiKarimun(cheapestType);
+            }
         }
 
-        // 4. Set Hotel (Jika belum ada yg dipilih)
-        if(state.biaya.hotel === 0 && dbHotels.length > 0) {
+        // 4. Set Hotel (Termurah Otomatis)
+        if(dbHotels.length > 0) {
             let sorted = dbHotels.sort((a,b)=>a.price_publish-b.price_publish);
             selectHotel(null, sorted[0].name, sorted[0].id, sorted[0].price_publish);
+            if (document.getElementById('label_hotel')) {
+                document.getElementById('label_hotel').innerText = sorted[0].name + ' (Termurah)';
+            }
         }
 
-        // 5. Set Guide
-        if(dbGuide.length > 0) state.biaya.guide = parseInt(dbGuide.sort((a,b)=>a.price_publish-b.price_publish)[0].price_publish);
+        // 5. Set Guide (Termurah)
+        if(dbGuide.length > 0) {
+            let sortedGuide = dbGuide.sort((a,b)=>a.price_publish-b.price_publish);
+            state.biaya.guide = parseInt(sortedGuide[0].price_publish);
+        }
 
         // 6. Tampilkan section wisata laut & darat
         showWisataSection();
@@ -4525,6 +4987,291 @@
         return totDarat + totLaut + totLokal + totTourLaut + totTourDarat + totGuide + totMakan + totFas;
     }
 
+    // KAPAL OPTION HANDLER - Display all kapal options
+    function updateKapalDisplay() {
+        const kapalType = document.querySelector('input[name="kapal_type"]:checked').value;
+        const kapalList = document.getElementById('kapal-list');
+        const pesawatList = document.getElementById('pesawat-list');
+        
+        if (kapalType === 'kapal') {
+            // Show kapal list
+            kapalList.innerHTML = '';
+            if (dbKapal && dbKapal.length > 0) {
+                // Find cheapest kapal
+                let sortedKapal = [...dbKapal].sort((a,b)=>(a.price_publish||0)-(b.price_publish||0));
+                let cheapestKapalIndex = dbKapal.indexOf(sortedKapal[0]);
+                
+                dbKapal.forEach((kapal, index) => {
+                    const kapalDiv = document.createElement('label');
+                    kapalDiv.style.cssText = 'padding: 8px; background: #f8f9fa; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; white-space: nowrap; min-width: 200px;';
+                    
+                    // Use name or description field - check what's available
+                    const kapalName = kapal.name || kapal.description || kapal.service_name || 'Kapal ' + (index + 1);
+                    const harga = kapal.price_publish || kapal.price_net || 0;
+                    const isCheapest = (index === cheapestKapalIndex);
+                    
+                    kapalDiv.innerHTML = `
+                        <input type="radio" name="selected_kapal" value="${index}" ${isCheapest ? 'checked' : ''} onchange="selectKapal(${index})">
+                        <span style="font-size: 0.72rem; margin-left: 8px;">
+                            <strong>${kapalName}${isCheapest ? ' (Termurah)' : ''}</strong>
+                            <br>
+                            <span style="color: #666; font-size: 0.68rem;">Rp ${new Intl.NumberFormat('id-ID').format(harga)}</span>
+                        </span>
+                    `;
+                    kapalList.appendChild(kapalDiv);
+                });
+                // Select cheapest kapal option
+                selectKapal(cheapestKapalIndex);
+            }
+            pesawatList.style.display = 'none';
+            kapalList.style.display = 'flex';
+        } else {
+            // Show pesawat list
+            pesawatList.innerHTML = '';
+            if (dbPesawat && dbPesawat.length > 0) {
+                // Find cheapest pesawat
+                let sortedPesawat = [...dbPesawat].sort((a,b)=>a.harga-b.harga);
+                let cheapestPesawatIndex = dbPesawat.indexOf(sortedPesawat[0]);
+                
+                dbPesawat.forEach((pesawat, index) => {
+                    const pesawatDiv = document.createElement('label');
+                    pesawatDiv.style.cssText = 'padding: 8px; background: #f8f9fa; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; white-space: nowrap; min-width: 200px;';
+                    const isCheapest = (index === cheapestPesawatIndex);
+                    pesawatDiv.innerHTML = `
+                        <input type="radio" name="selected_pesawat" value="${index}" ${isCheapest ? 'checked' : ''} onchange="selectPesawat(${index})">
+                        <span style="font-size: 0.72rem; margin-left: 8px;">
+                            <strong>${pesawat.nama_maskapai}${isCheapest ? ' (Termurah)' : ''}</strong>
+                            <br>
+                            <span style="color: #666; font-size: 0.68rem;">${pesawat.rute}</span>
+                            <br>
+                            <span style="color: #0d6efd; font-weight: 600; font-size: 0.68rem;">Rp ${new Intl.NumberFormat('id-ID').format(pesawat.harga)}</span>
+                        </span>
+                    `;
+                    pesawatList.appendChild(pesawatDiv);
+                });
+                // Select cheapest pesawat option
+                selectPesawat(cheapestPesawatIndex);
+            }
+            kapalList.style.display = 'none';
+            pesawatList.style.display = 'flex';
+        }
+    }
+
+    function selectKapal(index) {
+        const kapal = dbKapal[index];
+        const harga = kapal.price_publish || kapal.price_net || 0;
+        state.biaya.laut = parseInt(harga);
+        const kapalName = kapal.name || kapal.description || 'Kapal';
+        document.getElementById('label_kapal').innerText = kapalName + ' (DIPILIH)';
+        
+        // Update radio button checked state
+        const radioButtons = document.querySelectorAll('input[name="selected_kapal"]');
+        radioButtons.forEach((radio, i) => {
+            radio.checked = (i === index);
+        });
+        
+        console.log('✅ Kapal dipilih:', kapalName, 'Harga:', state.biaya.laut);
+        if (state.selectedKotaKey) {
+            reCalculate();
+            updateSummaryWidget(); // Real-time sync
+        }
+    }
+
+    function selectPesawat(index) {
+        const pesawat = dbPesawat[index];
+        state.biaya.laut = parseInt(pesawat.harga);
+        document.getElementById('label_kapal').innerText = pesawat.nama_maskapai + ' (DIPILIH)';
+        
+        // Update radio button checked state
+        const radioButtons = document.querySelectorAll('input[name="selected_pesawat"]');
+        radioButtons.forEach((radio, i) => {
+            radio.checked = (i === index);
+        });
+        
+        console.log('✅ Pesawat dipilih:', pesawat.nama_maskapai, 'Harga:', state.biaya.laut);
+        if (state.selectedKotaKey) {
+            reCalculate();
+            updateSummaryWidget(); // Real-time sync
+        }
+    }
+
+    // SELECT KONSUMSI - NEW
+    function selectKonsumsi(index) {
+        if (!dbKonsumsi || !dbKonsumsi[index]) return;
+        
+        const konsumsi = dbKonsumsi[index];
+        const harga = parseInt(konsumsi.price_per_person) || 0;
+        state.selectedKonsumsi = index;
+        state.biaya.konsumsi = harga;
+        
+        // Update display
+        const konsumsiName = konsumsi.name || 'Paket Konsumsi';
+        const mealType = konsumsi.meal_type || '';
+        
+        // Update card styling
+        document.querySelectorAll('.konsumsi-option-card').forEach((card, i) => {
+            if (i === index) {
+                card.style.borderColor = '#198754';
+                card.style.background = 'linear-gradient(135deg, rgba(25,135,84,0.1) 0%, rgba(255,255,255,1) 100%)';
+                card.style.boxShadow = '0 2px 8px rgba(25,135,84,0.2)';
+            } else {
+                card.style.borderColor = '#e8eef7';
+                card.style.background = '#fff';
+                card.style.boxShadow = 'none';
+            }
+        });
+        
+        console.log('✅ Konsumsi dipilih:', konsumsiName, 'Harga:', harga);
+        if (state.selectedKotaKey) {
+            reCalculate();
+            updateSummaryWidget(); // Real-time sync
+        }
+    }
+
+    // POPULATE KONSUMSI CONTAINER - NEW
+    function populateKonsumsiContainer() {
+        if (!dbKonsumsi || dbKonsumsi.length === 0) {
+            document.getElementById('konsumsi-container').innerHTML = '<div class="text-secondary small" style="width: 100%; text-align: center; padding: 10px; color: #aaa;">Belum ada paket konsumsi</div>';
+            return;
+        }
+        
+        const container = document.getElementById('konsumsi-container');
+        container.innerHTML = '';
+        
+        dbKonsumsi.forEach((konsumsi, index) => {
+            const mealType = konsumsi.meal_type || 'all';
+            const mealLabel = {
+                'breakfast': '🌅 Pagi',
+                'lunch': '🌞 Siang',
+                'dinner': '🌙 Malam',
+                'snack': '🍿 Snack',
+                'all': '🍽️ Semua'
+            }[mealType] || '🍽️ ' + mealType;
+            
+            const card = document.createElement('div');
+            card.className = 'konsumsi-option-card';
+            card.style.cssText = `
+                background: #fff;
+                border: 1.5px solid #e8eef7;
+                border-radius: 10px;
+                padding: 8px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                position: relative;
+                flex: 0 0 calc(50% - 4px);
+                text-align: center;
+            `;
+            
+            card.innerHTML = `
+                <div style="font-size: 0.65rem; font-weight: 600; color: #333; margin-bottom: 3px; line-height: 1.3;">
+                    ${mealLabel}
+                </div>
+                <div style="font-size: 0.6rem; color: #666; margin-bottom: 3px;">
+                    ${konsumsi.name}
+                </div>
+                <div style="font-size: 0.75rem; font-weight: 700; color: #0d6efd;">
+                    Rp ${parseInt(konsumsi.price_per_person).toLocaleString('id-ID')}
+                </div>
+            `;
+            
+            card.onclick = function(e) {
+                e.stopPropagation();
+                selectKonsumsi(index);
+            };
+            
+            card.onmouseover = function() {
+                if (state.selectedKonsumsi !== index) {
+                    this.style.borderColor = '#0d6efd';
+                    this.style.transform = 'translateY(-1px)';
+                    this.style.boxShadow = '0 4px 12px rgba(13,110,253,0.15)';
+                }
+            };
+            
+            card.onmouseout = function() {
+                if (state.selectedKonsumsi !== index) {
+                    this.style.borderColor = '#e8eef7';
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = 'none';
+                }
+            };
+            
+            container.appendChild(card);
+        });
+    }
+
+    // KAPAL OPTION HANDLER - LEGACY (keep for compatibility)
+    function updateKapalOption(option) {
+        console.log('🚢 Kapal option dipilih:', option);
+        const labelKapal = document.getElementById('label_kapal');
+        
+        if (option === 'tiket_kapal') {
+            labelKapal.textContent = '🚢 Tiket Kapal PP (Jepara → Karimun)';
+            if (dbKapal.length > 0) {
+                const kapalTermurah = dbKapal.sort((a,b) => (a.price_publish || 0) - (b.price_publish || 0))[0];
+                const hargaKapal = parseInt(kapalTermurah.price_publish || 0);
+                state.biaya.laut = hargaKapal;
+                console.log('✅ Tiket Kapal harga:', hargaKapal);
+            }
+        } else if (option === 'pesawat') {
+            labelKapal.textContent = '✈️ Tiket Pesawat PP (Semarang → Karimun)';
+            if (dbPesawat.length > 0) {
+                const pesawatTermurah = dbPesawat.sort((a,b) => a.harga - b.harga)[0];
+                const hargaPesawat = parseInt(pesawatTermurah.harga);
+                state.biaya.laut = hargaPesawat;
+                console.log('✅ Tiket Pesawat harga:', hargaPesawat);
+            }
+        }
+        
+        if (state.selectedKotaKey) {
+            reCalculate();
+        }
+    }
+    
+    // Initialize kapal/pesawat display on page load
+    function initKapalPesawatDisplay() {
+        // Render kapal and pesawat lists
+        updateKapalDisplay();
+        
+        // Initialize transportasi prices
+        initTransportasiPrices();
+    }
+
+    function initTransportasiPrices() {
+        // Find motor and mobil prices from dbLokal
+        const motorOption = dbLokal.find(l => l.name && l.name.toLowerCase().includes('motor'));
+        const mobilOption = dbLokal.find(l => l.name && l.name.toLowerCase().includes('mobil'));
+        
+        if(motorOption) {
+            document.getElementById('motor-price').textContent = `Rp ${fmt(motorOption.price_publish)}/hari`;
+        }
+        if(mobilOption) {
+            document.getElementById('mobil-price').textContent = `Rp ${fmt(mobilOption.price_publish)}/hari`;
+        }
+    }
+
+    function updateTransportasiKarimun(type) {
+        // Find selected option from dbLokal
+        let selectedLokal = null;
+        
+        if(type === 'motor') {
+            selectedLokal = dbLokal.find(l => l.name && l.name.toLowerCase().includes('motor'));
+        } else if(type === 'mobil') {
+            selectedLokal = dbLokal.find(l => l.name && l.name.toLowerCase().includes('mobil'));
+        }
+        
+        if(selectedLokal) {
+            state.biaya.lokal = parseInt(selectedLokal.price_publish);
+            document.getElementById('label_lokal').innerText = selectedLokal.name + ' (DIPILIH)';
+            console.log('✅ Transportasi dipilih:', type, 'Harga:', state.biaya.lokal);
+        }
+        
+        // Trigger recalculation if city is selected
+        if(state.selectedKotaKey) {
+            reCalculate();
+            updateSummaryWidget(); // Real-time update
+        }
+    }
+
     function reCalculate() {
         state.orang  = parseInt(document.getElementById('jml_orang').value) || 1;
         state.durasi = parseInt(document.getElementById('durasi').value) || 3;
@@ -4573,7 +5320,7 @@
         state.selectedFacilities.forEach(i => { totFas += parseInt(dbFas[i].price_publish); });
 
         // B. TOTAL ESTIMASI
-        state.totalEstimasi = totKapalPP + totDarat + totHotel + totLokal + totDaratGuide + totTourLaut + totMakan + totFas;
+        state.totalEstimate = totKapalPP + totDarat + totHotel + totLokal + totDaratGuide + totTourLaut + totMakan + totFas;
 
         // C. UPDATE TAMPILAN SESUAI URUTAN BARU
         // 1. Tiket Kapal PP
@@ -4588,6 +5335,8 @@
         document.getElementById('val_wisata_laut').innerText = "Rp " + fmt(totTourLaut);
         // 6. Makan
         document.getElementById('val_makan').innerText = "Rp " + fmt(totMakan);
+        // 7. Fasilitas Tambahan
+        document.getElementById('val_fasilitas').innerText = "Rp " + fmt(totFas);
         // Transport Darat (opsional)
         document.getElementById('val_darat').innerText = "Rp " + fmt(totDarat);
         
@@ -4597,16 +5346,16 @@
             sectionDarat.style.display = (state.selectedKotaKey && state.selectedKotaKey !== 'jepara') ? 'block' : 'none';
         }
         
-        document.getElementById('val_grand_total').innerText = "Rp " + fmt(state.totalEstimasi);
+        document.getElementById('val_grand_total').innerText = "Rp " + fmt(state.totalEstimate);
         
         // Update price per person
         let pricePerPerson = document.getElementById('price-per-person');
         if (pricePerPerson) {
-            pricePerPerson.innerText = "Rp " + fmt(Math.ceil(state.totalEstimasi / state.orang));
+            pricePerPerson.innerText = "Rp " + fmt(Math.ceil(state.totalEstimate / state.orang));
         }
         
         // Update floating total widget
-        updateFloatingTotal(state.totalEstimasi, state.orang);
+        updateFloatingTotal(state.totalEstimate, state.orang);
         
         checkBudget();
     }
@@ -4617,6 +5366,7 @@
     
     function slideHotel(direction) {
         const container = document.getElementById('hotel-list-container');
+        const carousel = document.getElementById('hotel-carousel');
         const totalSlides = parseInt(container.getAttribute('data-slides') || '1');
         let currentSlide = parseInt(container.getAttribute('data-current-slide') || '0');
         
@@ -4624,7 +5374,12 @@
         if (currentSlide < 0) currentSlide = 0;
         if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
         
-        showHotelSlide(currentSlide);
+        // Apply transform to carousel
+        if(carousel) {
+            carousel.style.transform = `translateX(calc(-${currentSlide} * 100%))`;
+        }
+        
+        container.setAttribute('data-current-slide', currentSlide);
         updateHotelNav(currentSlide, totalSlides);
     }
     
@@ -4636,35 +5391,6 @@
         if (prevBtn) prevBtn.disabled = (current <= 0);
         if (nextBtn) nextBtn.disabled = (current >= total - 1);
         if (counter) counter.textContent = `${current + 1}/${total}`;
-    }
-    
-    function nextHotelSlide() {
-        const container = document.getElementById('hotel-list-container');
-        const currentSlide = parseInt(container.getAttribute('data-current-slide'));
-        const totalSlides = parseInt(container.getAttribute('data-slides'));
-        const nextSlide = (currentSlide + 1) % totalSlides;
-        showHotelSlide(nextSlide);
-    }
-
-    function prevHotelSlide() {
-        const container = document.getElementById('hotel-list-container');
-        const currentSlide = parseInt(container.getAttribute('data-current-slide'));
-        const totalSlides = parseInt(container.getAttribute('data-slides'));
-        const prevSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-        showHotelSlide(prevSlide);
-    }
-
-    function showHotelSlide(slideIdx) {
-        const container = document.getElementById('hotel-list-container');
-        const slides = container.querySelectorAll('.hotel-slide');
-        
-        slides.forEach((slide, idx) => {
-            slide.classList.remove('active');
-            if(idx === slideIdx) slide.classList.add('active');
-        });
-        
-        document.getElementById('current-slide').innerText = slideIdx + 1;
-        container.setAttribute('data-current-slide', slideIdx);
     }
 
     // --- HOTEL GALLERY ---
@@ -4702,23 +5428,31 @@
 
     // --- RENDER FUNGSI ---
     function selectHotel(el, name, id, price) {
+        state.selectedHotel = id; // TAMBAHAN: Simpan ID hotel
+        state.selectedHotelName = name; // TAMBAHAN: Simpan nama hotel
         state.biaya.hotel = parseInt(price);
-        document.getElementById('label_hotel').innerText = name;
+        document.getElementById('label_hotel').innerText = name + ' (DIPILIH)';
         document.querySelectorAll('.hotel-card-2027').forEach(c => c.style.borderColor = 'transparent');
-        // Logic visual checked dihandle CSS
+        // Visual feedback untuk selected
+        if(el) {
+            el.style.borderColor = '#667eea';
+            el.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.3)';
+        }
         reCalculate();
+        updateSummaryWidget(); // Real-time update widget
     }
 
     function selectLokal(el) {
         const idx = parseInt(el.value);
         if(idx >= 0 && idx < dbLokal.length) {
             state.biaya.lokal = parseInt(dbLokal[idx].price_publish);
-            document.getElementById('label_lokal').innerText = dbLokal[idx].name;
+            document.getElementById('label_lokal').innerText = dbLokal[idx].name + ' (DIPILIH)';
         } else {
             state.biaya.lokal = 0;
             document.getElementById('label_lokal').innerText = 'Belum dipilih';
         }
         reCalculate();
+        updateSummaryWidget(); // Real-time update
     }
 
     function renderDestinations() {
@@ -4761,13 +5495,68 @@
     function toggleTourLaut(i) {
         if(state.selectedTourLaut.includes(i)) state.selectedTourLaut = state.selectedTourLaut.filter(x=>x!==i);
         else state.selectedTourLaut.push(i); // Tidak ada limit untuk wisata laut
-        renderDestinations(); reCalculate();
+        renderDestinations(); 
+        updateWisataDescriptions(); 
+        reCalculate();
+        updateSummaryWidget(); // Real-time update
     }
 
     function toggleTourDarat(i) {
         if(state.selectedTourDarat.includes(i)) state.selectedTourDarat = state.selectedTourDarat.filter(x=>x!==i);
         else state.selectedTourDarat.push(i);
-        renderDestinations(); reCalculate();
+        renderDestinations(); 
+        updateWisataDescriptions(); 
+        reCalculate();
+        updateSummaryWidget(); // Real-time update
+    }
+
+    // === TAMPILKAN DESKRIPSI WISATA YANG DIPILIH ===
+    function updateWisataDescriptions() {
+        // Update Wisata Laut
+        const lautDescDiv = document.getElementById('selected-tour-laut-desc');
+        const lautDescList = document.getElementById('tour-laut-desc-list');
+        
+        if(state.selectedTourLaut.length > 0) {
+            let html = '';
+            state.selectedTourLaut.forEach(idx => {
+                const item = dbTourLaut[idx];
+                if(item) {
+                    let deskripsi = item.description ? item.description.trim() : (item.location ? item.location.trim() : '(Tidak ada deskripsi)');
+                    html += `<div style="margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <div style="font-weight: 600; color: #0dcaf0; font-size: 0.7rem; margin-bottom: 3px;">✓ ${item.name}</div>
+                        <div style="color: rgba(255,255,255,0.8); font-size: 0.63rem; line-height: 1.3;">${deskripsi}</div>
+                        <div style="color: #0dcaf0; font-weight: 600; font-size: 0.65rem; margin-top: 4px;">Rp ${fmt(item.price_publish)}</div>
+                    </div>`;
+                }
+            });
+            lautDescList.innerHTML = html;
+            lautDescDiv.style.display = 'block';
+        } else {
+            lautDescDiv.style.display = 'none';
+        }
+        
+        // Update Wisata Darat
+        const daratDescDiv = document.getElementById('selected-tour-darat-desc');
+        const daratDescList = document.getElementById('tour-darat-desc-list');
+        
+        if(state.selectedTourDarat.length > 0) {
+            let html = '';
+            state.selectedTourDarat.forEach(idx => {
+                const item = dbTourDarat[idx];
+                if(item) {
+                    let deskripsi = item.description ? item.description.trim() : (item.location ? item.location.trim() : '(Tidak ada deskripsi)');
+                    html += `<div style="margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <div style="font-weight: 600; color: #10b981; font-size: 0.7rem; margin-bottom: 3px;">✓ ${item.name}</div>
+                        <div style="color: rgba(255,255,255,0.8); font-size: 0.63rem; line-height: 1.3;">${deskripsi}</div>
+                        <div style="color: #10b981; font-weight: 600; font-size: 0.65rem; margin-top: 4px;">Rp ${fmt(item.price_publish)}</div>
+                    </div>`;
+                }
+            });
+            daratDescList.innerHTML = html;
+            daratDescDiv.style.display = 'block';
+        } else {
+            daratDescDiv.style.display = 'none';
+        }
     }
 
     function renderFacilities() {
@@ -4849,6 +5638,7 @@
         }
         renderFacilities();
         reCalculate();
+        updateSummaryWidget(); // Real-time update
     }
 
     function renderHotels() {
@@ -4859,30 +5649,28 @@
             return;
         }
         
-        // Calculate visible rows (4 per row, showing 2 rows = 8 items per slide)
+        // Calculate slides: 4 items per row, 2 rows = 8 items per slide
         const itemsPerSlide = 8;
         const slides = [];
         for(let i = 0; i < dbHotels.length; i += itemsPerSlide) {
             slides.push(dbHotels.slice(i, i + itemsPerSlide));
         }
         
-        // Create carousel HTML
-        let carouselHTML = `<div class="hotel-carousel-container">
-            <div class="hotel-carousel" id="hotel-carousel">`;
+        // Create carousel HTML with proper slide structure
+        let carouselHTML = `<div class="hotel-carousel-container" style="position: relative; width: 100%;">
+            <div class="hotel-carousel" id="hotel-carousel" style="display: flex;">`;
         
         slides.forEach((slide, slideIdx) => {
-            carouselHTML += `<div class="hotel-slide ${slideIdx === 0 ? 'active' : ''}">
-                <div class="row g-1 justify-content-center">`;
+            carouselHTML += `<div class="hotel-slide" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; flex-shrink: 0;">`;
             
             slide.forEach(h => {
                 let pricePerNight = parseInt(h.price_publish);
-                let remainingBudget = state.budget ? (state.budget - calculateCurrentTotal()) : 0;
                 let imgSrc = h.image_url ? (h.image_url.startsWith('http')?h.image_url:BASE_UPLOADS_URL+h.image_url) : 'https://via.placeholder.com/300';
                 let isSel = (h.name === document.getElementById('label_hotel').innerText);
                 
-                carouselHTML += `<div class="col-6 col-sm-4 col-lg-3">
+                carouselHTML += `<div>
                     <input type="radio" name="hotel_id" id="hotel_${h.id}" class="d-none hotel-radio" ${isSel?'checked':''} onclick="selectHotel(this, '${h.name}', ${h.id}, ${h.price_publish})">
-                    <label for="hotel_${h.id}" class="hotel-card-2027 position-relative d-flex flex-column">
+                    <label for="hotel_${h.id}" class="hotel-card-2027 position-relative d-flex flex-column" style="height: 100%; cursor: pointer;">
                         <div class="hotel-img-wrapper">
                             <div class="price-badge-2027">Rp ${fmt(pricePerNight)}</div>
                             <div class="checkmark-overlay"><i class="bi bi-check-lg"></i></div>
@@ -4890,13 +5678,13 @@
                             <img src="${imgSrc}" class="hotel-img-2027" style="cursor: pointer;" onclick="event.stopPropagation(); openHotelGallery(${h.id}, '${h.name}', event)">
                         </div>
                         <div class="hotel-info-section">
-                            <h6>${h.name}</h6>
+                            <h6 style="font-size: 0.7rem; margin-bottom: 0;">${h.name}</h6>
                         </div>
                     </label>
                 </div>`;
             });
             
-            carouselHTML += `</div></div>`;
+            carouselHTML += `</div>`;
         });
         
         carouselHTML += `</div></div>`;
@@ -4906,6 +5694,13 @@
         // Store slide count for carousel navigation
         c.setAttribute('data-slides', slides.length);
         c.setAttribute('data-current-slide', '0');
+        
+        // Set carousel animation
+        const carousel = document.getElementById('hotel-carousel');
+        if(carousel) {
+            carousel.style.transition = 'transform 0.3s ease';
+            carousel.style.transform = 'translateX(0)';
+        }
         
         // Update navigation buttons
         updateHotelNav(0, slides.length);
@@ -4924,6 +5719,7 @@
         }
         
         renderDestinations();
+        updateWisataDescriptions();
     }
 
     function fmt(n) { return new Intl.NumberFormat('id-ID').format(n); }
@@ -4944,10 +5740,10 @@
         
         feedbackDiv.classList.remove('d-none');
         
-        const totalEstimasi = state.totalEstimasi;
-        const sisa = budget - totalEstimasi;
+        const totalEstimate = state.totalEstimate;
+        const sisa = budget - totalEstimate;
         
-        document.getElementById('budget-total-estimasi').innerText = 'Rp ' + fmt(totalEstimasi);
+        document.getElementById('budget-total-estimasi').innerText = 'Rp ' + fmt(totalEstimate);
         document.getElementById('sisa-uang').innerText = 'Rp ' + fmt(Math.abs(sisa));
         
         // Status berdasarkan sisa
@@ -5148,8 +5944,8 @@
                 
                 <div class="bg-primary bg-opacity-10 p-3 rounded-3 text-center">
                     <span class="small text-muted">TOTAL ESTIMASI</span>
-                    <h4 class="fw-bold text-primary mb-0">Rp ${fmt(state.totalEstimasi)}</h4>
-                    <small class="text-muted">(Rp ${fmt(Math.ceil(state.totalEstimasi / orang))} / orang)</small>
+                    <h4 class="fw-bold text-primary mb-0">Rp ${fmt(state.totalEstimate)}</h4>
+                    <small class="text-muted">(Rp ${fmt(Math.ceil(state.totalEstimate / orang))} / orang)</small>
                 </div>
             </div>
         `;
@@ -5328,6 +6124,165 @@
         }
     `;
     document.head.appendChild(style);
+
+    // ===== SUBMIT BOOKING FUNCTION =====
+    function submitBooking() {
+        // Validasi data yang dipilih
+        if (!state.selectedKotaKey) {
+            alert('Pilih kota asal terlebih dahulu!');
+            return;
+        }
+
+        if (state.selectedTourLaut.length === 0 && state.selectedTourDarat.length === 0) {
+            alert('Pilih minimal satu paket wisata!');
+            return;
+        }
+
+        if (!state.selectedHotel || !state.selectedHotelName) {
+            alert('Silakan pilih hotel/penginapan terlebih dahulu!');
+            return;
+        }
+
+        // Tampilkan modal form
+        showBookingModal();
+    }
+
+    function showBookingModal() {
+        // Update summary info dengan kalkulasi ulang berdasarkan state terkini
+        const durasi = parseInt(document.getElementById('durasi')?.value) || 3;
+        const orang = parseInt(document.getElementById('orang')?.value) || state.orang || 1;
+        let total = state.totalEstimate || 0;
+
+        // Jika orang lebih dari 1, kalkulasi ulang total
+        if (orang > 1) {
+            // Ambil base price dari state dan kalikan dengan jumlah orang
+            const basePrice = state.totalEstimate / (state.orang || 1);
+            total = basePrice * orang;
+        }
+
+        // Set nilai ke form
+        document.getElementById('num_people').value = orang;
+        
+        const summary = `Durasi: ${durasi} hari | Peserta: ${orang} orang | Total: Rp ${Math.round(total).toLocaleString('id-ID')}`;
+        document.getElementById('summary-info').innerText = summary;
+        
+        // Store calculated total di form untuk dikirim
+        document.getElementById('bookingModal').dataset.calculatedTotal = Math.round(total);
+        
+        // Tampilkan modal
+        document.getElementById('bookingModal').classList.add('show');
+    }
+
+    function closeBookingModal() {
+        document.getElementById('bookingModal').classList.remove('show');
+        document.getElementById('bookingForm').reset();
+    }
+
+    // Update summary ketika jumlah orang berubah
+    document.addEventListener('DOMContentLoaded', function() {
+        const numPeopleInput = document.getElementById('num_people');
+        const numChildrenInput = document.getElementById('num_children');
+        
+        if (numPeopleInput) {
+            numPeopleInput.addEventListener('change', updateBookingSummary);
+            numPeopleInput.addEventListener('input', updateBookingSummary);
+        }
+        if (numChildrenInput) {
+            numChildrenInput.addEventListener('change', updateBookingSummary);
+            numChildrenInput.addEventListener('input', updateBookingSummary);
+        }
+    });
+
+    function updateBookingSummary() {
+        const durasi = parseInt(document.getElementById('durasi')?.value) || 3;
+        const numPeople = parseInt(document.getElementById('num_people')?.value) || 1;
+        const numChildren = parseInt(document.getElementById('num_children')?.value) || 0;
+        
+        // Kalkulasi ulang total berdasarkan jumlah orang yang diinput
+        const basePrice = state.totalEstimate / (state.orang || 1);
+        const calculatedTotal = basePrice * numPeople;
+        
+        // Update summary
+        const summary = `Durasi: ${durasi} hari | Peserta: ${numPeople} orang | Total: Rp ${Math.round(calculatedTotal).toLocaleString('id-ID')}`;
+        document.getElementById('summary-info').innerText = summary;
+        
+        // Store calculated total
+        document.getElementById('bookingModal').dataset.calculatedTotal = Math.round(calculatedTotal);
+    }
+
+    // Close modal ketika click outside
+    document.addEventListener('click', function(event) {
+        const modal = document.getElementById('bookingModal');
+        if (event.target === modal) {
+            closeBookingModal();
+        }
+    });
+
+    function submitBookingForm(event) {
+        event.preventDefault();
+
+        // Kumpulkan data dari form modal
+        const bookingData = {
+            customer_name: document.getElementById('nama_tamu').value,
+            customer_email: document.getElementById('email').value,
+            customer_phone: document.getElementById('phone').value,
+            customer_address: document.getElementById('address').value,
+            city_origin: state.selectedKotaKey,
+            travel_date: document.getElementById('travel_date').value,
+            duration_day: parseInt(document.getElementById('durasi')?.value) || 3,
+            num_people: parseInt(document.getElementById('num_people').value) || 1,
+            num_children: parseInt(document.getElementById('num_children').value) || 0,
+            tour_laut_selected: JSON.stringify(state.selectedTourLaut),
+            tour_darat_selected: JSON.stringify(state.selectedTourDarat),
+            hotel_selected: state.selectedHotelName || '',
+            facilities_selected: JSON.stringify(state.selectedFacilities || []),
+            guide_type: document.getElementById('jenis_pemandu')?.value || '',
+            transport_type: document.getElementById('transportasi_lokal')?.value || '',
+            flight_type: document.getElementById('tiket_pesawat')?.value || '',
+            notes: document.getElementById('notes').value || '',
+            total_price: parseInt(document.getElementById('bookingModal').dataset.calculatedTotal) || state.totalEstimate || 0,
+            total_net_cost: state.totalNetCost || 0,
+            estimated_margin: ((parseInt(document.getElementById('bookingModal').dataset.calculatedTotal) || state.totalEstimate || 0) - (state.totalNetCost || 0))
+        };
+
+        console.log('Booking Data:', bookingData);
+
+        // Disable submit button saat proses
+        const submitBtn = document.querySelector('.btn-modal-submit');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Sedang Memproses...';
+
+        // Send ke server
+        fetch('<?= base_url('api/submit-booking') ?>', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify(bookingData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                closeBookingModal();
+                alert('✅ Booking berhasil!\n\nKode Booking: ' + data.booking_code + '\n\nSilahkan cek email untuk detail pembayaran dan link konfirmasi.');
+                // Redirect ke halaman booking confirmation
+                setTimeout(() => {
+                    window.location.href = '<?= base_url('booking/confirmation') ?>/' + data.booking_id;
+                }, 1000);
+            } else {
+                alert('❌ Error: ' + (data.message || 'Booking gagal!'));
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="bi bi-check-circle"></i> Lanjutkan Pemesanan';
+            }
+        })
+        .catch(err => {
+            console.error('Error:', err);
+            alert('❌ Terjadi kesalahan pada server. Silahkan coba lagi.');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="bi bi-check-circle"></i> Lanjutkan Pemesanan';
+        });
+    }
 
     // ===== BACK TO TOP BUTTON =====
     const backToTopBtn = document.getElementById('backToTopBtn');
@@ -5609,16 +6564,11 @@
         console.log('loadJadwalKapal: Modal initialized');
     }
     
-    // FIX IMAGE URLs - Convert /uploads/ to /dinara/uploads/
+    
+    // FIX IMAGE URLs - Ensure proper URL formatting
     function fixImageUrls() {
-        const baseUrl = '<?= base_url() ?>';
-        if (!baseUrl.includes('/dinara/')) {
-            document.querySelectorAll('img[src]').forEach(img => {
-                if (img.src.includes('/uploads/') && !img.src.includes('/dinara/uploads/')) {
-                    img.src = img.src.replace('/uploads/', '/dinara/uploads/');
-                }
-            });
-        }
+        // No need to fix URLs - they should be generated correctly by base_url()
+        console.log('Image URLs are properly generated with base_url()');
     }
     
     // STARTUP
@@ -5798,6 +6748,80 @@
             <i class="bi bi-chevron-up"></i>
         </a>
     </footer>
+
+    <!-- MODAL BOOKING FORM -->
+    <div class="modal-booking" id="bookingModal">
+        <div class="modal-booking-content">
+            <div class="modal-booking-header">
+                <h3><i class="bi bi-calendar-check"></i> Form Pemesanan Liburan</h3>
+                <button class="modal-booking-close" onclick="closeBookingModal()">×</button>
+            </div>
+            <form id="bookingForm" onsubmit="submitBookingForm(event)">
+                <div class="modal-booking-body">
+                    <!-- Nama Tamu -->
+                    <div class="form-group">
+                        <label for="nama_tamu"><i class="bi bi-person"></i> Nama Lengkap *</label>
+                        <input type="text" id="nama_tamu" name="nama_tamu" placeholder="Masukkan nama lengkap Anda" required>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email"><i class="bi bi-envelope"></i> Email *</label>
+                        <input type="email" id="email" name="email" placeholder="Masukkan email Anda" required>
+                    </div>
+
+                    <!-- WhatsApp -->
+                    <div class="form-group">
+                        <label for="phone"><i class="bi bi-telephone"></i> Nomor HP/WhatsApp *</label>
+                        <input type="tel" id="phone" name="phone" placeholder="Masukkan nomor WhatsApp Anda" required>
+                    </div>
+
+                    <!-- Tanggal Rencana Liburan -->
+                    <div class="form-group">
+                        <label for="travel_date"><i class="bi bi-calendar-event"></i> Tanggal Rencana Liburan *</label>
+                        <input type="date" id="travel_date" name="travel_date" required>
+                    </div>
+
+                    <!-- Jumlah Peserta -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="num_people"><i class="bi bi-people"></i> Jumlah Dewasa *</label>
+                            <input type="number" id="num_people" name="num_people" min="1" value="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="num_children"><i class="bi bi-person-badge"></i> Jumlah Anak</label>
+                            <input type="number" id="num_children" name="num_children" min="0" value="0">
+                        </div>
+                    </div>
+
+                    <!-- Alamat -->
+                    <div class="form-group">
+                        <label for="address"><i class="bi bi-geo-alt"></i> Alamat</label>
+                        <input type="text" id="address" name="address" placeholder="Masukkan alamat Anda (opsional)">
+                    </div>
+
+                    <!-- Catatan Khusus -->
+                    <div class="form-group">
+                        <label for="notes"><i class="bi bi-chat-dots"></i> Catatan Khusus</label>
+                        <textarea id="notes" name="notes" placeholder="Ada permintaan khusus? Tulis di sini... (opsional)"></textarea>
+                    </div>
+
+                    <!-- Summary Info -->
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 20px;">
+                        <p style="margin: 0; color: #666; font-size: 13px;"><strong>Ringkasan Pemesanan:</strong></p>
+                        <p style="margin: 8px 0 0 0; color: #333; font-weight: 600;" id="summary-info"></p>
+                    </div>
+                </div>
+
+                <div class="modal-booking-footer">
+                    <button type="button" class="btn-modal btn-modal-cancel" onclick="closeBookingModal()">Batal</button>
+                    <button type="submit" class="btn-modal btn-modal-submit">
+                        <i class="bi bi-check-circle"></i> Lanjutkan Pemesanan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
 </body>
 </html>

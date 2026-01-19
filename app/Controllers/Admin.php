@@ -15,19 +15,32 @@ class Admin extends BaseController
         
         // --- A. HITUNG KAS BESAR (KEUANGAN) ---
         if ($db->tableExists('bookings')) {
-            $builder = $db->table('bookings');
+            // Updated: Use new bookings table
+            $bookingModel = new \App\Models\BookingModel();
+            $paymentModel = new \App\Models\PaymentModel();
             
-            $querySum = $builder->selectSum('total_revenue', 'omset')
-                                ->selectSum('profit', 'laba') // INI KAS BESAR (Akumulasi Profit per Trip)
-                                ->selectSum('pax', 'total_pax')
+            $querySum = $db->table('bookings')
+                                ->selectSum('total_price', 'omset')
+                                ->selectSum('estimated_margin', 'laba')
+                                ->selectSum('num_people', 'total_pax')
                                 ->get()->getRow();
                                 
             $data['total_omset'] = $querySum->omset ?? 0;
             $data['total_laba']  = $querySum->laba ?? 0;
             $data['total_tamu']  = $querySum->total_pax ?? 0;
             
-            // Ambil 5 Booking Terakhir
-            $data['booking_list'] = $db->table('bookings')->orderBy('id', 'DESC')->limit(5)->get()->getResultArray();
+            // Ambil semua bookings dengan payment summary
+            $allBookings = $db->table('bookings')
+                ->select('bookings.*, 
+                    (SELECT SUM(amount) FROM payments WHERE payments.booking_id = bookings.id AND payments.status = "confirmed") as paid_amount,
+                    (SELECT COUNT(*) FROM payments WHERE payments.booking_id = bookings.id) as payment_count,
+                    (bookings.total_price - COALESCE(bookings.total_net_cost, 0)) as profit')
+                ->orderBy('bookings.created_at', 'DESC')
+                ->limit(5)
+                ->get()
+                ->getResultArray();
+            
+            $data['booking_list'] = $allBookings;
 
             // Data Pie Chart
             $data['chart_confirmed'] = $db->table('bookings')->where('status', 'confirmed')->countAllResults();
@@ -103,6 +116,13 @@ class Admin extends BaseController
             $data['jadwals'] = $db->table('jadwal_kapal')->orderBy('jam_berangkat', 'ASC')->get()->getResultArray();
         } else {
             $data['jadwals'] = [];
+        }
+
+        // Load Tiket Pesawat
+        if ($db->tableExists('tiket_pesawat')) {
+            $data['pesawats'] = $db->table('tiket_pesawat')->where('is_active', 1)->orderBy('harga', 'ASC')->get()->getResultArray();
+        } else {
+            $data['pesawats'] = [];
         }
 
         return view('admin_dashboard', $data);
@@ -287,7 +307,7 @@ class Admin extends BaseController
         ];
         $tab = $tabMap[$type] ?? 'tab-hotel';
         
-        return redirect()->to('/admin#' . $tab)->with('sukses', 'Data Ditambah! Tambah lagi jika perlu.');
+        return redirect()->to(base_url('admin') . '#' . $tab)->with('sukses', 'Data Ditambah! Tambah lagi jika perlu.');
     }
     
     // Fungsi untuk menyimpan wisata dari modal dropdown
@@ -325,11 +345,11 @@ class Admin extends BaseController
             $tabName = $type === 'wisata_darat' ? 'tab-wisata-darat' : 'tab-wisata-laut';
             session()->setFlashdata('sukses', 'Wisata berhasil ditambahkan!');
             session()->setFlashdata('active_tab', 'database');
-            return redirect()->to('/admin#' . $tabName);
+            return redirect()->to(base_url('admin') . '#' . $tabName);
         } catch (\Exception $e) {
             log_message('error', 'Save Wisata From Modal Error: ' . $e->getMessage());
             session()->setFlashdata('error', 'Error: ' . $e->getMessage());
-            return redirect()->to('/admin');
+            return redirect()->to(base_url('admin'));
         }
     }
 
@@ -390,13 +410,20 @@ class Admin extends BaseController
         ];
         $activePill = $tabMap[$item['type'] ?? ''] ?? 'tab-hotel';
         
-        if ($item && !empty($item['image']) && file_exists('uploads/services/' . $item['image'])) unlink('uploads/services/' . $item['image']);
-        $model->delete($id);
+        try {
+            if ($item && !empty($item['image']) && file_exists('uploads/services/' . $item['image'])) {
+                unlink('uploads/services/' . $item['image']);
+            }
+            $model->delete($id);
+            session()->setFlashdata('sukses', 'Data berhasil dihapus!');
+        } catch (\Exception $e) {
+            log_message('error', 'Delete Layanan Error: ' . $e->getMessage());
+            session()->setFlashdata('gagal', 'Gagal menghapus data!');
+        }
         
-        session()->setFlashdata('sukses', 'Data berhasil dihapus!');
         session()->setFlashdata('active_tab', 'database');
         session()->setFlashdata('active_pill', $activePill);
-        return redirect()->to('/admin');
+        return redirect()->back();
     }
 
     // =========================================================================
@@ -647,10 +674,7 @@ class Admin extends BaseController
 
             $data = [
                 'name' => $this->request->getPost('name'),
-                'description' => $this->request->getPost('description'),
                 'location' => $this->request->getPost('location'),
-                'lat' => $this->request->getPost('lat'),
-                'lng' => $this->request->getPost('lng'),
                 'price_publish' => $this->request->getPost('price_publish') ?? 0,
                 'price_net' => $this->request->getPost('price_net') ?? 0,
                 'is_active' => 1
@@ -666,11 +690,11 @@ class Admin extends BaseController
             session()->setFlashdata('sukses', 'Wisata berhasil ditambahkan!');
             session()->setFlashdata('active_tab', 'database');
             session()->setFlashdata('active_pill', $activePill);
-            return redirect()->to('/admin');
+            return redirect()->to(base_url('admin'));
         } catch (\Exception $e) {
             log_message('error', 'Save Wisata Error: ' . $e->getMessage());
             session()->setFlashdata('error', 'Error: ' . $e->getMessage());
-            return redirect()->to('/admin');
+            return redirect()->to(base_url('admin'));
         }
     }
 
@@ -689,7 +713,7 @@ class Admin extends BaseController
             session()->setFlashdata('sukses', 'Wisata berhasil dihapus!');
             session()->setFlashdata('active_tab', 'database');
             session()->setFlashdata('active_pill', $activePill);
-            return redirect()->to('/admin');
+            return redirect()->to(base_url('admin'));
         } catch (\Exception $e) {
             log_message('error', 'Delete Wisata Error: ' . $e->getMessage());
             session()->setFlashdata('error', 'Error: ' . $e->getMessage());
@@ -706,7 +730,6 @@ class Admin extends BaseController
             
             $data = [
                 'name' => $this->request->getPost('name'),
-                'description' => $this->request->getPost('description'),
                 'location' => $this->request->getPost('location'),
                 'price_publish' => $this->request->getPost('price_publish') ?? 0,
                 'price_net' => $this->request->getPost('price_net') ?? 0,
@@ -717,11 +740,11 @@ class Admin extends BaseController
             session()->setFlashdata('sukses', 'Wisata berhasil diperbarui!');
             session()->setFlashdata('active_tab', 'database');
             session()->setFlashdata('active_pill', $activePill);
-            return redirect()->to('/admin');
+            return redirect()->to(base_url('admin'));
         } catch (\Exception $e) {
             log_message('error', 'Update Wisata Error: ' . $e->getMessage());
             session()->setFlashdata('error', 'Error: ' . $e->getMessage());
-            return redirect()->to('/admin');
+            return redirect()->to(base_url('admin'));
         }
     }
 
@@ -744,11 +767,11 @@ class Admin extends BaseController
             session()->setFlashdata('sukses', 'Konsumsi berhasil ditambahkan!');
             session()->setFlashdata('active_tab', 'database');
             session()->setFlashdata('active_pill', 'tab-konsumsi');
-            return redirect()->to('/admin');
+            return redirect()->to(base_url('admin'));
         } catch (\Exception $e) {
             log_message('error', 'Save Konsumsi Error: ' . $e->getMessage());
             session()->setFlashdata('error', 'Error: ' . $e->getMessage());
-            return redirect()->to('/admin');
+            return redirect()->to(base_url('admin'));
         }
     }
 
@@ -1148,5 +1171,64 @@ class Admin extends BaseController
         }
         
         return $this->response->setJSON(['success' => true]);
+    }
+
+    // TIKET PESAWAT MANAGEMENT
+    // =========================================================================
+    
+    public function simpan_tiket_pesawat()
+    {
+        $db = \Config\Database::connect();
+        
+        // Buat table tiket_pesawat jika belum ada
+        if (!$db->tableExists('tiket_pesawat')) {
+            $forge = \Config\Database::forge();
+            $forge->addField([
+                'id' => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
+                'nama_maskapai' => ['type' => 'VARCHAR', 'constraint' => 255],
+                'rute' => ['type' => 'VARCHAR', 'constraint' => 255],
+                'harga' => ['type' => 'DECIMAL', 'constraint' => [15, 2]],
+                'deskripsi' => ['type' => 'TEXT', 'null' => true],
+                'is_active' => ['type' => 'TINYINT', 'constraint' => 1, 'default' => 1],
+                'created_at' => ['type' => 'TIMESTAMP', 'default' => 'CURRENT_TIMESTAMP'],
+                'updated_at' => ['type' => 'TIMESTAMP', 'default' => 'CURRENT_TIMESTAMP', 'on_update' => true],
+            ]);
+            $forge->addKey('id', 'PRIMARY');
+            $forge->createTable('tiket_pesawat');
+        }
+
+        // Simpan data tiket pesawat
+        $data = [
+            'nama_maskapai' => $this->request->getPost('nama_maskapai'),
+            'rute' => $this->request->getPost('rute'),
+            'harga' => (int)$this->request->getPost('harga'),
+            'deskripsi' => $this->request->getPost('deskripsi'),
+            'is_active' => (int)$this->request->getPost('is_active'),
+        ];
+        
+        try {
+            $db->table('tiket_pesawat')->insert($data);
+            session()->setFlashdata('sukses', 'Tiket pesawat berhasil ditambahkan!');
+        } catch (\Exception $e) {
+            log_message('error', 'Insert Tiket Pesawat Error: ' . $e->getMessage());
+            session()->setFlashdata('gagal', 'Gagal menambahkan tiket pesawat!');
+        }
+
+        return redirect()->back();
+    }
+
+    public function delete_tiket_pesawat($id)
+    {
+        $db = \Config\Database::connect();
+        
+        try {
+            $db->table('tiket_pesawat')->where('id', $id)->delete();
+            session()->setFlashdata('sukses', 'Tiket pesawat berhasil dihapus!');
+        } catch (\Exception $e) {
+            log_message('error', 'Delete Tiket Pesawat Error: ' . $e->getMessage());
+            session()->setFlashdata('gagal', 'Gagal menghapus tiket pesawat!');
+        }
+
+        return redirect()->back();
     }
 }

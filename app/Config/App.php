@@ -16,31 +16,23 @@ class App extends BaseConfig
      *
      * E.g., http://example.com/
      */
-    public string $baseURL = '';
+    public string $baseURL = 'http://localhost:8080/dinara/public/';
 
     public function __construct()
     {
         parent::__construct();
         
-        // Get baseURL from environment or construct it dynamically
-        if (empty($this->baseURL)) {
+        // Get baseURL from environment variable if set
+        $envBaseURL = env('app.baseURL');
+        if (!empty($envBaseURL)) {
+            // Gunakan langsung dari env tanpa tambahan path
+            $this->baseURL = rtrim($envBaseURL, '/') . '/';
+        } else {
+            // Default fallback
             $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-            $host = $_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] ?? 'localhost');
-            
-            // Check if we're in subdirectory
-            $script = $_SERVER['SCRIPT_NAME'] ?? '/index.php';
-            $baseDir = dirname($script);
-            
-            // Remove /public from path if present
-            if (str_ends_with($baseDir, '/public')) {
-                $baseDir = dirname($baseDir);
-            }
-            
-            if (empty($baseDir) || $baseDir === '/') {
-                $this->baseURL = $protocol . '://' . $host . '/dinara/';
-            } else {
-                $this->baseURL = $protocol . '://' . $host . $baseDir . '/';
-            }
+            $host = $_SERVER['HTTP_HOST'] ?? 'localhost:8080';
+            $basePath = '/dinara/public/';
+            $this->baseURL = $protocol . '://' . $host . $basePath;
         }
     }
 

@@ -86,7 +86,20 @@
             <div class="col-md-6 col-lg-4 mb-3">
                 <div class="card border-0 shadow-sm rounded-4 h-100">
                     <div class="card-header bg-light border-0 rounded-4 rounded-bottom-0 d-flex align-items-center gap-2 py-3 px-4">
-                        <i class="bi bi-info-circle text-primary" style="font-size:1.3rem;"></i>
+                        <?php 
+                        // Icon khusus untuk setiap section
+                        $icon = 'bi-info-circle';
+                        if($info['key_name'] === 'floating_box') $icon = 'bi-window-dock';
+                        elseif($info['key_name'] === 'transport_land') $icon = 'bi-car-front';
+                        elseif($info['key_name'] === 'transport_sea') $icon = 'bi-ship';
+                        elseif($info['key_name'] === 'hotel') $icon = 'bi-building';
+                        elseif($info['key_name'] === 'activity') $icon = 'bi-water';
+                        elseif($info['key_name'] === 'guide') $icon = 'bi-person-badge';
+                        elseif($info['key_name'] === 'transport') $icon = 'bi-scooter';
+                        elseif($info['key_name'] === 'food') $icon = 'bi-egg-fried';
+                        elseif($info['key_name'] === 'facility') $icon = 'bi-star';
+                        ?>
+                        <i class="bi <?= $icon ?> text-primary" style="font-size:1.3rem;"></i>
                         <div>
                             <h6 class="fw-bold m-0 text-dark"><?= esc($info['title']) ?></h6>
                             <small class="text-muted"><?= esc($info['key_name']) ?></small>

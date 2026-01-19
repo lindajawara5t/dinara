@@ -56,6 +56,10 @@ $routes->post('admin/update_jadwal_kapal', 'Admin::update_jadwal_kapal'); // Upd
 $routes->get('admin/delete_jadwal_kapal/(:num)', 'Admin::delete_jadwal_kapal/$1'); // Hapus jadwal kapal
 $routes->get('admin/get_jadwal_kapal_json', 'Admin::get_jadwal_kapal_json'); // Get jadwal kapal as JSON
 
+// === [BARU] ROUTE TIKET PESAWAT ===
+$routes->post('admin/simpan_tiket_pesawat', 'Admin::simpan_tiket_pesawat'); // Simpan tiket pesawat
+$routes->get('admin/delete_tiket_pesawat/(:num)', 'Admin::delete_tiket_pesawat/$1'); // Hapus tiket pesawat
+
 // === [BARU] ROUTE HERO SLIDESHOW ===
 $routes->get('admin/get_slideshows', 'Admin::get_slideshows'); // Get all slideshows
 $routes->post('admin/save_slideshow', 'Admin::save_slideshow'); // Save new slideshow
@@ -73,10 +77,19 @@ $routes->post('kalkulator/hitung', 'Kalkulator::hitung'); // <--- INI YANG TADIN
 $routes->get('itinerary', 'Kalkulator::itinerary');     // Halaman Itinerary Detail
 $routes->get('itinerary/(:num)', 'Kalkulator::itinerary/$1'); // Halaman Itinerary dengan durasi
 
+// === [BARU] RUTE API BOOKING ===
+$routes->post('api/submit-booking', 'Api::submitBooking'); // Submit booking form dengan data tamu
+$routes->get('booking/confirmation/(:any)', 'Booking::confirmation/$1'); // Halaman konfirmasi booking
+$routes->get('admin/bookings', 'Bookings::index'); // Admin daftar booking
+$routes->get('admin/booking/(:num)', 'Bookings::detail/$1'); // Admin detail booking
+$routes->post('admin/booking/update-status', 'Bookings::updateStatus'); // Update status booking
+$routes->get('admin/finance', 'Finance::index'); // Admin finance dashboard
+
 // 4. RUTE SETTINGS
 $routes->get('settings/unified', 'Settings::settingsUnified');         // [NEW] Halaman settings unified modern 2027
 $routes->post('settings/save-unified', 'Settings::saveUnified');       // [NEW] Simpan settings unified
 $routes->get('settings/debug', 'Settings::debugSettings');             // [NEW] Debug page untuk cek database dan file
+$routes->get('settings/test-estimasi', 'Settings::testEstimasi');      // [TEST] Test method untuk debug
 $routes->get('settings/estimasi-info', 'Settings::estimasiInfo');      // Halaman settings estimasi
 $routes->post('settings/update-estimasi-info/(:any)', 'Settings::updateEstimasiInfo/$1'); // Update satu info
 $routes->post('settings/reset-estimasi-info-defaults', 'Settings::resetEstimasiInfoDefaults'); // Reset defaults

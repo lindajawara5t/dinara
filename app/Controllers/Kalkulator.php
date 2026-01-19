@@ -119,7 +119,33 @@ class Kalkulator extends BaseController
         $lokal     = $getRichData(['transport_local']);  
         $guide     = $getRichData(['guide']); 
 
+        // Load Tiket Kapal & Pesawat
         $kapal     = $db->table('service_categories')->where('type', 'transport_sea')->get()->getResultArray();
+        
+        // Buat & Load Tiket Pesawat
+        $pesawat = [];
+        if (!$db->tableExists('tiket_pesawat')) {
+            $forge = \Config\Database::forge();
+            $forge->addField([
+                'id' => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
+                'nama_maskapai' => ['type' => 'VARCHAR', 'constraint' => 255],
+                'rute' => ['type' => 'VARCHAR', 'constraint' => 255],
+                'harga' => ['type' => 'DECIMAL', 'constraint' => [15, 2]],
+                'deskripsi' => ['type' => 'TEXT', 'null' => true],
+                'is_active' => ['type' => 'TINYINT', 'constraint' => 1, 'default' => 1],
+                'created_at' => ['type' => 'TIMESTAMP', 'default' => new \CodeIgniter\Database\RawSql('CURRENT_TIMESTAMP')],
+                'updated_at' => ['type' => 'TIMESTAMP', 'default' => new \CodeIgniter\Database\RawSql('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')],
+            ]);
+            $forge->addKey('id', 'PRIMARY');
+            $forge->createTable('tiket_pesawat');
+            
+            // Insert default data
+            $db->table('tiket_pesawat')->insertBatch([
+                ['nama_maskapai' => 'Batik Air Charter', 'rute' => 'Semarang → Karimunjawa', 'harga' => 2500000, 'deskripsi' => 'Charter Pesawat: Lebih cepat dan nyaman', 'is_active' => 1],
+            ]);
+        }
+        $pesawat = $db->table('tiket_pesawat')->where('is_active', 1)->orderBy('harga', 'ASC')->get()->getResultArray();
+
         
         // [NEW] DESTINASI LAUT (HOPPING ISLAND - OPEN TRIP / PRIVATE TRIP / DIVING / MANCING)
         $destinasi_laut = $getRichData(['destinasi_laut']); // Ambil tipe 'destinasi_laut' dari database
@@ -176,10 +202,13 @@ class Kalkulator extends BaseController
 
         // 7b. AMBIL ESTIMASI SETTINGS (untuk info popover)
         $estimasi_settings = [];
+        $floating_box_description = null; // Default null, akan diisi dari database
+        $floating_box_found = false; // Flag untuk cek apakah data ditemukan
+        
         if ($db->tableExists('site_content')) {
             $estimasi_list = $db->table('site_content')
                 ->where('page_name', 'estimasi')
-                ->get()
+                ->get(0, 0, false) // Disable cache
                 ->getResultArray();
             
             // Group by section_name
@@ -189,7 +218,18 @@ class Kalkulator extends BaseController
                     $estimasi_settings[$section] = [];
                 }
                 $estimasi_settings[$section][$item['content_key']] = $item['content_value'];
+                
+                // Ambil deskripsi floating box jika ada (bahkan jika kosong)
+                if ($section === 'floating_box' && $item['content_key'] === 'description') {
+                    $floating_box_description = $item['content_value'];
+                    $floating_box_found = true;
+                }
             }
+        }
+        
+        // Jika tidak ditemukan di database sama sekali, gunakan default
+        if (!$floating_box_found) {
+            $floating_box_description = 'Ini total estimasi termurah liburan ke Karimunjawa 3H2M. Kamu bisa upgrade dengan klik pilihan yang ada!';
         }
 
         // 8. KIRIM DATA KE VIEW
@@ -214,6 +254,7 @@ class Kalkulator extends BaseController
             // 2. Kirim sebagai JSON
             'json_kota_asal' => json_encode($peta_data),
             'json_kapal'     => json_encode($kapal),
+            'json_pesawat'   => json_encode($pesawat),
             'json_lokal'     => json_encode($lokal),
             'json_hotels'    => json_encode($hotels),
             'json_tour_laut' => json_encode($tour_laut),    // <--- BARU
@@ -226,6 +267,7 @@ class Kalkulator extends BaseController
             'json_itinerary_4d' => json_encode($itinerary_4d),
             'json_service_info' => json_encode($service_info),
             'json_estimasi_settings' => json_encode($estimasi_settings),
+            'floating_box_description' => $floating_box_description,
             
             // Koordinat Peta
             'coord_jepara'   => json_encode(['lat' => -6.5950, 'lng' => 110.6690]),

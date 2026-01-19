@@ -1,0 +1,54 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# PHP
+composer.lock
+vendor/
+
+# Node (jika ada)
+node_modules/
+package-lock.json
+npm-debug.log
+
+# Logs
+writable/logs/
+*.log
+
+# Cache
+writable/cache/
+writable/debugbar/
+.cache/
+
+# OS
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Session files
+writable/session/
+
+# Upload files (optional)
+# uploads/*
+# !uploads/.gitkeep
+
+# Build output
+dist/
+build/
+
+# Testing
+coverage/
+.phpunit.result.cache

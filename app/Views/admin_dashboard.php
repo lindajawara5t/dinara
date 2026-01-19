@@ -154,8 +154,16 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="<?= base_url('admin/bookings') ?>" style="display: flex; align-items: center; justify-content: space-between;">
+                    <span><i class="bi bi-journal-text"></i> Manajemen Booking</span>
+                    <?php if($chart_pending > 0): ?>
+                        <span class="badge bg-danger"><?= $chart_pending ?></span>
+                    <?php endif; ?>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link <?= $activeTab === 'booking' ? 'active' : '' ?>" onclick="switchMenu('booking', this)">
-                    <i class="bi bi-journal-text"></i> Catatan Tamu
+                    <i class="bi bi-journal-text"></i> Catatan Tamu (Legacy)
                 </a>
             </li>
             <li class="nav-item">
@@ -211,11 +219,11 @@
                                     <?php if(!empty($booking_list)): foreach($booking_list as $b): ?>
                                     <tr>
                                         <td><span class="badge bg-light text-dark border"><?= $b['booking_code'] ?></span></td>
-                                        <td class="fw-bold"><?= $b['guest_name'] ?></td>
+                                        <td class="fw-bold"><?= $b['customer_name'] ?></td>
                                         <td><?= $b['travel_date'] ?></td>
-                                        <td class="text-success fw-bold">Rp <?= number_format($b['profit']) ?></td>
+                                        <td class="text-success fw-bold">Rp <?= number_format($b['profit'] ?? 0) ?></td>
                                         <td><span class="badge bg-<?= ($b['status']=='confirmed'?'success':($b['status']=='pending'?'warning':'danger')) ?>"><?= strtoupper($b['status']) ?></span></td>
-                                        <td><a href="/admin/booking_detail/<?= $b['id'] ?>" class="btn btn-sm btn-primary">Kelola</a></td>
+                                        <td><a href="<?= base_url('admin/booking_detail/'.$b['id']) ?>" class="btn btn-sm btn-primary">Kelola</a></td>
                                     </tr>
                                     <?php endforeach; else: ?><tr><td colspan="6" class="text-center text-muted py-4">Belum ada booking masuk.</td></tr><?php endif; ?>
                                 </tbody>
@@ -241,6 +249,7 @@
                     <li class="nav-item"><button class="nav-link <?= $activePill === 'tab-itinerary' ? 'active' : '' ?>" data-bs-toggle="pill" data-bs-target="#tab-itinerary"><i class="bi bi-calendar3"></i> Itinerary</button></li>
                     <li class="nav-item"><button class="nav-link <?= $activePill === 'tab-darat' ? 'active' : '' ?>" data-bs-toggle="pill" data-bs-target="#tab-darat"><i class="bi bi-bus-front"></i> Shuttle</button></li>
                     <li class="nav-item"><button class="nav-link <?= $activePill === 'tab-laut' ? 'active' : '' ?>" data-bs-toggle="pill" data-bs-target="#tab-laut"><i class="bi bi-ship"></i> Kapal</button></li>
+                    <li class="nav-item"><button class="nav-link <?= $activePill === 'tab-pesawat' ? 'active' : '' ?>" data-bs-toggle="pill" data-bs-target="#tab-pesawat"><i class="bi bi-airplane"></i> Pesawat</button></li>
                     <li class="nav-item"><button class="nav-link <?= $activePill === 'tab-kdarat' ? 'active' : '' ?>" data-bs-toggle="pill" data-bs-target="#tab-kdarat"><i class="bi bi-car-front"></i> Trans.KJ</button></li>
                     <li class="nav-item"><button class="nav-link <?= $activePill === 'tab-rental' ? 'active' : '' ?>" data-bs-toggle="pill" data-bs-target="#tab-rental"><i class="bi bi-bicycle"></i> Rental</button></li>
                     <li class="nav-item"><button class="nav-link <?= $activePill === 'tab-guide' ? 'active' : '' ?>" data-bs-toggle="pill" data-bs-target="#tab-guide"><i class="bi bi-person-badge"></i> Guide</button></li>
@@ -252,10 +261,157 @@
                     <div class="tab-pane fade <?= (!$activePill || $activePill === 'tab-hotel') ? 'show active' : '' ?>" id="tab-hotel"><?= renderTable('Hotel & Homestay', $penginapan, true) ?></div>
                     <div class="tab-pane fade <?= $activePill === 'tab-wisata-darat' ? 'show active' : '' ?>" id="tab-wisata-darat"><?= renderWisataTable('Wisata Darat', $wisata_darat ?? [], 'wisata_darat') ?></div>
                     <div class="tab-pane fade <?= $activePill === 'tab-wisata-laut' ? 'show active' : '' ?>" id="tab-wisata-laut"><?= renderWisataTable('Wisata Laut', $wisata_laut ?? [], 'wisata_laut') ?></div>
-                    <div class="tab-pane fade <?= $activePill === 'tab-konsumsi' ? 'show active' : '' ?>" id="tab-konsumsi"><?= renderKonsumsiTable('Konsumsi/Paket Makanan', $konsumsi ?? []) ?></div>
+                    <div class="tab-pane fade <?= $activePill === 'tab-konsumsi' ? 'show active' : '' ?>" id="tab-konsumsi">
+                        <div class="mb-4">
+                            <form action="<?= base_url('admin/save_konsumsi') ?>" method="POST">
+                                <?= csrf_field() ?>
+                                <div class="row mb-3">
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold">Nama Paket Makanan</label>
+                                        <input type="text" class="form-control" name="name" required placeholder="Contoh: Paket Breakfast">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold">Tipe Konsumsi</label>
+                                        <select class="form-control" name="meal_type" required>
+                                            <option value="">-- Pilih Tipe --</option>
+                                            <option value="breakfast">Pagi (Breakfast)</option>
+                                            <option value="lunch">Siang (Lunch)</option>
+                                            <option value="dinner">Malam (Dinner)</option>
+                                            <option value="snack">Snack</option>
+                                            <option value="all">Semua Paket (All)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold">Harga Per Orang</label>
+                                        <input type="number" class="form-control" name="price_per_person" required placeholder="50000">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold">&nbsp;</label>
+                                        <button type="submit" class="btn btn-primary fw-bold w-100">
+                                            <i class="bi bi-plus-lg me-2"></i>Tambah Konsumsi
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label fw-bold">Deskripsi</label>
+                                        <textarea class="form-control" name="description" rows="2" placeholder="Contoh: Menu nasi goreng, soto ayam, minuman segar"></textarea>
+                                    </div>
+                                </div>
+                            </form>
+                            <hr>
+                        </div>
+
+                        <!-- DAFTAR KONSUMSI -->
+                        <h6 class="fw-bold mb-3"><i class="bi bi-list-ul me-2"></i>Paket Konsumsi yang Tersedia</h6>
+                        <?= renderKonsumsiTable('Konsumsi/Paket Makanan', $konsumsi ?? []) ?>
+                    </div>
                     <div class="tab-pane fade <?= $activePill === 'tab-itinerary' ? 'show active' : '' ?>" id="tab-itinerary"><?= renderItineraryTable('Itinerary Perjalanan', $itinerary ?? []) ?></div>
                     <div class="tab-pane fade <?= $activePill === 'tab-darat' ? 'show active' : '' ?>" id="tab-darat"><?= renderTable('Shuttle Jepara', $darat, false) ?></div>
                     <div class="tab-pane fade <?= $activePill === 'tab-laut' ? 'show active' : '' ?>" id="tab-laut"><?= renderTable('Tiket Kapal', $laut, false) ?></div>
+                    
+                    <!-- TAB PESAWAT -->
+                    <div class="tab-pane fade <?= $activePill === 'tab-pesawat' ? 'show active' : '' ?>" id="tab-pesawat">
+                        <div class="mb-4">
+                            <form action="<?= base_url('admin/simpan_tiket_pesawat') ?>" method="POST">
+                                <div class="row mb-3">
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold">Maskapai/Nama Pesawat</label>
+                                        <input type="text" class="form-control" name="nama_maskapai" required placeholder="Contoh: Batik Air Charter">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold">Rute</label>
+                                        <input type="text" class="form-control" name="rute" required placeholder="Contoh: Semarang → Karimunjawa">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label fw-bold">Harga</label>
+                                        <input type="number" class="form-control" name="harga" required placeholder="2500000">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label fw-bold">Status</label>
+                                        <select class="form-control" name="is_active" required>
+                                            <option value="1">Aktif</option>
+                                            <option value="0">Tidak Aktif</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label fw-bold">Deskripsi</label>
+                                        <textarea class="form-control" name="deskripsi" rows="2" placeholder="Contoh: Charter Pesawat: Lebih cepat dan nyaman"></textarea>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary fw-bold">
+                                    <i class="bi bi-plus-lg me-2"></i>Tambah Tiket Pesawat
+                                </button>
+                            </form>
+                            <hr>
+                        </div>
+
+                        <!-- DAFTAR TIKET PESAWAT -->
+                        <h6 class="fw-bold mb-3"><i class="bi bi-list-ul me-2"></i>Tiket Pesawat yang Tersedia</h6>
+                        <div class="table-responsive">
+                            <table class="table table-hover border">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th width="20%">Maskapai</th>
+                                        <th width="20%">Rute</th>
+                                        <th width="15%">Harga</th>
+                                        <th width="15%">Status</th>
+                                        <th width="20%">Deskripsi</th>
+                                        <th width="10%">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php 
+                                        $db = \Config\Database::connect();
+                                        if ($db->tableExists('tiket_pesawat')) {
+                                            $pesawats = $db->table('tiket_pesawat')->orderBy('harga', 'ASC')->get()->getResultArray();
+                                            if (!empty($pesawats)) {
+                                                foreach($pesawats as $pesawat):
+                                    ?>
+                                    <tr>
+                                        <td><strong><?= esc($pesawat['nama_maskapai']) ?></strong></td>
+                                        <td><?= esc($pesawat['rute']) ?></td>
+                                        <td><strong>Rp <?= number_format($pesawat['harga'], 0, ',', '.') ?></strong></td>
+                                        <td>
+                                            <span class="badge bg-<?= ($pesawat['is_active'] ? 'success' : 'danger') ?>">
+                                                <?= ($pesawat['is_active'] ? 'Aktif' : 'Tidak Aktif') ?>
+                                            </span>
+                                        </td>
+                                        <td><?= esc($pesawat['deskripsi'] ?? '-') ?></td>
+                                        <td>
+                                            <a href="<?= base_url('admin/delete_tiket_pesawat/' . $pesawat['id']) ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus?')">
+                                                <i class="bi bi-trash"></i> Hapus
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <?php 
+                                                endforeach;
+                                            } else {
+                                    ?>
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">
+                                            <i class="bi bi-inbox"></i> Belum ada tiket pesawat. Silakan tambahkan di atas.
+                                        </td>
+                                    </tr>
+                                    <?php 
+                                            }
+                                        } else {
+                                    ?>
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">
+                                            <i class="bi bi-inbox"></i> Tabel tiket pesawat belum ada.
+                                        </td>
+                                    </tr>
+                                    <?php 
+                                        }
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                     <div class="tab-pane fade <?= $activePill === 'tab-kdarat' ? 'show active' : '' ?>" id="tab-kdarat"><?= renderTable('Transport Karimun', $karimun_darat, false) ?></div>
                     <div class="tab-pane fade <?= $activePill === 'tab-rental' ? 'show active' : '' ?>" id="tab-rental"><?= renderTable('Rental Motor/Mobil', $rental, false) ?></div>
                     <div class="tab-pane fade <?= $activePill === 'tab-guide' ? 'show active' : '' ?>" id="tab-guide"><?= renderTable('Guide', $guide, false) ?></div>
@@ -276,7 +432,7 @@
                                             <small class="text-muted" style="font-size: 0.65rem;"><i class="bi bi-hand-index"></i> Klik peta untuk pilih lokasi</small>
                                         </div>
                                         
-                                        <form action="/admin/simpan_kota" method="post" class="mt-2">
+                                        <form action="<?= base_url('admin/simpan_kota') ?>" method="post" class="mt-2">
                                             <div class="mb-2">
                                                 <input type="text" name="name" id="pick_name" class="form-control form-control-sm" placeholder="Nama Lokasi (cth: Stasiun Semarang)" required>
                                             </div>
@@ -335,7 +491,7 @@
                                                         <td class="text-center">
                                                             <div class="action-group">
                                                                 <button type="button" class="btn btn-info btn-action text-white" onclick="viewOnMap(<?= $k['lat'] ?>, <?= $k['lng'] ?>, '<?= esc($k['name']) ?>')" title="Lihat di Peta"><i class="bi bi-eye"></i></button>
-                                                                <a href="/admin/hapus_kota/<?= $k['id'] ?>" class="btn btn-outline-danger btn-action" onclick="return confirm('Hapus lokasi ini?')" title="Hapus"><i class="bi bi-trash"></i></a>
+                                                                <a href="<?= base_url('admin/hapus_kota/'.$k['id']) ?>" class="btn btn-outline-danger btn-action" onclick="return confirm('Hapus lokasi ini?')" title="Hapus"><i class="bi bi-trash"></i></a>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -357,10 +513,84 @@
 
         <div id="view-booking" class="section-view <?= $activeTab === 'booking' ? 'active' : '' ?>">
             <h3 class="fw-bold text-secondary mb-4">Catatan Tamu & Booking</h3>
-            <div class="card border-0 shadow-sm p-4 text-center">
-                <i class="bi bi-journal-album text-muted" style="font-size: 3rem;"></i>
-                <h5 class="mt-3">Halaman Lengkap Booking</h5>
-                <p class="text-muted">Fitur pencarian dan filter lengkap akan tampil disini.</p>
+            
+            <div class="card border-0 shadow-sm p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold text-primary m-0">Daftar Booking</h5>
+                    <input type="text" class="form-control form-control-sm" style="width: 200px;" placeholder="Cari booking code atau nama...">
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="120">Booking Code</th>
+                                <th>Nama Tamu</th>
+                                <th>Email</th>
+                                <th width="120">Tgl Booking</th>
+                                <th width="100">Jumlah</th>
+                                <th width="130">Total Harga</th>
+                                <th width="120">Status Booking</th>
+                                <th width="120">Pembayaran</th>
+                                <th width="100">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if(!empty($booking_list)): foreach($booking_list as $b): ?>
+                            <tr>
+                                <td><code style="background: #f0f0f0; padding: 4px 8px; border-radius: 4px;"><?= esc($b['booking_code']) ?></code></td>
+                                <td><strong><?= esc($b['customer_name']) ?></strong></td>
+                                <td><small><?= esc($b['customer_email']) ?></small></td>
+                                <td><small><?= date('d M Y', strtotime($b['created_at'])) ?></small></td>
+                                <td class="text-center"><strong><?= $b['num_people'] ?> orang</strong></td>
+                                <td class="fw-bold text-success">Rp <?= number_format($b['total_price'], 0, ',', '.') ?></td>
+                                <td>
+                                    <?php
+                                    $statusColor = ['pending' => '#FFA500', 'confirmed' => '#0dcaf0', 'completed' => '#10b981', 'cancelled' => '#e74c3c'];
+                                    $statusText = ['pending' => 'Pending', 'confirmed' => 'Confirmed', 'completed' => 'Completed', 'cancelled' => 'Cancelled'];
+                                    $status = strtolower($b['status']);
+                                    ?>
+                                    <span style="background: <?= $statusColor[$status] ?? '#999' ?>; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">
+                                        <?= $statusText[$status] ?? 'Unknown' ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <?php
+                                    $paymentStatus = strtolower($b['payment_status']);
+                                    $paymentColors = ['unpaid' => '#fbbf24', 'partial' => '#60a5fa', 'paid' => '#34d399'];
+                                    ?>
+                                    <span style="background: <?= $paymentColors[$paymentStatus] ?? '#999' ?>; color: <?= $paymentStatus === 'paid' ? '#065f46' : '#333' ?>; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">
+                                        <?php
+                                        $paymentLabels = ['unpaid' => 'Belum Bayar', 'partial' => 'Sebagian', 'paid' => 'Sudah Bayar'];
+                                        echo $paymentLabels[$paymentStatus] ?? 'Unknown';
+                                        ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewBookingDetail(<?= $b['id'] ?>)" title="Lihat Detail">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success" onclick="managePayment(<?= $b['id'] ?>)" title="Kelola Pembayaran">
+                                        <i class="bi bi-cash-coin"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <?php endforeach; else: ?>
+                            <tr>
+                                <td colspan="9" class="text-center text-muted py-4">
+                                    <i class="bi bi-inbox" style="font-size: 2rem;"></i><br>
+                                    <small>Belum ada booking</small>
+                                </td>
+                            </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-3 d-flex justify-content-between align-items-center">
+                    <small class="text-muted">Menampilkan <?= count($booking_list) ?> booking terbaru</small>
+                    <a href="<?= base_url('admin/bookings') ?>" class="btn btn-sm btn-primary">Lihat Semua Booking</a>
+                </div>
             </div>
         </div>
 
@@ -400,7 +630,7 @@
                     <div class="alert alert-danger shadow-sm">
                         <h6 class="fw-bold text-danger"><i class="bi bi-exclamation-triangle-fill"></i> Reset Pabrik</h6>
                         <p class="small text-muted mb-2">Hati-hati! Data yang dihapus tidak bisa dikembalikan.</p>
-                        <form action="/admin/reset_data" method="post" onsubmit="return confirm('ANDA YAKIN? SEMUA DATA AKAN HILANG PERMANEN!')">
+                        <form action="<?= base_url('admin/reset_data') ?>" method="post" onsubmit="return confirm('ANDA YAKIN? SEMUA DATA AKAN HILANG PERMANEN!');">
                             <select name="reset_mode" class="form-select form-select-sm border-danger text-danger fw-bold mb-2">
                                 <option value="" disabled selected>-- Pilih Opsi Reset --</option>
                                 <option value="tamu">Hapus Data Tamu & Keuangan</option>
@@ -420,7 +650,7 @@
                         
                         <div class="bg-light p-3 rounded mb-4 border">
                             <h6 class="small fw-bold text-muted mb-2">Tambah Promo Baru</h6>
-                            <form action="/admin/simpan_konten" method="post" enctype="multipart/form-data">
+                            <form action="<?= base_url('admin/simpan_konten') ?>" method="post" enctype="multipart/form-data">
                                 <div class="row g-2">
                                     <div class="col-md-4">
                                         <input type="text" name="title" class="form-control form-control-sm" placeholder="Judul Promo" required>
@@ -448,7 +678,7 @@
                                             <div class="text-muted small text-truncate" style="max-width: 350px;"><?= esc($p['description'] ?? '') ?></div>
                                         </td>
                                         <td class="text-end">
-                                            <a href="/admin/hapus_konten/<?= $p['id'] ?>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Hapus promo ini?')"><i class="bi bi-trash"></i></a>
+                                            <a href="<?= base_url('admin/hapus_konten/'.$p['id']) ?>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Hapus promo ini?')"><i class="bi bi-trash"></i></a>
                                         </td>
                                     </tr>
                                     <?php endforeach; else: ?>
@@ -960,49 +1190,6 @@
             </div>
         </div>
 
-        <!-- ==================== SETTINGS ESTIMASI SECTION ==================== -->
-        <div id="view-settings_estimasi" class="section-view <?= $activeTab === 'settings_estimasi' ? 'active' : '' ?>">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3 class="fw-bold text-secondary mb-0"><i class="bi bi-sliders text-primary"></i> Settings Estimasi Biaya</h3>
-            </div>
-            <p class="text-muted small mb-4">Kelola deskripsi dan informasi untuk setiap detail estimasi biaya yang ditampilkan di landing page.</p>
-
-            <div class="row">
-                <?php 
-                $estimasiDefaults = [
-                    ['key' => 'transport_land', 'title' => 'Transportasi Darat', 'desc' => $settings['est_transport_land'] ?? 'Biaya transportasi darat dari titik jemput ke Jepara PP'],
-                    ['key' => 'transport_sea', 'title' => 'Transportasi Laut', 'desc' => $settings['est_transport_sea'] ?? 'Harga tiket kapal PP dari Jepara ke Karimunjawa'],
-                    ['key' => 'hotel', 'title' => 'Penginapan', 'desc' => $settings['est_hotel'] ?? 'Harga per kamar per malam (sharing room)'],
-                    ['key' => 'wisata_laut', 'title' => 'Wisata Laut', 'desc' => $settings['est_wisata_laut'] ?? 'Paket Island Hopping dengan snorkeling'],
-                    ['key' => 'wisata_darat', 'title' => 'Wisata Darat', 'desc' => $settings['est_wisata_darat'] ?? 'Paket City Tour dengan tiket masuk'],
-                    ['key' => 'guide', 'title' => 'Guide Lokal', 'desc' => $settings['est_guide'] ?? 'Jasa pemandu wisata profesional'],
-                    ['key' => 'transport', 'title' => 'Transport Lokal', 'desc' => $settings['est_transport'] ?? 'Biaya sewa motor/mobil lokal per hari'],
-                    ['key' => 'food', 'title' => 'Konsumsi', 'desc' => $settings['est_food'] ?? 'Biaya makan 3x sehari'],
-                ];
-                foreach($estimasiDefaults as $est): 
-                ?>
-                <div class="col-md-6 col-lg-4 mb-3">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-header py-2 bg-light">
-                            <h6 class="fw-bold m-0 text-dark small"><i class="bi bi-info-circle text-primary me-2"></i><?= $est['title'] ?></h6>
-                        </div>
-                        <div class="card-body">
-                            <form action="<?= base_url('settings/save-homepage') ?>" method="POST">
-                                <input type="hidden" name="section" value="estimasi">
-                                <div class="mb-2">
-                                    <textarea class="form-control form-control-sm" name="est_<?= $est['key'] ?>" rows="3"><?= esc($est['desc']) ?></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary btn-sm w-100">
-                                    <i class="bi bi-check-lg"></i> Simpan
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-
     </div>
 
     <div class="modal fade" id="modalTambah" tabindex="-1">
@@ -1012,7 +1199,7 @@
                     <h6 class="modal-title m-0 text-white"><i class="bi bi-plus-circle"></i> Tambah Data Baru</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="/admin/simpan" method="post" enctype="multipart/form-data">
+                <form action="<?= base_url('admin/simpan') ?>" method="post" enctype="multipart/form-data">
                     <div class="modal-body p-3">
                         <div class="mb-2">
                             <label class="small fw-bold text-muted mb-1">KATEGORI</label>
@@ -1063,12 +1250,8 @@
                                 <input type="file" name="image" class="form-control form-control-sm">
                             </div>
                             <div id="box-lokasi" style="display: none;" class="mt-2">
-                                <label class="small text-info">📍 Lokasi & Koordinat</label>
-                                <input type="text" name="location" class="form-control form-control-sm mb-1" placeholder="Nama lokasi">
-                                <div class="row g-1">
-                                    <div class="col-6"><input type="number" step="0.00001" name="lat" class="form-control form-control-sm" placeholder="Lat"></div>
-                                    <div class="col-6"><input type="number" step="0.00001" name="lng" class="form-control form-control-sm" placeholder="Lng"></div>
-                                </div>
+                                <label class="small text-info">� Deskripsi Paket</label>
+                                <textarea name="location" class="form-control form-control-sm" rows="2" placeholder="Deskripsi detail paket wisata..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -1089,7 +1272,7 @@
                     <h6 class="modal-title m-0"><i class="bi bi-pencil-square"></i> Edit Data</h6>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="/admin/update_layanan" method="post" enctype="multipart/form-data">
+                <form action="<?= base_url('admin/update_layanan') ?>" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="id" id="edit_id">
                     <div class="modal-body">
                         <div class="mb-2">
@@ -1131,7 +1314,7 @@
                     <h6 class="modal-title m-0"><i class="bi bi-pencil-square"></i> Edit Wisata</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="/admin/update_wisata" method="post">
+                <form action="<?= base_url('admin/update_wisata') ?>" method="post">
                     <input type="hidden" name="id" id="edit_wisata_id">
                     <input type="hidden" name="type" id="edit_wisata_type">
                     <div class="modal-body">
@@ -1141,11 +1324,7 @@
                         </div>
                         <div class="mb-2">
                             <label class="small fw-bold">Deskripsi</label>
-                            <textarea name="description" id="edit_wisata_desc" class="form-control form-control-sm" rows="2"></textarea>
-                        </div>
-                        <div class="mb-2">
-                            <label class="small fw-bold">Lokasi</label>
-                            <input type="text" name="location" id="edit_wisata_location" class="form-control form-control-sm">
+                            <textarea name="location" id="edit_wisata_location" class="form-control form-control-sm" rows="2" placeholder="Deskripsi detail paket wisata..."></textarea>
                         </div>
                         <div class="row g-2 mb-2">
                             <div class="col-6">
@@ -1174,7 +1353,7 @@
                     <h6 class="modal-title m-0"><i class="bi bi-pencil-square"></i> Edit Konsumsi</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="/admin/update_konsumsi" method="post">
+                <form action="<?= base_url('admin/update_konsumsi') ?>" method="post">
                     <input type="hidden" name="id" id="edit_konsumsi_id">
                     <div class="modal-body">
                         <div class="mb-2">
@@ -1216,7 +1395,7 @@
                     <h6 class="modal-title m-0"><i class="bi bi-pencil-square"></i> Edit Itinerary</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="/admin/update_itinerary" method="post">
+                <form action="<?= base_url('admin/update_itinerary') ?>" method="post">
                     <input type="hidden" name="id" id="edit_itin_id">
                     <div class="modal-body">
                         <div class="row g-2 mb-2">
@@ -1272,7 +1451,7 @@
                     <h6 class="modal-title m-0"><i class="bi bi-pencil-square"></i> Edit Jadwal Kapal</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="/admin/update_jadwal_kapal" method="post">
+                <form action="<?= base_url('admin/update_jadwal_kapal') ?>" method="post">
                     <input type="hidden" name="id" id="edit_jadwal_id">
                     <div class="modal-body">
                         <div class="mb-2">
@@ -1320,21 +1499,20 @@
 
     <?php
     function renderWisataTable($title, $data, $type) {
-        $html = '<div class="table-responsive"><table class="table table-compact mb-0"><thead><tr><th>Nama</th><th>Lokasi</th><th class="text-end">Jual</th><th class="text-end">Modal</th><th class="text-center">Aksi</th></tr></thead><tbody>';
+        $html = '<div class="table-responsive"><table class="table table-compact mb-0"><thead><tr><th>Nama</th><th class="text-end">Jual</th><th class="text-end">Modal</th><th class="text-center">Aksi</th></tr></thead><tbody>';
         if(empty($data)) {
-            $html .= '<tr><td colspan="5" class="text-center py-2 text-muted small"><i class="bi bi-inbox"></i> Kosong</td></tr>';
+            $html .= '<tr><td colspan="4" class="text-center py-2 text-muted small"><i class="bi bi-inbox"></i> Kosong</td></tr>';
         } else {
             foreach($data as $d) {
                 $d['type'] = $type;
                 $jsData = htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8');
                 $html .= '<tr>';
                 $html .= '<td><span class="fw-semibold">'.esc($d['name']).'</span></td>';
-                $html .= '<td><small class="text-muted">'.substr(esc($d['location'] ?? '-'),0,15).'</small></td>';
                 $html .= '<td class="text-end"><span class="price-badge sell">'.number_format($d['price_publish'] ?? 0, 0, ',', '.').'</span></td>';
                 $html .= '<td class="text-end"><span class="price-badge cost">'.number_format($d['price_net'] ?? 0, 0, ',', '.').'</span></td>';
                 $html .= '<td><div class="action-group">';
                 $html .= '<button class="btn btn-warning btn-action" onclick="openEditWisata('.$jsData.')" title="Edit"><i class="bi bi-pencil"></i></button>';
-                $html .= '<a href="/admin/delete_wisata/'.$d['id'].'/'.$type.'" class="btn btn-outline-danger btn-action" onclick="return confirm(\'Hapus?\')" title="Hapus"><i class="bi bi-trash"></i></a>';
+                $html .= '<a href="'.base_url('admin/delete_wisata/'.$d['id'].'/'.$type).'" class="btn btn-outline-danger btn-action" onclick="return confirm(\'Hapus?\')" title="Hapus"><i class="bi bi-trash"></i></a>';
                 $html .= '</div></td></tr>';
             }
         }
@@ -1354,10 +1532,10 @@
                 $html .= '<td class="text-end"><span class="price-badge sell">'.number_format($d['price_publish'],0,',','.').'</span></td>';
                 $html .= '<td class="text-end"><span class="price-badge cost">'.number_format($d['price_net'],0,',','.').'</span></td>';
                 $html .= '<td><div class="action-group">';
-                if($showImage) $html .= '<a href="/admin/manage_service/'.$d['id'].'" class="btn btn-info btn-action text-white" title="Foto"><i class="bi bi-image"></i></a>';
+                if($showImage) $html .= '<a href="'.base_url('admin/manage_service/'.$d['id']).'" class="btn btn-info btn-action text-white" title="Foto"><i class="bi bi-image"></i></a>';
                 $jsData = htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8');
                 $html .= '<button class="btn btn-warning btn-action" onclick="openEdit('.$jsData.')" title="Edit"><i class="bi bi-pencil"></i></button>';
-                $html .= '<a href="/admin/delete_layanan/'.$d['id'].'" class="btn btn-outline-danger btn-action" onclick="return confirm(\'Hapus?\')" title="Hapus"><i class="bi bi-trash"></i></a>';
+                $html .= '<a href="'.base_url('admin/delete_layanan/'.$d['id']).'" class="btn btn-outline-danger btn-action" onclick="return confirm(\'Hapus?\')" title="Hapus"><i class="bi bi-trash"></i></a>';
                 $html .= '</div></td></tr>';
             }
         }
@@ -1378,9 +1556,7 @@
                 $html .= '<td><span class="badge bg-secondary" style="font-size:0.6rem;">'.esc($mealLabel).'</span></td>';
                 $html .= '<td class="text-end"><span class="price-badge sell">'.number_format($d['price_per_person'], 0, ',', '.').'</span></td>';
                 $html .= '<td><div class="action-group">';
-                $jsData = htmlspecialchars(json_encode($d), ENT_QUOTES, 'UTF-8');
-                $html .= '<button class="btn btn-warning btn-action" onclick="openEditKonsumsi('.$jsData.')" title="Edit"><i class="bi bi-pencil"></i></button>';
-                $html .= '<a href="/admin/delete_konsumsi/'.$d['id'].'" class="btn btn-outline-danger btn-action" onclick="return confirm(\'Hapus?\')" title="Hapus"><i class="bi bi-trash"></i></a>';
+                $html .= '<a href="'.base_url('admin/delete_konsumsi/'.$d['id']).'" class="btn btn-outline-danger btn-action" onclick="return confirm(\'Hapus?\')" title="Hapus"><i class="bi bi-trash"></i></a>';
                 $html .= '</div></td></tr>';
             }
         }
@@ -1408,7 +1584,7 @@
                     $html .= '<td><small>'.$time.'</small></td>';
                     $html .= '<td><span class="fw-semibold">'.substr(esc($item['title']),0,20).'</span></td>';
                     $jsData = htmlspecialchars(json_encode($item), ENT_QUOTES, 'UTF-8');
-                    $html .= '<td><div class="action-group"><button class="btn btn-warning btn-action" onclick="openEditItinerary('.$jsData.')" title="Edit"><i class="bi bi-pencil"></i></button><a href="/admin/delete_itinerary/'.$item['id'].'" class="btn btn-outline-danger btn-action" onclick="return confirm(\'Hapus?\')" title="Hapus"><i class="bi bi-trash"></i></a></div></td>';
+                    $html .= '<td><div class="action-group"><button class="btn btn-warning btn-action" onclick="openEditItinerary('.$jsData.')" title="Edit"><i class="bi bi-pencil"></i></button><a href="'.base_url('admin/delete_itinerary/'.$item['id']).'" class="btn btn-outline-danger btn-action" onclick="return confirm(\'Hapus?\')" title="Hapus"><i class="bi bi-trash"></i></a></div></td>';
                     $html .= '</tr>';
                 }
             }
@@ -1464,7 +1640,6 @@
             document.getElementById('edit_wisata_id').value = data.id;
             document.getElementById('edit_wisata_type').value = data.type;
             document.getElementById('edit_wisata_name').value = data.name;
-            document.getElementById('edit_wisata_desc').value = data.description || '';
             document.getElementById('edit_wisata_location').value = data.location || '';
             document.getElementById('edit_wisata_pub').value = data.price_publish || 0;
             document.getElementById('edit_wisata_net').value = data.price_net || 0;

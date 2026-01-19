@@ -143,20 +143,24 @@ $slideshows = $slideshowModel->getAllSlideshows();
             
             <div class="mb-3">
                 <label for="slideshow_button_url" class="form-label">Link Tombol (Opsional)</label>
-                <select class="form-select" id="slideshow_button_url">
-                    <option value="">-- Pilih Link --</option>
-                    <option value="javascript:showSection('promo')">🎉 Promo (JavaScript)</option>
-                    <option value="/kalkulator">🧮 Hitung Kalkulasi</option>
-                    <option value="/destinasi">🗺️ Destinasi</option>
-                    <option value="/hotel">🏨 Hotel</option>
-                    <option value="/travel">✈️ Travel & Wisata</option>
-                    <option value="/travel/karimunjawa">🏝️ Karimunjawa</option>
-                    <option value="/blog">📰 Blog & Terbaru</option>
-                    <option value="https://www.susiair.com/">✈️ Tiket Pesawat</option>
-                    <option value="javascript:showSection('estimasi')">🚤 Tiket Kapal</option>
-                    <option value="javascript:showSection('estimasi')">📋 Estimasi Harga</option>
-                </select>
-                <small class="text-muted">Pilih halaman tujuan untuk tombol</small>
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <select class="form-select" id="slideshow_button_url" style="flex: 1;">
+                        <option value="">-- Pilih Link Terusan --</option>
+                        <option value="/">🏠 Home (Beranda)</option>
+                        <option value="/promo">🎉 Promo</option>
+                        <option value="/kalkulator">🧮 Hitung Kalkulasi</option>
+                        <option value="/destinasi">🗺️ Destinasi</option>
+                        <option value="/hotel">🏨 Hotel</option>
+                        <option value="/travel">✈️ Travel & Wisata</option>
+                        <option value="/travel/karimunjawa">🏝️ Karimunjawa</option>
+                        <option value="/blog">📰 Blog & Terbaru</option>
+                        <option value="https://www.susiair.com/">✈️ Tiket Pesawat</option>
+                        <option value="/estimasi">🚤 Estimasi Harga</option>
+                        <option value="/contact">📞 Hubungi Kami</option>
+                    </select>
+                    <input type="text" class="form-control" id="slideshow_button_url_custom" placeholder="Atau masukkan custom URL..." style="flex: 0.8;">
+                </div>
+                <small class="text-muted">Pilih dari dropdown atau masukkan custom URL (https://... atau /path). Custom URL akan menimpa pilihan dropdown.</small>
             </div>
             
             <button type="button" class="btn btn-primary w-100" onclick="uploadSlideshow()" id="upload-btn" disabled>
@@ -269,20 +273,24 @@ $slideshows = $slideshowModel->getAllSlideshows();
                 
                 <div class="mb-3">
                     <label for="edit_slideshow_button_url" class="form-label">Link Tombol</label>
-                    <select class="form-select" id="edit_slideshow_button_url">
-                        <option value="">-- Pilih Link --</option>
-                        <option value="javascript:showSection('promo')">🎉 Promo (JavaScript)</option>
-                        <option value="/kalkulator">🧮 Hitung Kalkulasi</option>
-                        <option value="/destinasi">🗺️ Destinasi</option>
-                        <option value="/hotel">🏨 Hotel</option>
-                        <option value="/travel">✈️ Travel & Wisata</option>
-                        <option value="/travel/karimunjawa">🏝️ Karimunjawa</option>
-                        <option value="/blog">📰 Blog & Terbaru</option>
-                        <option value="https://www.susiair.com/">✈️ Tiket Pesawat</option>
-                        <option value="javascript:showSection('estimasi')">🚤 Tiket Kapal</option>
-                        <option value="javascript:showSection('estimasi')">📋 Estimasi Harga</option>
-                    </select>
-                    <small class="text-muted">Pilih halaman tujuan untuk tombol</small>
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <select class="form-select" id="edit_slideshow_button_url" style="flex: 1;">
+                            <option value="">-- Pilih Link Terusan --</option>
+                            <option value="/">🏠 Home (Beranda)</option>
+                            <option value="/promo">🎉 Promo</option>
+                            <option value="/kalkulator">🧮 Hitung Kalkulasi</option>
+                            <option value="/destinasi">🗺️ Destinasi</option>
+                            <option value="/hotel">🏨 Hotel</option>
+                            <option value="/travel">✈️ Travel & Wisata</option>
+                            <option value="/travel/karimunjawa">🏝️ Karimunjawa</option>
+                            <option value="/blog">📰 Blog & Terbaru</option>
+                            <option value="https://www.susiair.com/">✈️ Tiket Pesawat</option>
+                            <option value="/estimasi">🚤 Estimasi Harga</option>
+                            <option value="/contact">📞 Hubungi Kami</option>
+                        </select>
+                        <input type="text" class="form-control" id="edit_slideshow_button_url_custom" placeholder="Atau custom URL..." style="flex: 0.8;">
+                    </div>
+                    <small class="text-muted">Pilih dari dropdown atau masukkan custom URL. Custom URL akan menimpa pilihan dropdown.</small>
                 </div>
             </div>
             <div class="modal-footer">
@@ -295,6 +303,15 @@ $slideshows = $slideshowModel->getAllSlideshows();
 
 <script>
 let selectedImage = null;
+
+// Helper function untuk mengambil URL tombol (prioritas custom > dropdown)
+function getButtonUrl(dropdownSelector, customSelector) {
+    const customUrl = document.getElementById(customSelector).value.trim();
+    if (customUrl) {
+        return customUrl; // Custom URL memiliki prioritas
+    }
+    return document.getElementById(dropdownSelector).value;
+}
 
 function handleSlideshowImageUpload(event) {
     const file = event.target.files[0];
@@ -317,8 +334,10 @@ function uploadSlideshow() {
     formData.append('description', document.getElementById('slideshow_desc').value);
     formData.append('duration', document.getElementById('slideshow_duration').value);
     formData.append('button_label', document.getElementById('slideshow_button_label').value);
-    formData.append('button_url', document.getElementById('slideshow_button_url').value);
+    formData.append('button_url', getButtonUrl('slideshow_button_url', 'slideshow_button_url_custom'));
     formData.append('button_class', document.getElementById('slideshow_button_class').value);
+
+    console.log('📤 Uploading slideshow with button_url:', getButtonUrl('slideshow_button_url', 'slideshow_button_url_custom'));
 
     fetch('<?= base_url('admin/save_slideshow') ?>', {
         method: 'POST',
@@ -350,9 +369,27 @@ function editSlideshow(id) {
                 document.getElementById('edit_slideshow_desc').value = slideshow.description || '';
                 document.getElementById('edit_slideshow_duration').value = slideshow.duration || 5000;
                 document.getElementById('edit_slideshow_button_label').value = slideshow.button_label || '';
-                document.getElementById('edit_slideshow_button_url').value = slideshow.button_url || '';
+                
+                // Set button_url dari database ke dropdown jika cocok, jika tidak ke custom field
+                const buttonUrl = slideshow.button_url || '';
+                const dropdownOptions = document.getElementById('edit_slideshow_button_url').options;
+                let found = false;
+                for (let i = 0; i < dropdownOptions.length; i++) {
+                    if (dropdownOptions[i].value === buttonUrl) {
+                        document.getElementById('edit_slideshow_button_url').value = buttonUrl;
+                        document.getElementById('edit_slideshow_button_url_custom').value = '';
+                        found = true;
+                        break;
+                    }
+                }
+                // Jika tidak ditemukan di dropdown, masukkan ke custom field
+                if (!found) {
+                    document.getElementById('edit_slideshow_button_url').value = '';
+                    document.getElementById('edit_slideshow_button_url_custom').value = buttonUrl;
+                }
+                
                 document.getElementById('edit_slideshow_button_class').value = slideshow.button_class || 'btn-warning';
-                document.getElementById('current-image').src = '<?= base_url('') ?>' + slideshow.image_url;
+                document.getElementById('current-image').src = '<?= base_url('/') ?>' + slideshow.image_url;
                 new bootstrap.Modal(document.getElementById('editSlideshowModal')).show();
             }
         });
@@ -367,8 +404,10 @@ function saveEditSlideshow() {
     formData.append('description', document.getElementById('edit_slideshow_desc').value);
     formData.append('duration', document.getElementById('edit_slideshow_duration').value);
     formData.append('button_label', document.getElementById('edit_slideshow_button_label').value);
-    formData.append('button_url', document.getElementById('edit_slideshow_button_url').value);
+    formData.append('button_url', getButtonUrl('edit_slideshow_button_url', 'edit_slideshow_button_url_custom'));
     formData.append('button_class', document.getElementById('edit_slideshow_button_class').value);
+    
+    console.log('🔄 Updating slideshow with button_url:', getButtonUrl('edit_slideshow_button_url', 'edit_slideshow_button_url_custom'));
     
     const newImage = document.getElementById('edit_slideshow_image').files[0];
     if (newImage) {
@@ -449,4 +488,38 @@ if (typeof Sortable !== 'undefined') {
         });
     }
 }
+
+// Event listeners untuk auto-clear custom field saat dropdown dipilih
+document.addEventListener('DOMContentLoaded', function() {
+    const slideshowDropdown = document.getElementById('slideshow_button_url');
+    const slideshowCustom = document.getElementById('slideshow_button_url_custom');
+    const editDropdown = document.getElementById('edit_slideshow_button_url');
+    const editCustom = document.getElementById('edit_slideshow_button_url_custom');
+    
+    if (slideshowDropdown && slideshowCustom) {
+        slideshowDropdown.addEventListener('change', function() {
+            if (this.value) {
+                slideshowCustom.value = ''; // Clear custom jika dropdown dipilih
+            }
+        });
+        slideshowCustom.addEventListener('input', function() {
+            if (this.value) {
+                slideshowDropdown.value = ''; // Clear dropdown jika custom diisi
+            }
+        });
+    }
+    
+    if (editDropdown && editCustom) {
+        editDropdown.addEventListener('change', function() {
+            if (this.value) {
+                editCustom.value = ''; // Clear custom jika dropdown dipilih
+            }
+        });
+        editCustom.addEventListener('input', function() {
+            if (this.value) {
+                editDropdown.value = ''; // Clear dropdown jika custom diisi
+            }
+        });
+    }
+});
 </script>

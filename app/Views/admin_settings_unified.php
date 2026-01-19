@@ -669,6 +669,9 @@
             <button class="modern-tab" onclick="switchTab('jadwal_kapal')">
                 <i class="bi bi-calendar-event-fill"></i> Jadwal Kapal
             </button>
+            <button class="modern-tab" onclick="switchTab('tiket_pesawat')">
+                <i class="bi bi-airplane-fill"></i> Tiket Pesawat
+            </button>
         </div>
 
         <!-- TAB: GENERAL -->
@@ -1149,10 +1152,22 @@
         </div>
 
         <!-- TAB: ESTIMASI -->
-        <div id="tab-estimasi" class="tab-content-modern">
+<div id="tab-estimasi" class="tab-content-modern">
             <div class="info-box mb-4">
                 <i class="bi bi-info-circle-fill"></i>
                 <strong>Info:</strong> Deskripsi ini akan muncul sebagai tooltip di halaman estimasi biaya
+            </div>
+
+            <!-- LINK KE HALAMAN ESTIMASI DETAIL -->
+            <div class="alert-modern" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin-bottom: 25px;">
+                <i class="bi bi-sliders" style="font-size: 1.5rem;"></i>
+                <div>
+                    <strong>Edit Deskripsi Detail Estimasi</strong><br>
+                    <small>Kelola deskripsi lengkap untuk setiap item estimasi termasuk floating box total</small><br>
+                    <a href="<?= base_url('settings/estimasi-info') ?>" class="btn btn-light btn-sm mt-2" style="border-radius: 12px;">
+                        <i class="bi bi-arrow-right-circle"></i> Buka Settings Estimasi Detail
+                    </a>
+                </div>
             </div>
 
             <form action="<?= base_url('settings/save-unified') ?>" method="POST" enctype="multipart/form-data" onsubmit="showLoading()">
@@ -1161,6 +1176,7 @@
                 <div class="settings-grid">
                     <?php 
                     $estimasiItems = [
+                        ['key' => 'floating_box', 'title' => 'Deskripsi Box Total', 'icon' => 'window-dock', 'color' => '#10b981'],
                         ['key' => 'transport_land', 'title' => 'Transportasi Darat', 'icon' => 'truck', 'color' => '#0ea5e9'],
                         ['key' => 'transport_sea', 'title' => 'Transportasi Laut', 'icon' => 'water', 'color' => '#06b6d4'],
                         ['key' => 'hotel', 'title' => 'Penginapan', 'icon' => 'building', 'color' => '#8b5cf6'],
@@ -1551,6 +1567,129 @@
                                 <tr>
                                     <td colspan="7" class="text-center text-muted py-4">
                                         <i class="bi bi-inbox"></i> Belum ada data jadwal kapal.
+                                    </td>
+                                </tr>
+                                <?php 
+                                    }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: TIKET PESAWAT -->
+        <div id="tab-tiket_pesawat" class="tab-content-modern">
+            <div class="info-box mb-4">
+                <i class="bi bi-info-circle-fill"></i>
+                <strong>Info:</strong> Kelola harga tiket pesawat charter yang ditampilkan di halaman estimasi. Tambahkan, edit, atau hapus opsi pesawat sesuai kebutuhan.
+            </div>
+
+            <!-- FORM INPUT TIKET PESAWAT -->
+            <div class="glass-card mb-4">
+                <div class="glass-card-header" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white;">
+                    <h6><i class="bi bi-airplane-fill me-2"></i>Tambah Tiket Pesawat Baru</h6>
+                </div>
+                <div class="glass-card-body">
+                    <form action="<?= base_url('admin/simpan_tiket_pesawat') ?>" method="POST" id="formTiketPesawat">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Nama Maskapai</label>
+                                <input type="text" class="form-control" name="nama_maskapai" placeholder="Contoh: Batik Air Charter" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Rute Penerbangan</label>
+                                <input type="text" class="form-control" name="rute" placeholder="Contoh: Semarang → Karimunjawa" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Harga Tiket (Rp)</label>
+                                <input type="number" class="form-control" name="harga" placeholder="Contoh: 2500000" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Status</label>
+                                <select class="form-control" name="is_active" required>
+                                    <option value="1" selected>Aktif</option>
+                                    <option value="0">Tidak Aktif</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label fw-bold">Deskripsi</label>
+                                <textarea class="form-control" name="deskripsi" rows="2" placeholder="Contoh: Charter Pesawat: Lebih cepat dan nyaman"></textarea>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-modern" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                            <i class="bi bi-plus-lg me-2"></i>Tambah Tiket Pesawat
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- DAFTAR TIKET PESAWAT -->
+            <div class="glass-card">
+                <div class="glass-card-header" style="background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); color: white;">
+                    <h6><i class="bi bi-list-ul me-2"></i>Tiket Pesawat yang Tersedia</h6>
+                </div>
+                <div class="glass-card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover border">
+                            <thead class="table-light">
+                                <tr>
+                                    <th width="20%">Maskapai</th>
+                                    <th width="20%">Rute</th>
+                                    <th width="15%">Harga</th>
+                                    <th width="15%">Status</th>
+                                    <th width="30%">Deskripsi</th>
+                                    <th width="10%">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                    $db = \Config\Database::connect();
+                                    if ($db->tableExists('tiket_pesawat')) {
+                                        $tikets = $db->table('tiket_pesawat')->orderBy('harga', 'ASC')->get()->getResultArray();
+                                        if (!empty($tikets)) {
+                                            foreach($tikets as $tiket):
+                                ?>
+                                <tr>
+                                    <td><?= esc($tiket['nama_maskapai']) ?></td>
+                                    <td><?= esc($tiket['rute']) ?></td>
+                                    <td><strong>Rp <?= number_format($tiket['harga'], 0, ',', '.') ?></strong></td>
+                                    <td>
+                                        <span class="badge <?= $tiket['is_active'] ? 'bg-success' : 'bg-secondary' ?>">
+                                            <?= $tiket['is_active'] ? 'Aktif' : 'Tidak Aktif' ?>
+                                        </span>
+                                    </td>
+                                    <td><?= esc($tiket['deskripsi']) ?></td>
+                                    <td>
+                                        <a href="<?= base_url('admin/delete_tiket_pesawat/' . $tiket['id']) ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus?')">
+                                            <i class="bi bi-trash"></i> Hapus
+                                        </a>
+                                    </td>
+                                </tr>
+                                <?php 
+                                            endforeach;
+                                        } else {
+                                ?>
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">
+                                        <i class="bi bi-inbox"></i> Belum ada tiket pesawat. Silakan tambahkan di atas.
+                                    </td>
+                                </tr>
+                                <?php 
+                                        }
+                                    } else {
+                                ?>
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">
+                                        <i class="bi bi-inbox"></i> Tabel tiket pesawat belum ada.
                                     </td>
                                 </tr>
                                 <?php 

@@ -330,63 +330,140 @@ class Settings extends BaseController
     }
 
     // ==================== ESTIMASI SETTINGS ====================
+    
+    // Test method untuk debug
+    public function testEstimasi()
+    {
+        echo "<h1>Test Estimasi Settings</h1>";
+        echo "<p>Controller method berjalan!</p>";
+        
+        // Test database
+        $count = $this->db->table('site_content')
+            ->where('page_name', 'estimasi')
+            ->countAllResults();
+        
+        echo "<p>Data count: $count</p>";
+        
+        if ($count > 0) {
+            $data = $this->db->table('site_content')
+                ->where('page_name', 'estimasi')
+                ->get()
+                ->getResultArray();
+            
+            echo "<pre>";
+            print_r($data);
+            echo "</pre>";
+        }
+        
+        echo "<p><a href='" . base_url('settings/estimasi-info') . "'>Go to Estimasi Info</a></p>";
+    }
+    
     public function estimasiInfo()
     {
-        // Ambil semua estimasi info dari site_content table
-        $estimasiList = $this->db->table('site_content')
-            ->where('page_name', 'estimasi')
-            ->orderBy('id', 'ASC')
-            ->get()
-            ->getResultArray();
-
-        // Jika tidak ada data, buat default
-        if (empty($estimasiList)) {
-            $defaults = [
-                ['page_name' => 'estimasi', 'section_name' => 'transport_land', 'content_key' => 'title', 'content_value' => 'Transportasi Darat'],
-                ['page_name' => 'estimasi', 'section_name' => 'transport_land', 'content_key' => 'description', 'content_value' => 'Biaya transportasi darat dari titik jemput ke Jepara PP'],
-                ['page_name' => 'estimasi', 'section_name' => 'transport_sea', 'content_key' => 'title', 'content_value' => 'Transportasi Laut'],
-                ['page_name' => 'estimasi', 'section_name' => 'transport_sea', 'content_key' => 'description', 'content_value' => 'Harga tiket kapal PP dari Jepara ke Karimunjawa'],
-                ['page_name' => 'estimasi', 'section_name' => 'hotel', 'content_key' => 'title', 'content_value' => 'Penginapan'],
-                ['page_name' => 'estimasi', 'section_name' => 'hotel', 'content_key' => 'description', 'content_value' => 'Harga per kamar per malam (sharing room)'],
-                ['page_name' => 'estimasi', 'section_name' => 'wisata_laut', 'content_key' => 'title', 'content_value' => 'Wisata Laut'],
-                ['page_name' => 'estimasi', 'section_name' => 'wisata_laut', 'content_key' => 'description', 'content_value' => 'Paket Island Hopping dengan snorkeling dan aktivitas laut'],
-                ['page_name' => 'estimasi', 'section_name' => 'wisata_darat', 'content_key' => 'title', 'content_value' => 'Wisata Darat'],
-                ['page_name' => 'estimasi', 'section_name' => 'wisata_darat', 'content_key' => 'description', 'content_value' => 'Paket City Tour dengan tiket masuk dan pemandu lokal'],
-                ['page_name' => 'estimasi', 'section_name' => 'guide', 'content_key' => 'title', 'content_value' => 'Guide Lokal'],
-                ['page_name' => 'estimasi', 'section_name' => 'guide', 'content_key' => 'description', 'content_value' => 'Jasa pemandu wisata profesional (1 guide per 8 orang)'],
-                ['page_name' => 'estimasi', 'section_name' => 'transport', 'content_key' => 'title', 'content_value' => 'Transport Lokal'],
-                ['page_name' => 'estimasi', 'section_name' => 'transport', 'content_key' => 'description', 'content_value' => 'Biaya sewa motor/mobil lokal per hari di Karimunjawa'],
-                ['page_name' => 'estimasi', 'section_name' => 'food', 'content_key' => 'title', 'content_value' => 'Konsumsi'],
-                ['page_name' => 'estimasi', 'section_name' => 'food', 'content_key' => 'description', 'content_value' => 'Biaya makan 3x sehari (breakfast, lunch, dinner)'],
-            ];
-
-            foreach ($defaults as $d) {
-                $this->db->table('site_content')->insert($d);
-            }
-
-            // Fetch again
+        try {
+            // Force fresh query - no cache
             $estimasiList = $this->db->table('site_content')
                 ->where('page_name', 'estimasi')
                 ->orderBy('id', 'ASC')
-                ->get()
+                ->get(0, 0, false)
                 ->getResultArray();
-        }
 
-        // Format data untuk view - group by section_name
-        $serviceInfo = [];
-        foreach ($estimasiList as $item) {
-            if (!isset($serviceInfo[$item['section_name']])) {
-                $serviceInfo[$item['section_name']] = ['id' => $item['id'], 'key_name' => $item['section_name']];
+            // DEBUG: Show raw data
+            if($this->request->getGet('debug') === '1') {
+                echo "<h2>DEBUG MODE - FRESH QUERY</h2>";
+                echo "<p><strong>Total rows:</strong> " . count($estimasiList) . "</p>";
+                echo "<p><strong>Query:</strong> " . $this->db->getLastQuery() . "</p>";
+                echo "<pre>"; print_r($estimasiList); echo "</pre>";
+                
+                // Test direct count
+                $countQuery = $this->db->query("SELECT COUNT(*) as total FROM site_content WHERE page_name='estimasi'");
+                $count = $countQuery->getRow()->total;
+                echo "<p><strong>Direct SQL Count:</strong> $count</p>";
+                
+                // Test all sections
+                $sectionsQuery = $this->db->query("SELECT DISTINCT section_name FROM site_content WHERE page_name='estimasi' ORDER BY MIN(id)");
+                echo "<p><strong>Sections in DB:</strong></p><ul>";
+                foreach($sectionsQuery->getResultArray() as $s) {
+                    echo "<li>{$s['section_name']}</li>";
+                }
+                echo "</ul>";
+                die();
             }
-            $serviceInfo[$item['section_name']][$item['content_key']] = $item['content_value'];
+
+            log_message('info', '=== ESTIMASI INFO DEBUG ===');
+            log_message('info', 'Raw data count: ' . count($estimasiList));
+            log_message('info', 'Raw data: ' . json_encode($estimasiList));
+
+            // Jika tidak ada data, buat default
+            if (empty($estimasiList)) {
+                $defaults = [
+                    ['page_name' => 'estimasi', 'section_name' => 'floating_box', 'content_key' => 'title', 'content_value' => 'Deskripsi Box Total'],
+                    ['page_name' => 'estimasi', 'section_name' => 'floating_box', 'content_key' => 'description', 'content_value' => '<span style="color:#ffe082;">Ini total estimasi termurah</span> liburan ke Karimunjawa 3H2M.<br>Kamu bisa <b>upgrade</b> dengan klik pilihan yang ada. Buat liburanmu makin seru dan sesuai keinginan!'],
+                    ['page_name' => 'estimasi', 'section_name' => 'transport_land', 'content_key' => 'title', 'content_value' => 'Transportasi Darat'],
+                    ['page_name' => 'estimasi', 'section_name' => 'transport_land', 'content_key' => 'description', 'content_value' => 'Biaya transportasi darat dari titik jemput ke Jepara PP'],
+                    ['page_name' => 'estimasi', 'section_name' => 'transport_sea', 'content_key' => 'title', 'content_value' => 'Transportasi Laut'],
+                    ['page_name' => 'estimasi', 'section_name' => 'transport_sea', 'content_key' => 'description', 'content_value' => 'Harga tiket kapal PP dari Jepara ke Karimunjawa'],
+                    ['page_name' => 'estimasi', 'section_name' => 'hotel', 'content_key' => 'title', 'content_value' => 'Penginapan'],
+                    ['page_name' => 'estimasi', 'section_name' => 'hotel', 'content_key' => 'description', 'content_value' => 'Harga per kamar per malam (sharing room)'],
+                    ['page_name' => 'estimasi', 'section_name' => 'activity', 'content_key' => 'title', 'content_value' => 'Wisata Laut'],
+                    ['page_name' => 'estimasi', 'section_name' => 'activity', 'content_key' => 'description', 'content_value' => 'Paket snorkeling, diving, dan aktivitas water sports'],
+                    ['page_name' => 'estimasi', 'section_name' => 'dest_laut', 'content_key' => 'title', 'content_value' => 'Wisata Darat'],
+                    ['page_name' => 'estimasi', 'section_name' => 'dest_laut', 'content_key' => 'description', 'content_value' => 'Tiket masuk destinasi wisata lokal dan tempat bersejarah'],
+                    ['page_name' => 'estimasi', 'section_name' => 'guide', 'content_key' => 'title', 'content_value' => 'Guide Lokal'],
+                    ['page_name' => 'estimasi', 'section_name' => 'guide', 'content_key' => 'description', 'content_value' => 'Jasa pemandu wisata profesional (1 guide per 8 orang)'],
+                    ['page_name' => 'estimasi', 'section_name' => 'transport', 'content_key' => 'title', 'content_value' => 'Transport Lokal'],
+                    ['page_name' => 'estimasi', 'section_name' => 'transport', 'content_key' => 'description', 'content_value' => 'Biaya sewa motor/mobil lokal per hari di Karimunjawa'],
+                    ['page_name' => 'estimasi', 'section_name' => 'food', 'content_key' => 'title', 'content_value' => 'Konsumsi'],
+                    ['page_name' => 'estimasi', 'section_name' => 'food', 'content_key' => 'description', 'content_value' => 'Biaya makan 3x sehari (breakfast, lunch, dinner)'],
+                    ['page_name' => 'estimasi', 'section_name' => 'facility', 'content_key' => 'title', 'content_value' => 'Fasilitas Tambahan'],
+                    ['page_name' => 'estimasi', 'section_name' => 'facility', 'content_key' => 'description', 'content_value' => 'Fasilitas optional seperti dokumentasi, BBQ, dll'],
+                ];
+
+                foreach ($defaults as $d) {
+                    $this->db->table('site_content')->insert($d);
+                }
+
+                // Fetch again
+                $estimasiList = $this->db->table('site_content')
+                    ->where('page_name', 'estimasi')
+                    ->orderBy('id', 'ASC')
+                    ->get()
+                    ->getResultArray();
+            }
+
+            // Format data untuk view - group by section_name
+            $serviceInfo = [];
+            foreach ($estimasiList as $item) {
+                if (!isset($serviceInfo[$item['section_name']])) {
+                    $serviceInfo[$item['section_name']] = ['id' => $item['id'], 'key_name' => $item['section_name']];
+                }
+                $serviceInfo[$item['section_name']][$item['content_key']] = $item['content_value'];
+            }
+
+            // DEBUG OUTPUT
+            if($this->request->getGet('show') === '1') {
+                echo "<h2>Debug Controller Output</h2>";
+                echo "<p>Raw rows: " . count($estimasiList) . "</p>";
+                echo "<p>Grouped sections: " . count($serviceInfo) . "</p>";
+                echo "<p>Section names: " . implode(', ', array_keys($serviceInfo)) . "</p>";
+                echo "<pre>"; print_r(array_values($serviceInfo)); echo "</pre>";
+                die();
+            }
+
+            log_message('info', 'Grouped sections count: ' . count($serviceInfo));
+            log_message('info', 'Section names: ' . implode(', ', array_keys($serviceInfo)));
+            log_message('info', 'Final serviceInfo: ' . json_encode(array_values($serviceInfo)));
+
+            $data = [
+                'title' => 'Settings Estimasi Biaya',
+                'serviceInfo' => array_values($serviceInfo),
+            ];
+
+            return view('admin_settings_estimasi', $data);
+        } catch (\Exception $e) {
+            log_message('error', 'Error in estimasiInfo: ' . $e->getMessage());
+            die('Error: ' . $e->getMessage() . '<br>Trace: ' . $e->getTraceAsString());
         }
-
-        $data = [
-            'title' => 'Settings Estimasi Biaya',
-            'serviceInfo' => array_values($serviceInfo),
-        ];
-
-        return view('admin_settings_estimasi', $data);
     }
 
     // Update satu estimasi info (by section_name)
@@ -406,9 +483,23 @@ class Settings extends BaseController
                 ->where('content_key', 'description')
                 ->update(['content_value' => $description, 'updated_at' => date('Y-m-d H:i:s')]);
 
+            // ✅ CLEAR CACHE OTOMATIS - Agar langsung sync tanpa refresh manual
+            \Config\Services::cache()->clean();
+            
+            // Clear writable cache files
+            $cacheDir = WRITEPATH . 'cache';
+            if (is_dir($cacheDir)) {
+                $files = glob($cacheDir . '/*');
+                foreach ($files as $file) {
+                    if (is_file($file)) {
+                        @unlink($file);
+                    }
+                }
+            }
+
             return $this->response->setJSON([
                 'success' => true,
-                'message' => 'Berhasil diperbarui'
+                'message' => 'Berhasil diperbarui dan otomatis tersinkronisasi!'
             ]);
         } catch (\Exception $e) {
             return $this->response->setJSON(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
